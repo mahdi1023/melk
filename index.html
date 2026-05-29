@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ثبت درخواست ملک</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap');
+
+    :root {
+      --bg: #0f0f13;
+      --surface: #1a1a23;
+      --surface2: #22222e;
+      --border: #2e2e3e;
+      --accent: #6c63ff;
+      --accent2: #ff6584;
+      --text: #e8e8f0;
+      --text-muted: #7a7a9a;
+      --success: #43e97b;
+      --radius: 14px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Vazirmatn', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 0 0 100px 0;
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, #1a1a23 0%, #16162a 100%);
+      padding: 20px 20px 28px;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+    }
+    .header::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 160px; height: 160px;
+      background: radial-gradient(circle, rgba(108,99,255,0.15) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .header-icon {
+      font-size: 2.2rem;
+      margin-bottom: 8px;
+    }
+    .header h1 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .header p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Steps */
+    .steps {
+      display: flex;
+      padding: 16px 20px;
+      gap: 6px;
+      align-items: center;
+    }
+    .step {
+      flex: 1;
+      height: 3px;
+      border-radius: 99px;
+      background: var(--border);
+      transition: background 0.3s;
+    }
+    .step.active { background: var(--accent); }
+    .step.done { background: var(--success); }
+
+    /* Step label */
+    .step-label {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      padding: 0 20px 12px;
+    }
+    .step-label span { color: var(--accent); font-weight: 600; }
+
+    /* Section */
+    .section {
+      display: none;
+      padding: 0 16px;
+      animation: fadeIn 0.3s ease;
+    }
+    .section.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Card */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .card-title {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Input */
+    .input-group { margin-bottom: 12px; }
+    label {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    input, select, textarea {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 11px 14px;
+      color: var(--text);
+      font-family: 'Vazirmatn', sans-serif;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s;
+      direction: rtl;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--accent);
+    }
+    select option { background: var(--surface2); }
+    textarea { resize: none; height: 80px; }
+
+    /* Budget row */
+    .budget-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    /* Chips (requirements) */
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .chip {
+      padding: 7px 13px;
+      border-radius: 99px;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--text-muted);
+      user-select: none;
+    }
+    .chip.selected {
+      background: rgba(108,99,255,0.15);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* Summary */
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.85rem;
+      gap: 12px;
+    }
+    .summary-row:last-child { border-bottom: none; }
+    .summary-key { color: var(--text-muted); white-space: nowrap; }
+    .summary-val { color: var(--text); font-weight: 500; text-align: left; }
+
+    /* Bottom bar */
+    .bottom-bar {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      padding: 12px 16px;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 10px;
+    }
+    .btn {
+      flex: 1;
+      padding: 13px;
+      border-radius: 12px;
+      border: none;
+      font-family: 'Vazirmatn', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-primary:active { transform: scale(0.97); }
+    .btn-secondary {
+      background: var(--surface2);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+
+    /* Success */
+    .success-screen {
+      display: none;
+      text-align: center;
+      padding: 40px 20px;
+    }
+    .success-screen.show { display: block; }
+    .success-icon {
+      font-size: 4rem;
+      margin-bottom: 16px;
+      animation: pop 0.5s ease;
+    }
+    @keyframes pop {
+      0% { transform: scale(0); }
+      70% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+    .success-code {
+      background: var(--surface);
+      border: 1px dashed var(--accent);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin: 20px 0;
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-icon">🏠</div>
+  <h1>ثبت درخواست ملک</h1>
+  <p>نیازت رو وارد کن، مشاوران پیدات می‌کنن</p>
+</div>
+
+<!-- Steps -->
+<div class="steps">
+  <div class="step active" id="s1"></div>
+  <div class="step" id="s2"></div>
+  <div class="step" id="s3"></div>
+</div>
+<div class="step-label">مرحله <span id="stepNum">۱</span> از ۳</div>
+
+<!-- ─── Step 1: اطلاعات اصلی ─── -->
+<div class="section active" id="step1">
+  <div class="card">
+    <div class="card-title">📍 موقعیت و نوع ملک</div>
+
+    <div class="input-group">
+      <label>شهر / منطقه مورد نظر</label>
+      <input type="text" id="location" placeholder="مثلاً: تهران، منطقه ۵" />
+    </div>
+
+    <div class="input-group">
+      <label>نوع ملک</label>
+      <select id="property_type">
+        <option value="">انتخاب کن...</option>
+        <option value="آپارتمان">آپارتمان</option>
+        <option value="خانه ویلایی">خانه ویلایی</option>
+        <option value="زمین">زمین</option>
+        <option value="مغازه">مغازه</option>
+        <option value="دفتر">دفتر</option>
+      </select>
+    </div>
+
+    <div class="input-group">
+      <label>هدف</label>
+      <select id="purpose">
+        <option value="خرید">خرید</option>
+        <option value="اجاره">اجاره</option>
+        <option value="رهن">رهن و اجاره</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💰 بودجه</div>
+    <div class="budget-row">
+      <div class="input-group">
+        <label>از (میلیون تومان)</label>
+        <input type="number" id="budget_min" placeholder="۰" />
+      </div>
+      <div class="input-group">
+        <label>تا (میلیون تومان)</label>
+        <input type="number" id="budget_max" placeholder="۰" />
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Step 2: جزئیات ─── -->
+<div class="section" id="step2">
+  <div class="card">
+    <div class="card-title">📐 مشخصات فیزیکی</div>
+
+    <div class="budget-row">
+      <div class="input-group">
+        <label>متراژ از (متر)</label>
+        <input type="number" id="area_min" placeholder="۰" />
+      </div>
+      <div class="input-group">
+        <label>متراژ تا (متر)</label>
+        <input type="number" id="area_max" placeholder="۰" />
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label>تعداد اتاق</label>
+      <select id="rooms">
+        <option value="فرقی نمیکنه">فرقی نمیکنه</option>
+        <option value="بدون اتاق (استودیو)">استودیو</option>
+        <option value="۱ اتاق">۱ اتاق</option>
+        <option value="۲ اتاق">۲ اتاق</option>
+        <option value="۳ اتاق">۳ اتاق</option>
+        <option value="۴ اتاق یا بیشتر">۴ اتاق یا بیشتر</option>
+      </select>
+    </div>
+
+    <div class="input-group">
+      <label>طبقه</label>
+      <select id="floor">
+        <option value="فرقی نمیکنه">فرقی نمیکنه</option>
+        <option value="همکف">همکف</option>
+        <option value="۱-۳">۱ تا ۳</option>
+        <option value="۴-۷">۴ تا ۷</option>
+        <option value="بالای ۷">بالای ۷</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">✅ امکانات الزامی</div>
+    <div class="chips" id="chips">
+      <div class="chip" onclick="toggleChip(this)" data-val="پارکینگ">🚗 پارکینگ</div>
+      <div class="chip" onclick="toggleChip(this)" data-val="انباری">📦 انباری</div>
+      <div class="chip" onclick="toggleChip(this)" data-val="آسانسور">🛗 آسانسور</div>
+      <div class="chip" onclick="toggleChip(this)" data-val="نور خوب">☀️ نور خوب</div>
+      <div class="chip" onclick="toggleChip(this)" data-val="بالکن">🌿 بالکن</div>
+      <div class="chip" onclick="toggleChip(this)" data-val="سند تکبرگ">📄 سند تکبرگ</div>
+      <div class="chip" onclick="toggleChip(this)" data-val="گاز لوله‌کشی">🔥 گاز</div>
+      <div class="chip" onclick="toggleChip(this)" data-val="نوساز">🏗 نوساز</div>
+      <div class="chip" onclick="toggleChip(this)" data-val="وام‌دار">🏦 وام‌دار</div>
+      <div class="chip" onclick="toggleChip(this)" data-val="حیاط">🌳 حیاط</div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Step 3: تأیید ─── -->
+<div class="section" id="step3">
+  <div class="card">
+    <div class="card-title">📋 خلاصه درخواست</div>
+    <div id="summaryContent"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">✏️ توضیحات اضافه (اختیاری)</div>
+    <textarea id="description" placeholder="هر نکته‌ای که مهمه بنویس..."></textarea>
+  </div>
+</div>
+
+<!-- Success -->
+<div class="success-screen" id="successScreen">
+  <div class="success-icon">✅</div>
+  <h2>درخواست ثبت شد!</h2>
+  <p style="color:var(--text-muted);margin-top:8px;font-size:0.85rem">کد یونیک شما:</p>
+  <div class="success-code" id="generatedCode">---</div>
+  <p style="color:var(--text-muted);font-size:0.8rem">این کد در کانال منتشر شد.<br>مشاوران برای تماس باید این کد رو به ربات بدن.</p>
+</div>
+
+<!-- Bottom Bar -->
+<div class="bottom-bar" id="bottomBar">
+  <button class="btn btn-secondary" id="backBtn" onclick="prevStep()" style="display:none">← قبلی</button>
+  <button class="btn btn-primary" id="nextBtn" onclick="nextStep()">بعدی ←</button>
+</div>
+
+<script>
+  const tg = window.Telegram.WebApp;
+  tg.expand();
+  tg.ready();
+
+  let currentStep = 1;
+  const totalSteps = 3;
+
+  const stepNums = ['۱','۲','۳'];
+
+  function updateStepUI() {
+    document.getElementById('stepNum').textContent = stepNums[currentStep - 1];
+    for (let i = 1; i <= totalSteps; i++) {
+      const el = document.getElementById('s' + i);
+      if (i < currentStep) { el.className = 'step done'; }
+      else if (i === currentStep) { el.className = 'step active'; }
+      else { el.className = 'step'; }
+    }
+    document.querySelectorAll('.section').forEach((s, idx) => {
+      s.classList.toggle('active', idx + 1 === currentStep);
+    });
+    document.getElementById('backBtn').style.display = currentStep > 1 ? 'block' : 'none';
+    document.getElementById('nextBtn').textContent = currentStep === totalSteps ? '✅ ثبت درخواست' : 'بعدی ←';
+  }
+
+  function toggleChip(el) {
+    el.classList.toggle('selected');
+  }
+
+  function getSelectedChips() {
+    return [...document.querySelectorAll('.chip.selected')].map(c => c.dataset.val);
+  }
+
+  function buildSummary() {
+    const rows = [
+      { key: 'موقعیت', val: document.getElementById('location').value || '---' },
+      { key: 'نوع ملک', val: document.getElementById('property_type').value || '---' },
+      { key: 'هدف', val: document.getElementById('purpose').value },
+      { key: 'بودجه', val: `${document.getElementById('budget_min').value || '۰'} تا ${document.getElementById('budget_max').value || '؟'} میلیون` },
+      { key: 'متراژ', val: `${document.getElementById('area_min').value || '۰'} تا ${document.getElementById('area_max').value || '؟'} متر` },
+      { key: 'اتاق', val: document.getElementById('rooms').value },
+      { key: 'طبقه', val: document.getElementById('floor').value },
+      { key: 'الزامات', val: getSelectedChips().join('، ') || 'ندارم' },
+    ];
+    document.getElementById('summaryContent').innerHTML = rows.map(r =>
+      `<div class="summary-row"><span class="summary-key">${r.key}</span><span class="summary-val">${r.val}</span></div>`
+    ).join('');
+  }
+
+  function nextStep() {
+    if (currentStep === 1) {
+      if (!document.getElementById('location').value) {
+        alert('لطفاً موقعیت رو وارد کن');
+        return;
+      }
+      if (!document.getElementById('property_type').value) {
+        alert('لطفاً نوع ملک رو انتخاب کن');
+        return;
+      }
+    }
+    if (currentStep === 2) {
+      buildSummary();
+    }
+    if (currentStep < totalSteps) {
+      currentStep++;
+      updateStepUI();
+    } else {
+      submitForm();
+    }
+  }
+
+  function prevStep() {
+    if (currentStep > 1) { currentStep--; updateStepUI(); }
+  }
+
+  function submitForm() {
+    const data = {
+      location: document.getElementById('location').value,
+      property_type: document.getElementById('property_type').value,
+      purpose: document.getElementById('purpose').value,
+      budget: `${document.getElementById('budget_min').value}-${document.getElementById('budget_max').value} میلیون تومان`,
+      area: `${document.getElementById('area_min').value}-${document.getElementById('area_max').value} متر`,
+      rooms: document.getElementById('rooms').value,
+      floor: document.getElementById('floor').value,
+      requirements: getSelectedChips(),
+      description: document.getElementById('description').value,
+    };
+
+    tg.sendData(JSON.stringify(data));
+
+    // نمایش صفحه موفقیت
+    document.querySelector('.steps').style.display = 'none';
+    document.querySelector('.step-label').style.display = 'none';
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById('bottomBar').style.display = 'none';
+    document.getElementById('successScreen').classList.add('show');
+  }
+</script>
+</body>
+</html>
