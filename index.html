@@ -1,503 +1,491 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ثبت درخواست ملک</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap');
-
-    :root {
-      --bg: #0f0f13;
-      --surface: #1a1a23;
-      --surface2: #22222e;
-      --border: #2e2e3e;
-      --accent: #6c63ff;
-      --accent2: #ff6584;
-      --text: #e8e8f0;
-      --text-muted: #7a7a9a;
-      --success: #43e97b;
-      --radius: 14px;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: 'Vazirmatn', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      padding: 0 0 100px 0;
-    }
-
-    /* Header */
-    .header {
-      background: linear-gradient(135deg, #1a1a23 0%, #16162a 100%);
-      padding: 20px 20px 28px;
-      position: relative;
-      overflow: hidden;
-      border-bottom: 1px solid var(--border);
-    }
-    .header::before {
-      content: '';
-      position: absolute;
-      top: -40px; right: -40px;
-      width: 160px; height: 160px;
-      background: radial-gradient(circle, rgba(108,99,255,0.15) 0%, transparent 70%);
-      border-radius: 50%;
-    }
-    .header-icon {
-      font-size: 2.2rem;
-      margin-bottom: 8px;
-    }
-    .header h1 {
-      font-size: 1.3rem;
-      font-weight: 700;
-      color: #fff;
-    }
-    .header p {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      margin-top: 4px;
-    }
-
-    /* Steps */
-    .steps {
-      display: flex;
-      padding: 16px 20px;
-      gap: 6px;
-      align-items: center;
-    }
-    .step {
-      flex: 1;
-      height: 3px;
-      border-radius: 99px;
-      background: var(--border);
-      transition: background 0.3s;
-    }
-    .step.active { background: var(--accent); }
-    .step.done { background: var(--success); }
-
-    /* Step label */
-    .step-label {
-      text-align: center;
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      padding: 0 20px 12px;
-    }
-    .step-label span { color: var(--accent); font-weight: 600; }
-
-    /* Section */
-    .section {
-      display: none;
-      padding: 0 16px;
-      animation: fadeIn 0.3s ease;
-    }
-    .section.active { display: block; }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Card */
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 16px;
-      margin-bottom: 12px;
-    }
-    .card-title {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      margin-bottom: 12px;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    /* Input */
-    .input-group { margin-bottom: 12px; }
-    label {
-      display: block;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      margin-bottom: 6px;
-    }
-    input, select, textarea {
-      width: 100%;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 11px 14px;
-      color: var(--text);
-      font-family: 'Vazirmatn', sans-serif;
-      font-size: 0.9rem;
-      outline: none;
-      transition: border-color 0.2s;
-      direction: rtl;
-    }
-    input:focus, select:focus, textarea:focus {
-      border-color: var(--accent);
-    }
-    select option { background: var(--surface2); }
-    textarea { resize: none; height: 80px; }
-
-    /* Budget row */
-    .budget-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    /* Chips (requirements) */
-    .chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .chip {
-      padding: 7px 13px;
-      border-radius: 99px;
-      border: 1px solid var(--border);
-      background: var(--surface2);
-      font-size: 0.78rem;
-      cursor: pointer;
-      transition: all 0.2s;
-      color: var(--text-muted);
-      user-select: none;
-    }
-    .chip.selected {
-      background: rgba(108,99,255,0.15);
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-
-    /* Summary */
-    .summary-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      padding: 10px 0;
-      border-bottom: 1px solid var(--border);
-      font-size: 0.85rem;
-      gap: 12px;
-    }
-    .summary-row:last-child { border-bottom: none; }
-    .summary-key { color: var(--text-muted); white-space: nowrap; }
-    .summary-val { color: var(--text); font-weight: 500; text-align: left; }
-
-    /* Bottom bar */
-    .bottom-bar {
-      position: fixed;
-      bottom: 0; left: 0; right: 0;
-      padding: 12px 16px;
-      background: var(--bg);
-      border-top: 1px solid var(--border);
-      display: flex;
-      gap: 10px;
-    }
-    .btn {
-      flex: 1;
-      padding: 13px;
-      border-radius: 12px;
-      border: none;
-      font-family: 'Vazirmatn', sans-serif;
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .btn-primary {
-      background: var(--accent);
-      color: #fff;
-    }
-    .btn-primary:active { transform: scale(0.97); }
-    .btn-secondary {
-      background: var(--surface2);
-      color: var(--text-muted);
-      border: 1px solid var(--border);
-    }
-
-    /* Success */
-    .success-screen {
-      display: none;
-      text-align: center;
-      padding: 40px 20px;
-    }
-    .success-screen.show { display: block; }
-    .success-icon {
-      font-size: 4rem;
-      margin-bottom: 16px;
-      animation: pop 0.5s ease;
-    }
-    @keyframes pop {
-      0% { transform: scale(0); }
-      70% { transform: scale(1.2); }
-      100% { transform: scale(1); }
-    }
-    .success-code {
-      background: var(--surface);
-      border: 1px dashed var(--accent);
-      border-radius: var(--radius);
-      padding: 16px;
-      margin: 20px 0;
-      font-size: 1.5rem;
-      font-weight: 700;
-      letter-spacing: 2px;
-      color: var(--accent);
-    }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>ملک‌یاب</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --gold:#C9A84C;
+  --gold2:#E8C97A;
+  --gold-dim:rgba(201,168,76,0.15);
+  --bg:#080A0F;
+  --bg2:#0D1017;
+  --surface:#111520;
+  --surface2:#161B28;
+  --border:rgba(201,168,76,0.12);
+  --border2:rgba(255,255,255,0.06);
+  --text:#F0EDE8;
+  --text2:#A09890;
+  --text3:#5A5550;
+  --success:#2ECC71;
+  --r:16px;
+}
+html,body{height:100%;overflow-x:hidden}
+body{
+  font-family:'Vazirmatn',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  padding-bottom:90px;
+}
+ 
+/* ── NOISE TEXTURE ── */
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:0;opacity:.4;
+}
+ 
+/* ── HERO HEADER ── */
+.hero{
+  position:relative;overflow:hidden;
+  padding:32px 20px 24px;
+  background:linear-gradient(160deg,#0D1017 0%,#111520 100%);
+  border-bottom:1px solid var(--border);
+}
+.hero::after{
+  content:'';position:absolute;
+  bottom:-60px;left:50%;transform:translateX(-50%);
+  width:300px;height:120px;
+  background:radial-gradient(ellipse,rgba(201,168,76,0.08) 0%,transparent 70%);
+  pointer-events:none;
+}
+.hero-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-mark{
+  width:38px;height:38px;border-radius:10px;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;box-shadow:0 4px 20px rgba(201,168,76,0.3);
+}
+.logo-text{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--gold);letter-spacing:.5px}
+.badge{
+  padding:4px 10px;border-radius:99px;
+  border:1px solid var(--border);
+  font-size:.65rem;color:var(--text2);letter-spacing:1px;
+  text-transform:uppercase;
+}
+.hero-title{
+  font-family:'Playfair Display',serif;
+  font-size:1.7rem;font-weight:900;
+  line-height:1.2;color:var(--text);
+  margin-bottom:8px;
+}
+.hero-title span{color:var(--gold)}
+.hero-sub{font-size:.8rem;color:var(--text2);line-height:1.6}
+ 
+/* ── PROGRESS ── */
+.progress-wrap{padding:16px 20px 0}
+.progress-track{
+  height:2px;background:var(--border2);border-radius:99px;
+  margin-bottom:8px;overflow:hidden;
+}
+.progress-fill{
+  height:100%;border-radius:99px;
+  background:linear-gradient(90deg,var(--gold),var(--gold2));
+  transition:width .5s cubic-bezier(.4,0,.2,1);
+  box-shadow:0 0 8px rgba(201,168,76,0.5);
+}
+.progress-labels{display:flex;justify-content:space-between}
+.p-label{font-size:.65rem;color:var(--text3);letter-spacing:.5px}
+.p-label.active{color:var(--gold)}
+ 
+/* ── SECTIONS ── */
+.section{display:none;padding:16px 16px 0;animation:slideUp .35s cubic-bezier(.4,0,.2,1)}
+.section.active{display:block}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+ 
+/* ── CARDS ── */
+.card{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:var(--r);
+  padding:16px;margin-bottom:12px;
+  position:relative;overflow:hidden;
+}
+.card::before{
+  content:'';position:absolute;top:0;right:0;
+  width:60px;height:60px;
+  background:radial-gradient(circle,rgba(201,168,76,0.05) 0%,transparent 70%);
+}
+.card-header{
+  display:flex;align-items:center;gap:8px;
+  margin-bottom:14px;
+  padding-bottom:12px;
+  border-bottom:1px solid var(--border2);
+}
+.card-icon{
+  width:28px;height:28px;border-radius:8px;
+  background:var(--gold-dim);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;
+}
+.card-title{font-size:.75rem;color:var(--text2);font-weight:500;letter-spacing:.3px}
+ 
+/* ── INPUTS ── */
+.field{margin-bottom:12px}
+.field label{
+  display:block;font-size:.7rem;
+  color:var(--text3);margin-bottom:5px;
+  letter-spacing:.3px;text-transform:uppercase;
+}
+.field input,.field select,.field textarea{
+  width:100%;
+  background:var(--surface2);
+  border:1px solid var(--border2);
+  border-radius:10px;
+  padding:11px 14px;
+  color:var(--text);
+  font-family:'Vazirmatn',sans-serif;
+  font-size:.9rem;
+  outline:none;
+  transition:border-color .2s,box-shadow .2s;
+  direction:rtl;
+  appearance:none;
+  -webkit-appearance:none;
+}
+.field input:focus,.field select:focus,.field textarea:focus{
+  border-color:var(--gold);
+  box-shadow:0 0 0 3px rgba(201,168,76,0.08);
+}
+.field select option{background:#111520}
+.field textarea{resize:none;height:75px;line-height:1.5}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+ 
+/* ── CHIPS ── */
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{
+  padding:7px 12px;border-radius:99px;
+  border:1px solid var(--border2);
+  background:var(--surface2);
+  font-size:.75rem;cursor:pointer;
+  transition:all .2s;color:var(--text2);
+  user-select:none;
+}
+.chip.on{
+  background:var(--gold-dim);
+  border-color:var(--gold);
+  color:var(--gold);
+  box-shadow:0 0 12px rgba(201,168,76,0.1);
+}
+ 
+/* ── SUMMARY ── */
+.sum-row{
+  display:flex;justify-content:space-between;
+  align-items:flex-start;gap:12px;
+  padding:10px 0;
+  border-bottom:1px solid var(--border2);
+  font-size:.82rem;
+}
+.sum-row:last-child{border:none}
+.sum-k{color:var(--text3);white-space:nowrap;font-size:.72rem;letter-spacing:.3px;text-transform:uppercase}
+.sum-v{color:var(--text);font-weight:500;text-align:left}
+ 
+/* ── BOTTOM BAR ── */
+.bottom{
+  position:fixed;bottom:0;left:0;right:0;
+  padding:10px 16px 14px;
+  background:linear-gradient(to top,var(--bg) 70%,transparent);
+  display:flex;gap:8px;z-index:10;
+}
+.btn{
+  flex:1;padding:14px;border-radius:12px;
+  border:none;font-family:'Vazirmatn',sans-serif;
+  font-size:.9rem;font-weight:600;
+  cursor:pointer;transition:all .2s;
+  position:relative;overflow:hidden;
+}
+.btn-main{
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:#080A0F;
+  box-shadow:0 4px 20px rgba(201,168,76,0.25);
+}
+.btn-main:active{transform:scale(.97);box-shadow:0 2px 10px rgba(201,168,76,0.2)}
+.btn-back{
+  background:var(--surface);color:var(--text2);
+  border:1px solid var(--border2);
+  flex:0 0 52px;padding:14px 0;
+}
+.btn-back:active{transform:scale(.97)}
+ 
+/* ── SUCCESS ── */
+.success{
+  display:none;text-align:center;
+  padding:40px 24px;
+}
+.success.show{display:block;animation:slideUp .5s cubic-bezier(.4,0,.2,1)}
+.success-ring{
+  width:80px;height:80px;border-radius:50%;
+  background:linear-gradient(135deg,rgba(201,168,76,.2),rgba(201,168,76,.05));
+  border:1px solid var(--gold);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 20px;font-size:2rem;
+  box-shadow:0 0 40px rgba(201,168,76,.15);
+  animation:pulse 2s infinite;
+}
+@keyframes pulse{0%,100%{box-shadow:0 0 40px rgba(201,168,76,.15)}50%{box-shadow:0 0 60px rgba(201,168,76,.3)}}
+.success h2{
+  font-family:'Playfair Display',serif;
+  font-size:1.5rem;color:var(--text);margin-bottom:8px;
+}
+.success p{font-size:.82rem;color:var(--text2);line-height:1.6;margin-bottom:20px}
+.code-box{
+  background:var(--surface);
+  border:1px dashed var(--gold);
+  border-radius:14px;padding:18px;
+  margin:16px 0;
+}
+.code-label{font-size:.65rem;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
+.code-val{
+  font-family:'Playfair Display',serif;
+  font-size:1.8rem;color:var(--gold);
+  letter-spacing:4px;
+}
+.success-note{
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:12px;padding:14px;
+  font-size:.78rem;color:var(--text2);line-height:1.7;
+  text-align:right;
+}
+.success-note strong{color:var(--gold)}
+</style>
 </head>
 <body>
-
-<!-- Header -->
-<div class="header">
-  <div class="header-icon">🏠</div>
-  <h1>ثبت درخواست ملک</h1>
-  <p>نیازت رو وارد کن، مشاوران پیدات می‌کنن</p>
-</div>
-
-<!-- Steps -->
-<div class="steps">
-  <div class="step active" id="s1"></div>
-  <div class="step" id="s2"></div>
-  <div class="step" id="s3"></div>
-</div>
-<div class="step-label">مرحله <span id="stepNum">۱</span> از ۳</div>
-
-<!-- ─── Step 1: اطلاعات اصلی ─── -->
-<div class="section active" id="step1">
-  <div class="card">
-    <div class="card-title">📍 موقعیت و نوع ملک</div>
-
-    <div class="input-group">
-      <label>شهر / منطقه مورد نظر</label>
-      <input type="text" id="location" placeholder="مثلاً: تهران، منطقه ۵" />
+ 
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-top">
+    <div class="logo">
+      <div class="logo-mark">🏛</div>
+      <span class="logo-text">ملک‌یاب</span>
     </div>
-
-    <div class="input-group">
+    <div class="badge">Premium</div>
+  </div>
+  <h1 class="hero-title">ملک ایده‌آلت را<br><span>پیدا خواهند کرد</span></h1>
+  <p class="hero-sub">نیازت را ثبت کن — مشاوران حرفه‌ای به سراغت می‌آیند</p>
+</div>
+ 
+<!-- PROGRESS -->
+<div class="progress-wrap">
+  <div class="progress-track"><div class="progress-fill" id="pFill" style="width:33%"></div></div>
+  <div class="progress-labels">
+    <span class="p-label active" id="pl1">موقعیت و بودجه</span>
+    <span class="p-label" id="pl2">جزئیات</span>
+    <span class="p-label" id="pl3">تأیید</span>
+  </div>
+</div>
+ 
+<!-- STEP 1 -->
+<div class="section active" id="s1">
+  <div class="card">
+    <div class="card-header"><div class="card-icon">📍</div><span class="card-title">موقعیت مکانی</span></div>
+    <div class="field">
+      <label>شهر و منطقه</label>
+      <input id="location" type="text" placeholder="مثلاً: تهران، سعادت‌آباد"/>
+    </div>
+    <div class="field">
       <label>نوع ملک</label>
       <select id="property_type">
-        <option value="">انتخاب کن...</option>
-        <option value="آپارتمان">آپارتمان</option>
-        <option value="خانه ویلایی">خانه ویلایی</option>
-        <option value="زمین">زمین</option>
-        <option value="مغازه">مغازه</option>
-        <option value="دفتر">دفتر</option>
+        <option value="">انتخاب کنید...</option>
+        <option>آپارتمان</option>
+        <option>خانه ویلایی</option>
+        <option>زمین</option>
+        <option>مغازه / تجاری</option>
+        <option>دفتر / اداری</option>
+        <option>پنت‌هاوس</option>
       </select>
     </div>
-
-    <div class="input-group">
+    <div class="field">
       <label>هدف</label>
       <select id="purpose">
-        <option value="خرید">خرید</option>
-        <option value="اجاره">اجاره</option>
-        <option value="رهن">رهن و اجاره</option>
+        <option>خرید</option>
+        <option>اجاره</option>
+        <option>رهن و اجاره</option>
+        <option>پیش‌خرید</option>
       </select>
     </div>
   </div>
-
+ 
   <div class="card">
-    <div class="card-title">💰 بودجه</div>
-    <div class="budget-row">
-      <div class="input-group">
-        <label>از (میلیون تومان)</label>
-        <input type="number" id="budget_min" placeholder="۰" />
-      </div>
-      <div class="input-group">
-        <label>تا (میلیون تومان)</label>
-        <input type="number" id="budget_max" placeholder="۰" />
-      </div>
+    <div class="card-header"><div class="card-icon">💰</div><span class="card-title">محدوده بودجه</span></div>
+    <div class="field-row">
+      <div class="field"><label>از (میلیون)</label><input id="bmin" type="number" placeholder="۰"/></div>
+      <div class="field"><label>تا (میلیون)</label><input id="bmax" type="number" placeholder="∞"/></div>
     </div>
   </div>
 </div>
-
-<!-- ─── Step 2: جزئیات ─── -->
-<div class="section" id="step2">
+ 
+<!-- STEP 2 -->
+<div class="section" id="s2">
   <div class="card">
-    <div class="card-title">📐 مشخصات فیزیکی</div>
-
-    <div class="budget-row">
-      <div class="input-group">
-        <label>متراژ از (متر)</label>
-        <input type="number" id="area_min" placeholder="۰" />
-      </div>
-      <div class="input-group">
-        <label>متراژ تا (متر)</label>
-        <input type="number" id="area_max" placeholder="۰" />
-      </div>
+    <div class="card-header"><div class="card-icon">📐</div><span class="card-title">مشخصات فیزیکی</span></div>
+    <div class="field-row">
+      <div class="field"><label>متراژ از</label><input id="amin" type="number" placeholder="متر"/></div>
+      <div class="field"><label>متراژ تا</label><input id="amax" type="number" placeholder="متر"/></div>
     </div>
-
-    <div class="input-group">
-      <label>تعداد اتاق</label>
-      <select id="rooms">
-        <option value="فرقی نمیکنه">فرقی نمیکنه</option>
-        <option value="بدون اتاق (استودیو)">استودیو</option>
-        <option value="۱ اتاق">۱ اتاق</option>
-        <option value="۲ اتاق">۲ اتاق</option>
-        <option value="۳ اتاق">۳ اتاق</option>
-        <option value="۴ اتاق یا بیشتر">۴ اتاق یا بیشتر</option>
-      </select>
-    </div>
-
-    <div class="input-group">
-      <label>طبقه</label>
-      <select id="floor">
-        <option value="فرقی نمیکنه">فرقی نمیکنه</option>
-        <option value="همکف">همکف</option>
-        <option value="۱-۳">۱ تا ۳</option>
-        <option value="۴-۷">۴ تا ۷</option>
-        <option value="بالای ۷">بالای ۷</option>
-      </select>
+    <div class="field-row">
+      <div class="field">
+        <label>اتاق خواب</label>
+        <select id="rooms">
+          <option>فرقی نمی‌کند</option>
+          <option>استودیو</option>
+          <option>۱ اتاق</option>
+          <option>۲ اتاق</option>
+          <option>۳ اتاق</option>
+          <option>۴ اتاق+</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>طبقه</label>
+        <select id="floor">
+          <option>فرقی نمی‌کند</option>
+          <option>همکف</option>
+          <option>۱ تا ۳</option>
+          <option>۴ تا ۷</option>
+          <option>بالای ۷</option>
+          <option>آخر (پشت‌بام)</option>
+        </select>
+      </div>
     </div>
   </div>
-
+ 
   <div class="card">
-    <div class="card-title">✅ امکانات الزامی</div>
+    <div class="card-header"><div class="card-icon">✨</div><span class="card-title">امکانات الزامی</span></div>
     <div class="chips" id="chips">
-      <div class="chip" onclick="toggleChip(this)" data-val="پارکینگ">🚗 پارکینگ</div>
-      <div class="chip" onclick="toggleChip(this)" data-val="انباری">📦 انباری</div>
-      <div class="chip" onclick="toggleChip(this)" data-val="آسانسور">🛗 آسانسور</div>
-      <div class="chip" onclick="toggleChip(this)" data-val="نور خوب">☀️ نور خوب</div>
-      <div class="chip" onclick="toggleChip(this)" data-val="بالکن">🌿 بالکن</div>
-      <div class="chip" onclick="toggleChip(this)" data-val="سند تکبرگ">📄 سند تکبرگ</div>
-      <div class="chip" onclick="toggleChip(this)" data-val="گاز لوله‌کشی">🔥 گاز</div>
-      <div class="chip" onclick="toggleChip(this)" data-val="نوساز">🏗 نوساز</div>
-      <div class="chip" onclick="toggleChip(this)" data-val="وام‌دار">🏦 وام‌دار</div>
-      <div class="chip" onclick="toggleChip(this)" data-val="حیاط">🌳 حیاط</div>
+      <div class="chip" data-v="پارکینگ">🚗 پارکینگ</div>
+      <div class="chip" data-v="انباری">📦 انباری</div>
+      <div class="chip" data-v="آسانسور">🛗 آسانسور</div>
+      <div class="chip" data-v="نور عالی">☀️ نور عالی</div>
+      <div class="chip" data-v="بالکن">🌿 بالکن</div>
+      <div class="chip" data-v="سند تک‌برگ">📄 سند تک‌برگ</div>
+      <div class="chip" data-v="گاز شهری">🔥 گاز شهری</div>
+      <div class="chip" data-v="نوساز">🏗 نوساز</div>
+      <div class="chip" data-v="وام‌دار">🏦 وام‌دار</div>
+      <div class="chip" data-v="حیاط">🌳 حیاط</div>
+      <div class="chip" data-v="استخر">🏊 استخر</div>
+      <div class="chip" data-v="سونا">🧖 سونا</div>
     </div>
   </div>
 </div>
-
-<!-- ─── Step 3: تأیید ─── -->
-<div class="section" id="step3">
+ 
+<!-- STEP 3 -->
+<div class="section" id="s3">
   <div class="card">
-    <div class="card-title">📋 خلاصه درخواست</div>
-    <div id="summaryContent"></div>
+    <div class="card-header"><div class="card-icon">📋</div><span class="card-title">خلاصه درخواست</span></div>
+    <div id="summary"></div>
   </div>
-
   <div class="card">
-    <div class="card-title">✏️ توضیحات اضافه (اختیاری)</div>
-    <textarea id="description" placeholder="هر نکته‌ای که مهمه بنویس..."></textarea>
+    <div class="card-header"><div class="card-icon">✏️</div><span class="card-title">توضیحات تکمیلی</span></div>
+    <div class="field">
+      <textarea id="desc" placeholder="هر نکته مهمی که باید مشاوران بدانند..."></textarea>
+    </div>
   </div>
 </div>
-
-<!-- Success -->
-<div class="success-screen" id="successScreen">
-  <div class="success-icon">✅</div>
-  <h2>درخواست ثبت شد!</h2>
-  <p style="color:var(--text-muted);margin-top:8px;font-size:0.85rem">کد یونیک شما:</p>
-  <div class="success-code" id="generatedCode">---</div>
-  <p style="color:var(--text-muted);font-size:0.8rem">این کد در کانال منتشر شد.<br>مشاوران برای تماس باید این کد رو به ربات بدن.</p>
+ 
+<!-- SUCCESS -->
+<div class="success" id="successScreen">
+  <div class="success-ring">✓</div>
+  <h2>درخواست ثبت شد</h2>
+  <p>آگهی شما در کانال ملک‌یاب منتشر شد.<br>مشاوران حرفه‌ای به زودی با شما تماس می‌گیرند.</p>
+  <div class="code-box">
+    <div class="code-label">کد یونیک درخواست</div>
+    <div class="code-val" id="codeVal">---</div>
+  </div>
+  <div class="success-note">
+    این کد را <strong>نگه‌داری کنید</strong>.<br>
+    مشاوران برای دسترسی به اطلاعات تماس شما، باید این کد را در ربات وارد کنند.
+  </div>
 </div>
-
-<!-- Bottom Bar -->
-<div class="bottom-bar" id="bottomBar">
-  <button class="btn btn-secondary" id="backBtn" onclick="prevStep()" style="display:none">← قبلی</button>
-  <button class="btn btn-primary" id="nextBtn" onclick="nextStep()">بعدی ←</button>
+ 
+<!-- BOTTOM -->
+<div class="bottom" id="bottomBar">
+  <button class="btn btn-back" id="backBtn" onclick="prev()" style="display:none">←</button>
+  <button class="btn btn-main" id="nextBtn" onclick="next()">ادامه ←</button>
 </div>
-
+ 
 <script>
-  const tg = window.Telegram.WebApp;
-  tg.expand();
-  tg.ready();
-
-  let currentStep = 1;
-  const totalSteps = 3;
-
-  const stepNums = ['۱','۲','۳'];
-
-  function updateStepUI() {
-    document.getElementById('stepNum').textContent = stepNums[currentStep - 1];
-    for (let i = 1; i <= totalSteps; i++) {
-      const el = document.getElementById('s' + i);
-      if (i < currentStep) { el.className = 'step done'; }
-      else if (i === currentStep) { el.className = 'step active'; }
-      else { el.className = 'step'; }
-    }
-    document.querySelectorAll('.section').forEach((s, idx) => {
-      s.classList.toggle('active', idx + 1 === currentStep);
-    });
-    document.getElementById('backBtn').style.display = currentStep > 1 ? 'block' : 'none';
-    document.getElementById('nextBtn').textContent = currentStep === totalSteps ? '✅ ثبت درخواست' : 'بعدی ←';
+const tg = window.Telegram.WebApp;
+tg.expand();tg.ready();
+tg.setHeaderColor('#080A0F');
+tg.setBackgroundColor('#080A0F');
+ 
+let step = 1;
+const STEPS = 3;
+ 
+function pct(){return Math.round((step/STEPS)*100)+'%'}
+ 
+function ui(){
+  document.getElementById('pFill').style.width = pct();
+  for(let i=1;i<=STEPS;i++){
+    document.getElementById('pl'+i).className='p-label'+(i===step?' active':'');
+    document.getElementById('s'+i).className='section'+(i===step?' active':'');
   }
-
-  function toggleChip(el) {
-    el.classList.toggle('selected');
+  document.getElementById('backBtn').style.display = step>1?'flex':'none';
+  document.getElementById('nextBtn').textContent = step===STEPS?'✓ ثبت درخواست':'ادامه ←';
+}
+ 
+document.querySelectorAll('.chip').forEach(c=>{
+  c.onclick=()=>c.classList.toggle('on');
+});
+ 
+function chips(){
+  return [...document.querySelectorAll('.chip.on')].map(c=>c.dataset.v);
+}
+ 
+function buildSummary(){
+  const rows=[
+    ['موقعیت', document.getElementById('location').value||'—'],
+    ['نوع ملک', document.getElementById('property_type').value||'—'],
+    ['هدف', document.getElementById('purpose').value],
+    ['بودجه', (document.getElementById('bmin').value||'۰')+' تا '+(document.getElementById('bmax').value||'∞')+' میلیون'],
+    ['متراژ', (document.getElementById('amin').value||'۰')+' تا '+(document.getElementById('amax').value||'∞')+' متر'],
+    ['اتاق', document.getElementById('rooms').value],
+    ['طبقه', document.getElementById('floor').value],
+    ['الزامات', chips().join('، ')||'—'],
+  ];
+  document.getElementById('summary').innerHTML=rows.map(r=>
+    `<div class="sum-row"><span class="sum-k">${r[0]}</span><span class="sum-v">${r[1]}</span></div>`
+  ).join('');
+}
+ 
+function next(){
+  if(step===1){
+    if(!document.getElementById('location').value.trim()){alert('لطفاً موقعیت را وارد کنید');return;}
+    if(!document.getElementById('property_type').value){alert('لطفاً نوع ملک را انتخاب کنید');return;}
   }
-
-  function getSelectedChips() {
-    return [...document.querySelectorAll('.chip.selected')].map(c => c.dataset.val);
-  }
-
-  function buildSummary() {
-    const rows = [
-      { key: 'موقعیت', val: document.getElementById('location').value || '---' },
-      { key: 'نوع ملک', val: document.getElementById('property_type').value || '---' },
-      { key: 'هدف', val: document.getElementById('purpose').value },
-      { key: 'بودجه', val: `${document.getElementById('budget_min').value || '۰'} تا ${document.getElementById('budget_max').value || '؟'} میلیون` },
-      { key: 'متراژ', val: `${document.getElementById('area_min').value || '۰'} تا ${document.getElementById('area_max').value || '؟'} متر` },
-      { key: 'اتاق', val: document.getElementById('rooms').value },
-      { key: 'طبقه', val: document.getElementById('floor').value },
-      { key: 'الزامات', val: getSelectedChips().join('، ') || 'ندارم' },
-    ];
-    document.getElementById('summaryContent').innerHTML = rows.map(r =>
-      `<div class="summary-row"><span class="summary-key">${r.key}</span><span class="summary-val">${r.val}</span></div>`
-    ).join('');
-  }
-
-  function nextStep() {
-    if (currentStep === 1) {
-      if (!document.getElementById('location').value) {
-        alert('لطفاً موقعیت رو وارد کن');
-        return;
-      }
-      if (!document.getElementById('property_type').value) {
-        alert('لطفاً نوع ملک رو انتخاب کن');
-        return;
-      }
-    }
-    if (currentStep === 2) {
-      buildSummary();
-    }
-    if (currentStep < totalSteps) {
-      currentStep++;
-      updateStepUI();
-    } else {
-      submitForm();
-    }
-  }
-
-  function prevStep() {
-    if (currentStep > 1) { currentStep--; updateStepUI(); }
-  }
-
-  function submitForm() {
-    const data = {
-      location: document.getElementById('location').value,
-      property_type: document.getElementById('property_type').value,
-      purpose: document.getElementById('purpose').value,
-      budget: `${document.getElementById('budget_min').value}-${document.getElementById('budget_max').value} میلیون تومان`,
-      area: `${document.getElementById('area_min').value}-${document.getElementById('area_max').value} متر`,
-      rooms: document.getElementById('rooms').value,
-      floor: document.getElementById('floor').value,
-      requirements: getSelectedChips(),
-      description: document.getElementById('description').value,
-    };
-
+  if(step===2) buildSummary();
+  if(step<STEPS){step++;ui();}
+  else submit();
+}
+function prev(){if(step>1){step--;ui();}}
+ 
+function submit(){
+  const data={
+    location: document.getElementById('location').value,
+    property_type: document.getElementById('property_type').value,
+    purpose: document.getElementById('purpose').value,
+    budget: document.getElementById('bmin').value+'-'+document.getElementById('bmax').value+' میلیون تومان',
+    area: document.getElementById('amin').value+'-'+document.getElementById('amax').value+' متر',
+    rooms: document.getElementById('rooms').value,
+    floor: document.getElementById('floor').value,
+    requirements: chips(),
+    description: document.getElementById('desc').value,
+  };
+  try{
     tg.sendData(JSON.stringify(data));
-
-    // نمایش صفحه موفقیت
-    document.querySelector('.steps').style.display = 'none';
-    document.querySelector('.step-label').style.display = 'none';
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-    document.getElementById('bottomBar').style.display = 'none';
+    document.querySelector('.hero').style.display='none';
+    document.querySelector('.progress-wrap').style.display='none';
+    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+    document.getElementById('bottomBar').style.display='none';
     document.getElementById('successScreen').classList.add('show');
+  }catch(e){
+    alert('خطا: '+e.message);
   }
+}
 </script>
 </body>
 </html>
