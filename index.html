@@ -285,17 +285,6 @@ tr:hover td{background:rgba(255,255,255,.02)}
   </div>
 </div>
 
-<!-- ══════════ ADMIN LOGIN SCREEN ══════════ -->
-<div class="screen" id="adminLoginScreen" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:24px">
-  <div style="width:64px;height:64px;background:linear-gradient(135deg,#C9A84C,#E8C97A);border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:20px">🔐</div>
-  <div style="font-size:1.2rem;font-weight:700;color:#fff;margin-bottom:6px">ورود مدیریت</div>
-  <div style="font-size:.8rem;color:var(--text-muted);margin-bottom:28px">رمز عبور پنل ادمین را وارد کنید</div>
-  <div style="width:100%;max-width:320px">
-    <input id="adminPassInput" type="password" placeholder="رمز عبور..." onkeydown="if(event.key==='Enter')tryAdminLogin()" style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px 16px;color:var(--text);font-family:'Vazirmatn',sans-serif;font-size:1rem;outline:none;text-align:center;margin-bottom:12px"/>
-    <div id="loginErr" style="display:none;color:#ff6b6b;font-size:.8rem;text-align:center;margin-bottom:10px">❌ رمز اشتباه است</div>
-    <button onclick="tryAdminLogin()" style="width:100%;background:linear-gradient(135deg,#C9A84C,#E8C97A);border:none;border-radius:12px;padding:14px;color:#000;font-family:'Vazirmatn',sans-serif;font-size:.95rem;font-weight:700;cursor:pointer">ورود به پنل</button>
-  </div>
-</div>
 
 <!-- ══════════ ADMIN SCREEN ══════════ -->
 <div class="screen" id="adminScreen">
