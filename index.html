@@ -9,165 +9,186 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
-  --gold:#C9A84C;--gold2:#E8C97A;--gold-dim:rgba(201,168,76,0.12);
-  --bg:#080A0F;--bg2:#0D1017;--s:#111520;--s2:#161B28;
-  --border:rgba(255,255,255,0.07);--border-gold:rgba(201,168,76,0.15);
-  --text:#F0EDE8;--text2:#8A8580;--text3:#3A3530;
-  --green:#2ECC71;--red:#E74C3C;--blue:#3B82F6;--orange:#F59E0B;
-  --r:14px;
+  --gold:#C9A84C;--gold2:#E8C97A;--gdim:rgba(201,168,76,0.12);
+  --bg:#07090E;--bg2:#0C0F18;--s:#10141F;--s2:#151A27;
+  --border:rgba(255,255,255,0.07);--bgold:rgba(201,168,76,0.15);
+  --text:#EEE9E2;--t2:#7A7570;--t3:#323030;
+  --green:#27AE60;--red:#C0392B;--blue:#2980B9;--orange:#E67E22;
+  --r:13px;
 }
 body{font-family:'Vazirmatn',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:90px}
-
-/* ── SCREENS ── */
 .screen{display:none}.screen.show{display:block}
 
 /* ── HERO ── */
-.hero{
-  position:relative;overflow:hidden;padding:28px 20px 20px;
-  background:linear-gradient(160deg,#0D1017,#111520);
-  border-bottom:1px solid var(--border);
-}
-.hero::after{content:'';position:absolute;bottom:-50px;left:50%;transform:translateX(-50%);width:260px;height:100px;background:radial-gradient(ellipse,rgba(201,168,76,.06) 0%,transparent 70%);pointer-events:none}
-.hero-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-.logo{display:flex;align-items:center;gap:10px}
-.logo-mark{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-size:17px;box-shadow:0 4px 16px rgba(201,168,76,.25)}
-.logo-text{font-size:1.1rem;font-weight:700;color:var(--gold)}
-.badge-premium{padding:3px 9px;border-radius:99px;border:1px solid var(--border-gold);font-size:.6rem;color:var(--text2);letter-spacing:1px}
-.hero h1{font-size:1.5rem;font-weight:700;line-height:1.25;margin-bottom:6px}
+.hero{position:relative;overflow:hidden;padding:26px 18px 18px;background:linear-gradient(160deg,#0C0F18,#10141F);border-bottom:1px solid var(--border)}
+.hero::after{content:'';position:absolute;bottom:-40px;left:50%;transform:translateX(-50%);width:240px;height:90px;background:radial-gradient(ellipse,rgba(201,168,76,.05) 0%,transparent 70%);pointer-events:none}
+.hero-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.logo{display:flex;align-items:center;gap:9px}
+.lmark{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 4px 14px rgba(201,168,76,.22)}
+.ltext{font-size:1rem;font-weight:700;color:var(--gold)}
+.premium{padding:3px 8px;border-radius:99px;border:1px solid var(--bgold);font-size:.58rem;color:var(--t2);letter-spacing:1px}
+.hero h1{font-size:1.4rem;font-weight:700;line-height:1.25;margin-bottom:5px}
 .hero h1 span{color:var(--gold)}
-.hero p{font-size:.78rem;color:var(--text2);line-height:1.6}
+.hero p{font-size:.76rem;color:var(--t2);line-height:1.6}
 
 /* ── PROGRESS ── */
-.prog-wrap{padding:14px 20px 0}
-.prog-track{height:2px;background:var(--border);border-radius:99px;overflow:hidden;margin-bottom:7px}
-.prog-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--gold),var(--gold2));transition:width .5s cubic-bezier(.4,0,.2,1);box-shadow:0 0 8px rgba(201,168,76,.4)}
-.prog-labels{display:flex;justify-content:space-between}
-.pl{font-size:.62rem;color:var(--text3);letter-spacing:.3px}
+.pw{padding:13px 18px 0}
+.pt{height:2px;background:var(--border);border-radius:99px;overflow:hidden;margin-bottom:6px}
+.pf{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--gold),var(--gold2));transition:width .5s cubic-bezier(.4,0,.2,1);box-shadow:0 0 7px rgba(201,168,76,.35)}
+.pls{display:flex;justify-content:space-between}
+.pl{font-size:.6rem;color:var(--t3);letter-spacing:.3px}
 .pl.on{color:var(--gold)}
 
-/* ── SECTION ── */
-.sec{display:none;padding:14px 14px 0;animation:up .3s cubic-bezier(.4,0,.2,1)}
+/* ── SECTIONS ── */
+.sec{display:none;padding:13px 13px 0;animation:up .3s cubic-bezier(.4,0,.2,1)}
 .sec.show{display:block}
-@keyframes up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
 /* ── CARD ── */
-.card{background:var(--s);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:10px;position:relative;overflow:hidden}
-.card::before{content:'';position:absolute;top:0;right:0;width:50px;height:50px;background:radial-gradient(circle,rgba(201,168,76,.04) 0%,transparent 70%)}
-.ch{display:flex;align-items:center;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border)}
-.ci{width:26px;height:26px;border-radius:7px;background:var(--gold-dim);display:flex;align-items:center;justify-content:center;font-size:12px}
-.ct{font-size:.72rem;color:var(--text2);font-weight:500;letter-spacing:.3px}
+.card{background:var(--s);border:1px solid var(--border);border-radius:var(--r);padding:13px;margin-bottom:9px;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;right:0;width:45px;height:45px;background:radial-gradient(circle,rgba(201,168,76,.03) 0%,transparent 70%)}
+.ch{display:flex;align-items:center;gap:7px;margin-bottom:11px;padding-bottom:9px;border-bottom:1px solid var(--border)}
+.ci{width:24px;height:24px;border-radius:6px;background:var(--gdim);display:flex;align-items:center;justify-content:center;font-size:11px}
+.ct{font-size:.7rem;color:var(--t2);font-weight:500;letter-spacing:.3px}
 
-/* ── FIELD ── */
-.f{margin-bottom:10px}
-.f label{display:block;font-size:.65rem;color:var(--text3);margin-bottom:4px;letter-spacing:.3px;text-transform:uppercase}
-.f input,.f select,.f textarea{
-  width:100%;background:var(--s2);border:1px solid var(--border);border-radius:9px;
-  padding:10px 13px;color:var(--text);font-family:'Vazirmatn',sans-serif;font-size:.88rem;
-  outline:none;transition:border-color .2s,box-shadow .2s;direction:rtl;appearance:none;
-}
-.f input:focus,.f select:focus,.f textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.07)}
-.f select option{background:#111520}
-.f textarea{resize:none;height:72px;line-height:1.5}
-.f2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+/* ── FIELDS ── */
+.f{margin-bottom:9px}
+.f label{display:block;font-size:.62rem;color:var(--t3);margin-bottom:3px;letter-spacing:.3px;text-transform:uppercase}
+.f input,.f select,.f textarea{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-family:'Vazirmatn',sans-serif;font-size:.86rem;outline:none;transition:border-color .2s;direction:rtl;appearance:none}
+.f input:focus,.f select:focus,.f textarea:focus{border-color:var(--gold);box-shadow:0 0 0 2px rgba(201,168,76,.07)}
+.f select option{background:#10141F}
+.f textarea{resize:none;height:70px;line-height:1.5}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 
 /* ── CHIPS ── */
 .chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{padding:6px 11px;border-radius:99px;border:1px solid var(--border);background:var(--s2);font-size:.72rem;cursor:pointer;transition:all .2s;color:var(--text2);user-select:none}
-.chip.on{background:var(--gold-dim);border-color:var(--gold);color:var(--gold);box-shadow:0 0 10px rgba(201,168,76,.08)}
+.chip{padding:6px 10px;border-radius:99px;border:1px solid var(--border);background:var(--s2);font-size:.7rem;cursor:pointer;transition:all .2s;color:var(--t2);user-select:none}
+.chip.on{background:var(--gdim);border-color:var(--gold);color:var(--gold);box-shadow:0 0 8px rgba(201,168,76,.07)}
 
 /* ── SUMMARY ── */
-.sr{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);font-size:.8rem}
+.sr{display:flex;justify-content:space-between;align-items:flex-start;gap:9px;padding:8px 0;border-bottom:1px solid var(--border);font-size:.78rem}
 .sr:last-child{border:none}
-.sk{color:var(--text3);white-space:nowrap;font-size:.68rem;letter-spacing:.3px;text-transform:uppercase}
-.sv{color:var(--text);font-weight:500;text-align:left;font-size:.8rem}
+.sk{color:var(--t3);white-space:nowrap;font-size:.65rem;letter-spacing:.3px;text-transform:uppercase}
+.sv{color:var(--text);font-weight:500;text-align:left;font-size:.78rem}
 
 /* ── BOTTOM ── */
-.bot{position:fixed;bottom:0;left:0;right:0;padding:10px 14px 14px;background:linear-gradient(to top,var(--bg) 60%,transparent);display:flex;gap:8px;z-index:10}
-.btn{flex:1;padding:13px;border-radius:11px;border:none;font-family:'Vazirmatn',sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;transition:all .2s}
-.btn-main{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#080A0F;box-shadow:0 4px 18px rgba(201,168,76,.22)}
-.btn-main:active{transform:scale(.97)}
-.btn-back{background:var(--s);color:var(--text2);border:1px solid var(--border);flex:0 0 50px;padding:13px 0}
-.btn-back:active{transform:scale(.97)}
+.bot{position:fixed;bottom:0;left:0;right:0;padding:9px 13px 13px;background:linear-gradient(to top,var(--bg) 55%,transparent);display:flex;gap:7px;z-index:10}
+.btn{flex:1;padding:12px;border-radius:10px;border:none;font-family:'Vazirmatn',sans-serif;font-size:.86rem;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-m{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#07090E;box-shadow:0 4px 16px rgba(201,168,76,.2)}
+.btn-m:active{transform:scale(.97)}
+.btn-b{background:var(--s);color:var(--t2);border:1px solid var(--border);flex:0 0 48px;padding:12px 0}
 
 /* ── SUCCESS ── */
-.succ{display:none;text-align:center;padding:36px 20px}
+.succ{display:none;text-align:center;padding:34px 18px}
 .succ.show{display:block;animation:up .5s cubic-bezier(.4,0,.2,1)}
-.succ-ring{width:76px;height:76px;border-radius:50%;background:linear-gradient(135deg,rgba(201,168,76,.15),rgba(201,168,76,.04));border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:1.8rem;box-shadow:0 0 36px rgba(201,168,76,.12);animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{box-shadow:0 0 36px rgba(201,168,76,.12)}50%{box-shadow:0 0 52px rgba(201,168,76,.25)}}
-.succ h2{font-size:1.35rem;font-weight:700;margin-bottom:6px}
-.succ p{font-size:.78rem;color:var(--text2);line-height:1.6;margin-bottom:16px}
-.code-box{background:var(--s);border:1px dashed var(--gold);border-radius:13px;padding:16px;margin:14px 0}
-.code-lbl{font-size:.6rem;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:5px}
-.code-val{font-size:1.7rem;font-weight:700;color:var(--gold);letter-spacing:4px}
-.succ-note{background:var(--s);border:1px solid var(--border);border-radius:11px;padding:12px;font-size:.76rem;color:var(--text2);line-height:1.7;text-align:right}
-.succ-note strong{color:var(--gold)}
+.sring{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,rgba(201,168,76,.14),rgba(201,168,76,.03));border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:1.7rem;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 30px rgba(201,168,76,.1)}50%{box-shadow:0 0 48px rgba(201,168,76,.22)}}
+.succ h2{font-size:1.25rem;font-weight:700;margin-bottom:5px}
+.succ p{font-size:.76rem;color:var(--t2);line-height:1.6;margin-bottom:14px}
+.cbox{background:var(--s);border:1px dashed var(--gold);border-radius:12px;padding:15px;margin:12px 0}
+.clbl{font-size:.58rem;color:var(--t3);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px}
+.cval{font-size:1.6rem;font-weight:700;color:var(--gold);letter-spacing:4px}
+.snote{background:var(--s);border:1px solid var(--border);border-radius:10px;padding:11px;font-size:.74rem;color:var(--t2);line-height:1.7;text-align:right}
+.snote strong{color:var(--gold)}
 
-/* ── ADMIN PANEL ── */
-#adminScreen{background:var(--bg);min-height:100vh}
-.adm-header{padding:20px 16px 16px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
-.adm-title{font-size:1.1rem;font-weight:700}
-.adm-sub{font-size:.7rem;color:var(--text2)}
-.adm-tabs{display:flex;overflow-x:auto;gap:6px;padding:12px 14px;border-bottom:1px solid var(--border);scrollbar-width:none}
-.adm-tabs::-webkit-scrollbar{display:none}
-.atab{padding:7px 14px;border-radius:99px;border:1px solid var(--border);background:var(--s2);font-size:.72rem;cursor:pointer;color:var(--text2);white-space:nowrap;transition:all .2s;flex-shrink:0}
-.atab.on{background:var(--gold-dim);border-color:var(--gold);color:var(--gold)}
-.adm-content{padding:14px}
-.adm-page{display:none}.adm-page.show{display:block}
+/* ══════════ ADMIN ══════════ */
+#adminScreen{background:var(--bg);min-height:100vh;padding-bottom:0}
 
-/* ── STAT CARDS ── */
-.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
-.stat{background:var(--s);border:1px solid var(--border);border-radius:12px;padding:14px}
-.stat-val{font-size:1.5rem;font-weight:700;margin-bottom:2px}
-.stat-lbl{font-size:.68rem;color:var(--text2)}
+/* ── ADMIN HEADER ── */
+.ah{padding:16px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.ah-left{display:flex;align-items:center;gap:9px}
+.ah-icon{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-size:15px}
+.ah-title{font-size:1rem;font-weight:700}
+.ah-sub{font-size:.65rem;color:var(--t2)}
+.ah-time{font-size:.65rem;color:var(--t2);text-align:left}
+
+/* ── TABS ── */
+.tabs{display:flex;overflow-x:auto;gap:5px;padding:10px 12px;border-bottom:1px solid var(--border);scrollbar-width:none;background:var(--bg2)}
+.tabs::-webkit-scrollbar{display:none}
+.tab{padding:6px 13px;border-radius:99px;border:1px solid var(--border);background:var(--s2);font-size:.7rem;cursor:pointer;color:var(--t2);white-space:nowrap;transition:all .2s;flex-shrink:0;position:relative}
+.tab.on{background:var(--gdim);border-color:var(--gold);color:var(--gold)}
+.tbadge{position:absolute;top:-4px;left:-4px;background:var(--red);color:#fff;font-size:.55rem;padding:1px 5px;border-radius:99px;min-width:16px;text-align:center}
+
+/* ── ADMIN CONTENT ── */
+.ac{padding:12px;overflow-y:auto}
+.ap{display:none}.ap.show{display:block}
+
+/* ── STAT GRID ── */
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px}
+.sc{background:var(--s);border:1px solid var(--border);border-radius:11px;padding:13px;position:relative;overflow:hidden}
+.sc::before{content:'';position:absolute;top:-15px;right:-15px;width:60px;height:60px;border-radius:50%;background:radial-gradient(circle,var(--sc-glow,rgba(201,168,76,.06)) 0%,transparent 70%)}
+.sc-val{font-size:1.45rem;font-weight:700;margin-bottom:2px}
+.sc-lbl{font-size:.65rem;color:var(--t2)}
+.sc-sub{font-size:.6rem;margin-top:5px}
 
 /* ── TABLE ── */
-.tbl-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:.75rem;min-width:400px}
-th{text-align:right;padding:8px 10px;color:var(--text2);font-weight:500;font-size:.65rem;border-bottom:1px solid var(--border)}
-td{padding:9px 10px;border-bottom:1px solid rgba(255,255,255,.04)}
+.tw{overflow-x:auto;border-radius:var(--r);border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:.73rem;min-width:380px}
+th{text-align:right;padding:8px 10px;color:var(--t2);font-weight:500;font-size:.62rem;border-bottom:1px solid var(--border);background:var(--s2);white-space:nowrap}
+td{padding:9px 10px;border-bottom:1px solid rgba(255,255,255,.035);vertical-align:middle}
 tr:last-child td{border:none}
-tr:hover td{background:rgba(255,255,255,.02)}
+tr:hover td{background:rgba(255,255,255,.018)}
 
 /* ── BADGE ── */
-.bdg{display:inline-flex;padding:2px 7px;border-radius:99px;font-size:.62rem;font-weight:600}
-.bdg-g{background:rgba(46,204,113,.1);color:var(--green)}
-.bdg-r{background:rgba(231,76,60,.1);color:var(--red)}
-.bdg-o{background:rgba(245,158,11,.1);color:var(--orange)}
-.bdg-b{background:rgba(59,130,246,.1);color:var(--blue)}
+.b{display:inline-flex;padding:2px 7px;border-radius:99px;font-size:.6rem;font-weight:600;white-space:nowrap}
+.bg{background:rgba(39,174,96,.12);color:var(--green)}
+.br{background:rgba(192,57,43,.12);color:var(--red)}
+.bo{background:rgba(230,126,34,.12);color:var(--orange)}
+.bb{background:rgba(41,128,185,.12);color:var(--blue)}
+.bx{background:rgba(255,255,255,.06);color:var(--t2)}
 
-/* ── ACTION BTN ── */
-.ab{padding:5px 10px;border-radius:7px;border:none;font-family:'Vazirmatn',sans-serif;font-size:.68rem;font-weight:600;cursor:pointer;transition:all .2s}
-.ab-r{background:rgba(231,76,60,.1);color:var(--red)}.ab-r:hover{background:rgba(231,76,60,.2)}
-.ab-g{background:rgba(46,204,113,.1);color:var(--green)}.ab-g:hover{background:rgba(46,204,113,.2)}
-.ab-b{background:rgba(59,130,246,.1);color:var(--blue)}.ab-b:hover{background:rgba(59,130,246,.2)}
-.ab-gold{background:var(--gold-dim);color:var(--gold)}.ab-gold:hover{background:rgba(201,168,76,.2)}
+/* ── ACTION BTNS ── */
+.ab{padding:4px 9px;border-radius:6px;border:none;font-family:'Vazirmatn',sans-serif;font-size:.66rem;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap}
+.ar{background:rgba(192,57,43,.12);color:var(--red)}.ar:hover{background:rgba(192,57,43,.22)}
+.ag{background:rgba(39,174,96,.12);color:var(--green)}.ag:hover{background:rgba(39,174,96,.22)}
+.abl{background:rgba(41,128,185,.12);color:var(--blue)}.abl:hover{background:rgba(41,128,185,.22)}
+.ao{background:rgba(201,168,76,.1);color:var(--gold)}.ao:hover{background:rgba(201,168,76,.2)}
+.abs{display:flex;gap:4px;flex-wrap:wrap}
 
-/* ── MODAL ── */
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;align-items:center;justify-content:center;padding:16px}
-.overlay.show{display:flex}
-.modal{background:var(--s);border:1px solid var(--border);border-radius:var(--r);padding:20px;width:100%;max-width:380px}
-.modal h3{font-size:.95rem;font-weight:700;margin-bottom:14px}
-.mf{margin-bottom:10px}
-.mf label{display:block;font-size:.68rem;color:var(--text2);margin-bottom:4px}
-.mf input,.mf textarea,.mf select{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:9px 11px;color:var(--text);font-family:'Vazirmatn',sans-serif;font-size:.82rem;outline:none}
-.mf textarea{height:70px;resize:none}
-.mbtns{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
-.mbtn{padding:9px 16px;border-radius:9px;border:none;font-family:'Vazirmatn',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer}
-.mbtn-main{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#000}
-.mbtn-cancel{background:var(--s2);color:var(--text2);border:1px solid var(--border)}
+/* ── SEARCH ── */
+.srch{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:9px;padding:8px 12px;color:var(--text);font-family:'Vazirmatn',sans-serif;font-size:.78rem;outline:none;margin-bottom:10px}
+.srch:focus{border-color:var(--gold)}
 
 /* ── EMPTY ── */
-.empty{text-align:center;padding:32px;color:var(--text2)}
-.empty-icon{font-size:2rem;margin-bottom:8px}
-.empty p{font-size:.78rem}
+.empty{text-align:center;padding:28px;color:var(--t2)}
+.empty-i{font-size:1.8rem;margin-bottom:7px}
+.empty p{font-size:.75rem}
 
-/* ── LOADING ── */
-.skel{background:linear-gradient(90deg,var(--s2) 25%,var(--s) 50%,var(--s2) 75%);background-size:200% 100%;animation:sh 1.5s infinite;border-radius:6px;height:13px;margin-bottom:7px}
-@keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
+/* ── DETAIL CARD ── */
+.dcard{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px}
+.drow{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:.75rem}
+.drow:last-child{border:none}
+.dk{color:var(--t2);font-size:.68rem}
+.dv{color:var(--text);font-weight:500}
+
+/* ── MODAL ── */
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:500;align-items:center;justify-content:center;padding:14px}
+.ov.show{display:flex}
+.modal{background:var(--s);border:1px solid var(--border);border-radius:var(--r);padding:18px;width:100%;max-width:360px;max-height:85vh;overflow-y:auto}
+.modal h3{font-size:.92rem;font-weight:700;margin-bottom:13px;display:flex;align-items:center;gap:7px}
+.mf{margin-bottom:9px}
+.mf label{display:block;font-size:.65rem;color:var(--t2);margin-bottom:3px}
+.mf input,.mf textarea,.mf select{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:7px;padding:8px 11px;color:var(--text);font-family:'Vazirmatn',sans-serif;font-size:.8rem;outline:none;direction:rtl}
+.mf textarea{height:65px;resize:none}
+.mf input[readonly],.mf textarea[readonly]{opacity:.7}
+.mbtns{display:flex;gap:7px;justify-content:flex-end;margin-top:13px;flex-wrap:wrap}
+.mbtn{padding:8px 15px;border-radius:8px;border:none;font-family:'Vazirmatn',sans-serif;font-size:.76rem;font-weight:600;cursor:pointer;transition:all .2s}
+.mbtn-m{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#07090E}
+.mbtn-c{background:var(--s2);color:var(--t2);border:1px solid var(--border)}
+.mbtn-r{background:rgba(192,57,43,.15);color:var(--red)}
+.mbtn-g{background:rgba(39,174,96,.15);color:var(--green)}
 
 /* ── TOAST ── */
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--s);border:1px solid var(--border);border-radius:10px;padding:10px 18px;font-size:.78rem;transition:transform .3s;z-index:999;white-space:nowrap}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(70px);background:var(--s);border:1px solid var(--border);border-radius:9px;padding:9px 16px;font-size:.76rem;transition:transform .3s;z-index:999;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.4)}
 .toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ── CHART ── */
+.bar-wrap{display:flex;align-items:flex-end;gap:3px;height:70px;padding:6px 0}
+.bar{flex:1;border-radius:3px 3px 0 0;background:rgba(201,168,76,.18);position:relative;cursor:pointer;transition:all .2s;min-height:3px}
+.bar:hover{background:rgba(201,168,76,.35)}
+.bar.today{background:linear-gradient(180deg,var(--gold2),var(--gold))}
+.bar-labels{display:flex;justify-content:space-between;margin-top:3px}
+.bar-lbl{font-size:.55rem;color:var(--t3)}
 </style>
 </head>
 <body>
@@ -176,34 +197,27 @@ tr:hover td{background:rgba(255,255,255,.02)}
 <div class="screen show" id="formScreen">
   <div class="hero">
     <div class="hero-top">
-      <div class="logo"><div class="logo-mark">🏛</div><span class="logo-text">ملک‌یاب</span></div>
-      <div class="badge-premium">PREMIUM</div>
+      <div class="logo"><div class="lmark">🏛</div><span class="ltext">ملک‌یاب</span></div>
+      <div class="premium">PREMIUM</div>
     </div>
     <h1>ملک ایده‌آلت را<br><span>پیدا خواهند کرد</span></h1>
     <p>نیازت را ثبت کن — مشاوران حرفه‌ای به سراغت می‌آیند</p>
   </div>
-
-  <div class="prog-wrap">
-    <div class="prog-track"><div class="prog-fill" id="pf" style="width:33%"></div></div>
-    <div class="prog-labels">
+  <div class="pw">
+    <div class="pt"><div class="pf" id="pf" style="width:33%"></div></div>
+    <div class="pls">
       <span class="pl on" id="pl1">موقعیت و بودجه</span>
       <span class="pl" id="pl2">جزئیات</span>
       <span class="pl" id="pl3">تأیید</span>
     </div>
   </div>
 
-  <!-- Step 1 -->
   <div class="sec show" id="s1">
     <div class="card">
       <div class="ch"><div class="ci">📍</div><span class="ct">موقعیت مکانی</span></div>
       <div class="f"><label>شهر و منطقه</label><input id="loc" type="text" placeholder="مثلاً: تهران، سعادت‌آباد"/></div>
       <div class="f"><label>نوع ملک</label>
-        <select id="ptype">
-          <option value="">انتخاب کنید...</option>
-          <option>آپارتمان</option><option>خانه ویلایی</option>
-          <option>زمین</option><option>مغازه / تجاری</option>
-          <option>دفتر / اداری</option><option>پنت‌هاوس</option>
-        </select>
+        <select id="ptype"><option value="">انتخاب کنید...</option><option>آپارتمان</option><option>خانه ویلایی</option><option>زمین</option><option>مغازه / تجاری</option><option>دفتر / اداری</option><option>پنت‌هاوس</option></select>
       </div>
       <div class="f"><label>هدف</label>
         <select id="purp"><option>خرید</option><option>اجاره</option><option>رهن و اجاره</option><option>پیش‌خرید</option></select>
@@ -218,7 +232,6 @@ tr:hover td{background:rgba(255,255,255,.02)}
     </div>
   </div>
 
-  <!-- Step 2 -->
   <div class="sec" id="s2">
     <div class="card">
       <div class="ch"><div class="ci">📐</div><span class="ct">مشخصات فیزیکی</span></div>
@@ -227,7 +240,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
         <div class="f"><label>متراژ تا</label><input id="amax" type="number" placeholder="متر"/></div>
       </div>
       <div class="f2">
-        <div class="f"><label>اتاق خواب</label>
+        <div class="f"><label>اتاق</label>
           <select id="rooms"><option>فرقی نمی‌کند</option><option>استودیو</option><option>۱ اتاق</option><option>۲ اتاق</option><option>۳ اتاق</option><option>۴+</option></select>
         </div>
         <div class="f"><label>طبقه</label>
@@ -243,7 +256,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
         <div class="chip" data-v="آسانسور">🛗 آسانسور</div>
         <div class="chip" data-v="نور عالی">☀️ نور عالی</div>
         <div class="chip" data-v="بالکن">🌿 بالکن</div>
-        <div class="chip" data-v="سند تک‌برگ">📄 سند تک‌برگ</div>
+        <div class="chip" data-v="سند تک‌برگ">📄 سند</div>
         <div class="chip" data-v="گاز شهری">🔥 گاز</div>
         <div class="chip" data-v="نوساز">🏗 نوساز</div>
         <div class="chip" data-v="وام‌دار">🏦 وام</div>
@@ -254,7 +267,6 @@ tr:hover td{background:rgba(255,255,255,.02)}
     </div>
   </div>
 
-  <!-- Step 3 -->
   <div class="sec" id="s3">
     <div class="card">
       <div class="ch"><div class="ci">📋</div><span class="ct">خلاصه درخواست</span></div>
@@ -262,166 +274,212 @@ tr:hover td{background:rgba(255,255,255,.02)}
     </div>
     <div class="card">
       <div class="ch"><div class="ci">✏️</div><span class="ct">توضیحات تکمیلی</span></div>
-      <div class="f"><textarea id="desc" placeholder="هر نکته مهمی که باید مشاوران بدانند..."></textarea></div>
+      <div class="f"><textarea id="desc" placeholder="هر نکته مهمی..."></textarea></div>
     </div>
   </div>
 
-  <!-- Success -->
   <div class="succ" id="succScreen">
-    <div class="succ-ring">✓</div>
+    <div class="sring">✓</div>
     <h2>درخواست ثبت شد</h2>
-    <p>آگهی شما در کانال ملک‌یاب منتشر شد.<br>مشاوران به زودی با شما تماس می‌گیرند.</p>
-    <div class="code-box">
-      <div class="code-lbl">کد یونیک درخواست</div>
-      <div class="code-val" id="codeVal">---</div>
-    </div>
-    <div class="succ-note">این کد را <strong>نگه‌داری کنید</strong>. مشاوران برای دسترسی به اطلاعات تماس شما باید این کد را در ربات وارد کنند.</div>
+    <p>آگهی شما در کانال منتشر شد.<br>مشاوران به زودی با شما تماس می‌گیرند.</p>
+    <div class="cbox"><div class="clbl">کد یونیک</div><div class="cval" id="codeVal">---</div></div>
+    <div class="snote">این کد را <strong>نگه‌داری کنید</strong>. مشاوران برای دسترسی به اطلاعات تماس شما باید این کد را در ربات وارد کنند.</div>
   </div>
 
   <div class="bot" id="formBot">
-    <button class="btn btn-back" id="backBtn" onclick="prev()" style="display:none">←</button>
-    <button class="btn btn-main" id="nextBtn" onclick="next()">ادامه ←</button>
+    <button class="btn btn-b" id="backBtn" onclick="prev()" style="display:none">←</button>
+    <button class="btn btn-m" id="nextBtn" onclick="next()">ادامه ←</button>
   </div>
 </div>
 
 <!-- ══════════ ADMIN SCREEN ══════════ -->
 <div class="screen" id="adminScreen">
-  <div class="adm-header">
-    <div class="logo-mark" style="width:32px;height:32px;font-size:15px;border-radius:9px;background:linear-gradient(135deg,#C9A84C,#E8C97A);display:flex;align-items:center;justify-content:center">📊</div>
-    <div><div class="adm-title">پنل مدیریت</div><div class="adm-sub">ملک‌یاب Admin</div></div>
+  <div class="ah">
+    <div class="ah-left">
+      <div class="ah-icon">📊</div>
+      <div><div class="ah-title">پنل مدیریت ملک‌یاب</div><div class="ah-sub">Super Admin Dashboard</div></div>
+    </div>
+    <div class="ah-time" id="ahTime"></div>
   </div>
 
-  <div class="adm-tabs">
-    <div class="atab on" onclick="atab('dash',this)">📊 داشبورد</div>
-    <div class="atab" onclick="atab('users',this)">👥 کاربران</div>
-    <div class="atab" onclick="atab('reqs',this)">📋 درخواست‌ها</div>
-    <div class="atab" onclick="atab('txs',this)">💰 تراکنش‌ها</div>
-    <div class="atab" onclick="atab('reports',this)">🚨 شکایات</div>
-    <div class="atab" onclick="atab('tickets',this)">🎫 تیکت‌ها</div>
-    <div class="atab" onclick="atab('banned',this)">🚫 بن‌شده‌ها</div>
+  <div class="tabs">
+    <div class="tab on" onclick="atab('dash',this)">📊 داشبورد</div>
+    <div class="tab" onclick="atab('users',this)">👥 کاربران</div>
+    <div class="tab" onclick="atab('reqs',this)">📋 آگهی‌ها</div>
+    <div class="tab" onclick="atab('txs',this)">💰 تراکنش‌ها</div>
+    <div class="tab" id="tabReports" onclick="atab('reports',this)">🚨 شکایات</div>
+    <div class="tab" id="tabTickets" onclick="atab('tickets',this)">🎫 تیکت‌ها</div>
+    <div class="tab" onclick="atab('banned',this)">🚫 بن‌شده‌ها</div>
   </div>
 
-  <div class="adm-content">
+  <div class="ac">
 
-    <!-- DASH -->
-    <div class="adm-page show" id="ap-dash">
-      <div class="stat-grid" id="statGrid">
-        <div class="stat"><div class="skel" style="width:40px;height:32px;border-radius:6px"></div><div class="skel" style="width:80px"></div></div>
-        <div class="stat"><div class="skel" style="width:40px;height:32px;border-radius:6px"></div><div class="skel" style="width:80px"></div></div>
-        <div class="stat"><div class="skel" style="width:40px;height:32px;border-radius:6px"></div><div class="skel" style="width:80px"></div></div>
-        <div class="stat"><div class="skel" style="width:40px;height:32px;border-radius:6px"></div><div class="skel" style="width:80px"></div></div>
+    <!-- DASHBOARD -->
+    <div class="ap show" id="ap-dash">
+      <div class="sg" id="statGrid">
+        <div class="sc"><div class="skel" style="width:50px;height:28px;border-radius:5px;background:var(--s2);margin-bottom:4px"></div><div class="skel" style="width:70px;height:11px;background:var(--s2);border-radius:4px"></div></div>
+        <div class="sc"><div class="skel" style="width:50px;height:28px;border-radius:5px;background:var(--s2);margin-bottom:4px"></div><div class="skel" style="width:70px;height:11px;background:var(--s2);border-radius:4px"></div></div>
+        <div class="sc"><div class="skel" style="width:50px;height:28px;border-radius:5px;background:var(--s2);margin-bottom:4px"></div><div class="skel" style="width:70px;height:11px;background:var(--s2);border-radius:4px"></div></div>
+        <div class="sc"><div class="skel" style="width:50px;height:28px;border-radius:5px;background:var(--s2);margin-bottom:4px"></div><div class="skel" style="width:70px;height:11px;background:var(--s2);border-radius:4px"></div></div>
       </div>
-      <div class="card" id="recentReqs"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
+      <div class="card" style="margin-bottom:9px">
+        <div class="ch"><div class="ci">📈</div><span class="ct">درخواست‌های ۷ روز اخیر</span></div>
+        <div class="bar-wrap" id="barChart"></div>
+        <div class="bar-labels" id="barLabels"></div>
+      </div>
+      <div class="card" id="recentCard">
+        <div class="ch"><div class="ci">⚡</div><span class="ct">آخرین آگهی‌ها</span></div>
+        <div id="recentList"></div>
+      </div>
     </div>
 
     <!-- USERS -->
-    <div class="adm-page" id="ap-users">
-      <div style="margin-bottom:10px">
-        <input style="width:100%;background:var(--s2);border:1px solid var(--border);border-radius:9px;padding:9px 12px;color:var(--text);font-family:'Vazirmatn',sans-serif;font-size:.8rem;outline:none" placeholder="جستجو..." oninput="filterU(this.value)" id="uSearch"/>
-      </div>
-      <div class="card" style="padding:0"><div class="tbl-wrap"><table><thead><tr><th>نام</th><th>تلفن</th><th>کیف پول</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody id="uTbl"><tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text2)">در حال بارگذاری...</td></tr></tbody></table></div></div>
+    <div class="ap" id="ap-users">
+      <input class="srch" placeholder="🔍 جستجو نام، یوزرنیم، تلفن..." oninput="filterU(this.value)"/>
+      <div class="tw"><table>
+        <thead><tr><th>کاربر</th><th>تلفن</th><th>کیف پول</th><th>عضویت</th><th>وضعیت</th><th>عملیات</th></tr></thead>
+        <tbody id="uTbl"><tr><td colspan="6" style="text-align:center;padding:22px;color:var(--t2)">در حال بارگذاری...</td></tr></tbody>
+      </table></div>
     </div>
 
-    <!-- REQS -->
-    <div class="adm-page" id="ap-reqs">
-      <div class="card" style="padding:0"><div class="tbl-wrap"><table><thead><tr><th>کد</th><th>موقعیت</th><th>نوع</th><th>بودجه</th><th>عملیات</th></tr></thead><tbody id="rTbl"><tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text2)">در حال بارگذاری...</td></tr></tbody></table></div></div>
+    <!-- REQUESTS -->
+    <div class="ap" id="ap-reqs">
+      <input class="srch" placeholder="🔍 جستجو کد، موقعیت، نوع..." oninput="filterR(this.value)"/>
+      <div class="tw"><table>
+        <thead><tr><th>کد</th><th>موقعیت</th><th>نوع</th><th>بودجه</th><th>صاحب آگهی</th><th>تاریخ</th><th>عملیات</th></tr></thead>
+        <tbody id="rTbl"><tr><td colspan="7" style="text-align:center;padding:22px;color:var(--t2)">در حال بارگذاری...</td></tr></tbody>
+      </table></div>
     </div>
 
-    <!-- TXS -->
-    <div class="adm-page" id="ap-txs">
-      <div class="card" style="padding:0"><div class="tbl-wrap"><table><thead><tr><th>کاربر</th><th>مبلغ</th><th>نوع</th><th>توضیحات</th></tr></thead><tbody id="txTbl"><tr><td colspan="4" style="text-align:center;padding:24px;color:var(--text2)">در حال بارگذاری...</td></tr></tbody></table></div></div>
+    <!-- TRANSACTIONS -->
+    <div class="ap" id="ap-txs">
+      <div class="sg" id="txStats" style="margin-bottom:10px"></div>
+      <div class="tw"><table>
+        <thead><tr><th>کاربر</th><th>مبلغ</th><th>نوع</th><th>توضیحات</th><th>تاریخ</th></tr></thead>
+        <tbody id="txTbl"><tr><td colspan="5" style="text-align:center;padding:22px;color:var(--t2)">در حال بارگذاری...</td></tr></tbody>
+      </table></div>
     </div>
 
     <!-- REPORTS -->
-    <div class="adm-page" id="ap-reports">
-      <div class="card" style="padding:0"><div class="tbl-wrap"><table><thead><tr><th>شاکی</th><th>متهم</th><th>دلیل</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody id="rpTbl"><tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text2)">در حال بارگذاری...</td></tr></tbody></table></div></div>
+    <div class="ap" id="ap-reports">
+      <div class="tw"><table>
+        <thead><tr><th>شاکی</th><th>متهم</th><th>کد آگهی</th><th>دلیل</th><th>وضعیت</th><th>تاریخ</th><th>عملیات</th></tr></thead>
+        <tbody id="rpTbl"><tr><td colspan="7" style="text-align:center;padding:22px;color:var(--t2)">در حال بارگذاری...</td></tr></tbody>
+      </table></div>
     </div>
 
     <!-- TICKETS -->
-    <div class="adm-page" id="ap-tickets">
-      <div class="card" style="padding:0"><div class="tbl-wrap"><table><thead><tr><th>کاربر</th><th>موضوع</th><th>پیام</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody id="tkTbl"><tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text2)">در حال بارگذاری...</td></tr></tbody></table></div></div>
+    <div class="ap" id="ap-tickets">
+      <div class="tw"><table>
+        <thead><tr><th>کاربر</th><th>موضوع</th><th>پیام</th><th>وضعیت</th><th>تاریخ</th><th>عملیات</th></tr></thead>
+        <tbody id="tkTbl"><tr><td colspan="6" style="text-align:center;padding:22px;color:var(--t2)">در حال بارگذاری...</td></tr></tbody>
+      </table></div>
     </div>
 
     <!-- BANNED -->
-    <div class="adm-page" id="ap-banned">
-      <div class="card" style="padding:0"><div class="tbl-wrap"><table><thead><tr><th>کاربر</th><th>دلیل</th><th>عملیات</th></tr></thead><tbody id="bnTbl"><tr><td colspan="3" style="text-align:center;padding:24px;color:var(--text2)">در حال بارگذاری...</td></tr></tbody></table></div></div>
+    <div class="ap" id="ap-banned">
+      <div class="tw"><table>
+        <thead><tr><th>کاربر</th><th>شماره</th><th>دلیل بن</th><th>تاریخ</th><th>عملیات</th></tr></thead>
+        <tbody id="bnTbl"><tr><td colspan="5" style="text-align:center;padding:22px;color:var(--t2)">در حال بارگذاری...</td></tr></tbody>
+      </table></div>
     </div>
 
   </div>
 </div>
 
 <!-- MODALS -->
-<div class="overlay" id="mBan">
-  <div class="modal">
-    <h3>🚫 بن کردن کاربر</h3>
-    <input type="hidden" id="mBanId"/>
-    <div class="mf"><label>دلیل بن</label><textarea id="mBanReason" placeholder="دلیل مسدودسازی..."></textarea></div>
-    <div class="mbtns"><button class="mbtn mbtn-main" onclick="doBan()">🚫 بن کن</button><button class="mbtn mbtn-cancel" onclick="cm('mBan')">انصراف</button></div>
+<div class="ov" id="mBan"><div class="modal">
+  <h3>🚫 بن کردن کاربر</h3>
+  <input type="hidden" id="mBanId"/>
+  <div class="mf"><label>نام کاربر</label><input id="mBanName" readonly/></div>
+  <div class="mf"><label>دلیل بن *</label><textarea id="mBanReason" placeholder="دلیل مسدودسازی را بنویسید..."></textarea></div>
+  <div class="mbtns">
+    <button class="mbtn mbtn-r" onclick="doBan()">🚫 بن کن</button>
+    <button class="mbtn mbtn-c" onclick="cm('mBan')">انصراف</button>
   </div>
-</div>
-<div class="overlay" id="mWallet">
-  <div class="modal">
-    <h3>💰 شارژ کیف پول</h3>
-    <input type="hidden" id="mWalletId"/>
-    <div class="mf"><label>نام کاربر</label><input type="text" id="mWalletName" readonly/></div>
-    <div class="mf"><label>مبلغ (تومان)</label><input type="number" id="mWalletAmt" placeholder="مثلاً 50000"/></div>
-    <div class="mbtns"><button class="mbtn mbtn-main" onclick="doCharge()">💳 شارژ</button><button class="mbtn mbtn-cancel" onclick="cm('mWallet')">انصراف</button></div>
+</div></div>
+
+<div class="ov" id="mWallet"><div class="modal">
+  <h3>💰 شارژ کیف پول</h3>
+  <input type="hidden" id="mWid"/>
+  <div class="mf"><label>کاربر</label><input id="mWName" readonly/></div>
+  <div class="mf"><label>موجودی فعلی</label><input id="mWCur" readonly/></div>
+  <div class="mf"><label>مبلغ شارژ (تومان) *</label><input type="number" id="mWAmt" placeholder="مثلاً 50000"/></div>
+  <div class="mbtns">
+    <button class="mbtn mbtn-m" onclick="doCharge()">💳 شارژ</button>
+    <button class="mbtn mbtn-c" onclick="cm('mWallet')">انصراف</button>
   </div>
-</div>
-<div class="overlay" id="mTicket">
-  <div class="modal">
-    <h3>💬 پاسخ به تیکت</h3>
-    <input type="hidden" id="mTkId"/><input type="hidden" id="mTkUid"/>
-    <div class="mf"><label>پیام کاربر</label><textarea id="mTkMsg" readonly style="background:var(--bg2)"></textarea></div>
-    <div class="mf"><label>پاسخ شما</label><textarea id="mTkReply" placeholder="پاسخ خود را بنویسید..."></textarea></div>
-    <div class="mbtns"><button class="mbtn mbtn-main" onclick="doTicketReply()">📨 ارسال</button><button class="mbtn mbtn-cancel" onclick="cm('mTicket')">انصراف</button></div>
+</div></div>
+
+<div class="ov" id="mTicket"><div class="modal">
+  <h3>💬 پاسخ به تیکت</h3>
+  <input type="hidden" id="mTkId"/><input type="hidden" id="mTkUid"/>
+  <div class="mf"><label>موضوع</label><input id="mTkSubj" readonly/></div>
+  <div class="mf"><label>پیام کاربر</label><textarea id="mTkMsg" readonly></textarea></div>
+  <div class="mf"><label>پاسخ شما *</label><textarea id="mTkReply" placeholder="پاسخ خود را بنویسید..."></textarea></div>
+  <div class="mbtns">
+    <button class="mbtn mbtn-m" onclick="doTicketReply()">📨 ارسال پاسخ</button>
+    <button class="mbtn mbtn-c" onclick="cm('mTicket')">انصراف</button>
   </div>
-</div>
-<div class="overlay" id="mReport">
-  <div class="modal">
-    <h3>🚨 بررسی شکایت</h3>
-    <input type="hidden" id="mRpId"/><input type="hidden" id="mRpUid"/>
-    <div class="mf"><label>دلیل شکایت</label><textarea id="mRpReason" readonly style="background:var(--bg2)"></textarea></div>
-    <div class="mbtns">
-      <button class="mbtn mbtn-main" style="background:var(--red);color:#fff" onclick="doBanReport()">🚫 بن متهم</button>
-      <button class="mbtn" style="background:rgba(46,204,113,.1);color:var(--green)" onclick="doResolve()">✅ رد شکایت</button>
-      <button class="mbtn mbtn-cancel" onclick="cm('mReport')">بستن</button>
-    </div>
+</div></div>
+
+<div class="ov" id="mReport"><div class="modal">
+  <h3>🚨 بررسی شکایت</h3>
+  <input type="hidden" id="mRid"/><input type="hidden" id="mRuid"/>
+  <div class="mf"><label>دلیل شکایت</label><textarea id="mRReason" readonly></textarea></div>
+  <div class="mf"><label>کاربر متهم</label><input id="mRReported" readonly/></div>
+  <div class="mbtns">
+    <button class="mbtn mbtn-r" onclick="doBanReport()">🚫 بن متهم</button>
+    <button class="mbtn mbtn-g" onclick="doResolve()">✅ رد شکایت</button>
+    <button class="mbtn mbtn-c" onclick="cm('mReport')">بستن</button>
   </div>
-</div>
+</div></div>
+
+<div class="ov" id="mReqDetail"><div class="modal">
+  <h3>📋 جزئیات آگهی</h3>
+  <div id="mReqBody"></div>
+  <div class="mbtns">
+    <button class="mbtn mbtn-r" id="mReqDelBtn">🗑 حذف</button>
+    <button class="mbtn mbtn-c" onclick="cm('mReqDetail')">بستن</button>
+  </div>
+</div></div>
 
 <div class="toast" id="toast"></div>
 
 <script>
 const tg = window.Telegram.WebApp;
 tg.expand(); tg.ready();
-tg.setHeaderColor && tg.setHeaderColor('#080A0F');
-tg.setBackgroundColor && tg.setBackgroundColor('#080A0F');
+tg.setHeaderColor && tg.setHeaderColor('#07090E');
+tg.setBackgroundColor && tg.setBackgroundColor('#07090E');
 
 const SB = "https://vwbyxjhyrrclmpcbkpgj.supabase.co";
 const SK = "sb_publishable_0xEgmVLQ_fm_XrYMaiF8_Q_z4OyxWpC";
 
-// ─── Supabase fetch ────────────────────────────────────
+// ── DB ──
 async function db(method, path, data=null){
-  const r = await fetch(`${SB}/rest/v1/${path}`,{
-    method, headers:{"apikey":SK,"Authorization":`Bearer ${SK}`,"Content-Type":"application/json","Prefer":"return=representation"},
-    body: data ? JSON.stringify(data) : null
-  });
-  if(!r.ok) return null;
-  const t = await r.text();
-  return t ? JSON.parse(t) : [];
+  try{
+    const r = await fetch(`${SB}/rest/v1/${path}`,{
+      method,
+      headers:{"apikey":SK,"Authorization":`Bearer ${SK}`,"Content-Type":"application/json","Prefer":"return=representation"},
+      body: data ? JSON.stringify(data) : null
+    });
+    if(!r.ok){ const e=await r.text(); console.error('DB error:',e); return null; }
+    const t = await r.text();
+    return t ? JSON.parse(t) : [];
+  }catch(e){ console.error(e); return null; }
 }
 
-// ─── Check if admin mode ───────────────────────────────
-const isAdmin = new URLSearchParams(window.location.search).get('admin') === '1';
+// ── ADMIN MODE ──
+const isAdmin = new URLSearchParams(window.location.search).get('admin')==='1';
 if(isAdmin){
   document.getElementById('formScreen').classList.remove('show');
   document.getElementById('adminScreen').classList.add('show');
+  document.getElementById('ahTime').textContent = new Date().toLocaleDateString('fa-IR',{weekday:'short',month:'short',day:'numeric'});
   loadDash();
 }
 
-// ─── FORM LOGIC ───────────────────────────────────────
-let step = 1;
+// ── FORM LOGIC ──
+let step=1;
 document.querySelectorAll('.chip').forEach(c=>c.onclick=()=>c.classList.toggle('on'));
 function chips(){ return [...document.querySelectorAll('.chip.on')].map(c=>c.dataset.v) }
 
@@ -431,22 +489,19 @@ function next(){
     if(!document.getElementById('ptype').value){alert('نوع ملک را انتخاب کنید');return}
   }
   if(step===2) buildSummary();
-  if(step<3){step++;uiStep()}
-  else submit();
+  if(step<3){step++;uiStep()}else submit();
 }
 function prev(){ if(step>1){step--;uiStep()} }
-
 function uiStep(){
-  const pcts=['33%','66%','100%'];
-  document.getElementById('pf').style.width = pcts[step-1];
+  const p=['33%','66%','100%'];
+  document.getElementById('pf').style.width=p[step-1];
   for(let i=1;i<=3;i++){
     document.getElementById('pl'+i).className='pl'+(i===step?' on':'');
     document.getElementById('s'+i).className='sec'+(i===step?' show':'');
   }
-  document.getElementById('backBtn').style.display = step>1?'flex':'none';
-  document.getElementById('nextBtn').textContent = step===3?'✓ ثبت درخواست':'ادامه ←';
+  document.getElementById('backBtn').style.display=step>1?'flex':'none';
+  document.getElementById('nextBtn').textContent=step===3?'✓ ثبت درخواست':'ادامه ←';
 }
-
 function buildSummary(){
   const rows=[
     ['موقعیت',document.getElementById('loc').value||'—'],
@@ -458,11 +513,8 @@ function buildSummary(){
     ['طبقه',document.getElementById('floor').value],
     ['الزامات',chips().join('، ')||'—'],
   ];
-  document.getElementById('summary').innerHTML = rows.map(r=>
-    `<div class="sr"><span class="sk">${r[0]}</span><span class="sv">${r[1]}</span></div>`
-  ).join('');
+  document.getElementById('summary').innerHTML=rows.map(r=>`<div class="sr"><span class="sk">${r[0]}</span><span class="sv">${r[1]}</span></div>`).join('');
 }
-
 function submit(){
   const data={
     location:document.getElementById('loc').value,
@@ -478,217 +530,343 @@ function submit(){
   try{
     tg.sendData(JSON.stringify(data));
     document.querySelector('.hero').style.display='none';
-    document.querySelector('.prog-wrap').style.display='none';
+    document.querySelector('.pw').style.display='none';
     document.querySelectorAll('.sec').forEach(s=>s.classList.remove('show'));
     document.getElementById('formBot').style.display='none';
     document.getElementById('succScreen').classList.add('show');
-  }catch(e){ alert('خطا: '+e.message) }
+  }catch(e){alert('خطا: '+e.message)}
 }
 
-// ─── ADMIN PANEL ──────────────────────────────────────
-function atab(name, el){
-  document.querySelectorAll('.atab').forEach(t=>t.classList.remove('on'));
-  document.querySelectorAll('.adm-page').forEach(p=>p.classList.remove('show'));
+// ── ADMIN TABS ──
+function atab(name,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.ap').forEach(p=>p.classList.remove('show'));
   el.classList.add('on');
   document.getElementById('ap-'+name).classList.add('show');
-  const loaders={users:loadUsers,reqs:loadReqs,txs:loadTxs,reports:loadReports,tickets:loadTickets,banned:loadBanned};
-  if(loaders[name]) loaders[name]();
+  const fn={users:loadUsers,reqs:loadReqs,txs:loadTxs,reports:loadReports,tickets:loadTickets,banned:loadBanned};
+  if(fn[name]) fn[name]();
 }
 
+// ── HELPERS ──
 function toast(msg,c='var(--green)'){
   const t=document.getElementById('toast');
   t.innerHTML=`<span style="color:${c}">${msg}</span>`;
   t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),2800);
 }
-
 function om(id){ document.getElementById(id).classList.add('show') }
 function cm(id){ document.getElementById(id).classList.remove('show') }
-function fd(d){ return d ? new Date(d).toLocaleDateString('fa-IR',{month:'short',day:'numeric'}) : '—' }
+function fd(d){ return d?new Date(d).toLocaleDateString('fa-IR',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'—' }
+function fds(d){ return d?new Date(d).toLocaleDateString('fa-IR',{month:'short',day:'numeric'}):'—' }
 
 // ── DASHBOARD ──
 async function loadDash(){
-  const [users,reqs,txs,banned] = await Promise.all([
-    db('GET','users?select=id'),
-    db('GET','requests?select=id,location,property_type,unique_code,created_at,users(full_name,username)&order=created_at.desc&limit=50'),
-    db('GET','transactions?select=amount'),
+  const [users,reqs,txs,banned,reports,tickets] = await Promise.all([
+    db('GET','users?select=id,created_at'),
+    db('GET','requests?select=id,location,property_type,unique_code,created_at,budget,user_id,users(full_name,username)&order=created_at.desc'),
+    db('GET','transactions?select=id,amount,type'),
     db('GET','banned_users?select=id'),
+    db('GET','reports?select=id,status'),
+    db('GET','tickets?select=id,status'),
   ]);
+
+  const pending = (reports||[]).filter(r=>r.status==='pending').length;
+  const openTk = (tickets||[]).filter(t=>t.status==='open').length;
   const revenue = (txs||[]).filter(t=>t.amount<0).reduce((s,t)=>s+Math.abs(t.amount),0);
+  const today = new Date().toISOString().split('T')[0];
+  const todayReqs = (reqs||[]).filter(r=>r.created_at&&r.created_at.startsWith(today)).length;
+
+  // badge
+  if(pending>0){ const b=document.getElementById('tabReports'); b.innerHTML+=`<span class="tbadge">${pending}</span>`; }
+  if(openTk>0){ const b=document.getElementById('tabTickets'); b.innerHTML+=`<span class="tbadge">${openTk}</span>`; }
+
   document.getElementById('statGrid').innerHTML=`
-    <div class="stat"><div class="stat-val" style="color:var(--blue)">${(users||[]).length}</div><div class="stat-lbl">کل کاربران</div></div>
-    <div class="stat"><div class="stat-val" style="color:var(--gold)">${(reqs||[]).length}</div><div class="stat-lbl">کل درخواست‌ها</div></div>
-    <div class="stat"><div class="stat-val" style="color:var(--green)">${revenue.toLocaleString('fa')}</div><div class="stat-lbl">درآمد (ت)</div></div>
-    <div class="stat"><div class="stat-val" style="color:var(--red)">${(banned||[]).length}</div><div class="stat-lbl">بن‌شده‌ها</div></div>
+    <div class="sc" style="--sc-glow:rgba(41,128,185,.08)">
+      <div class="sc-val" style="color:var(--blue)">${(users||[]).length}</div>
+      <div class="sc-lbl">کل کاربران</div>
+      <div class="sc-sub" style="color:var(--t2)">امروز: ${(users||[]).filter(u=>u.created_at&&u.created_at.startsWith(today)).length} نفر</div>
+    </div>
+    <div class="sc" style="--sc-glow:rgba(201,168,76,.08)">
+      <div class="sc-val" style="color:var(--gold)">${(reqs||[]).length}</div>
+      <div class="sc-lbl">کل آگهی‌ها</div>
+      <div class="sc-sub" style="color:var(--t2)">امروز: ${todayReqs} مورد</div>
+    </div>
+    <div class="sc" style="--sc-glow:rgba(39,174,96,.08)">
+      <div class="sc-val" style="color:var(--green)">${revenue.toLocaleString('fa')}</div>
+      <div class="sc-lbl">درآمد (تومان)</div>
+      <div class="sc-sub" style="color:var(--t2)">${(txs||[]).filter(t=>t.amount<0).length} تراکنش</div>
+    </div>
+    <div class="sc" style="--sc-glow:rgba(192,57,43,.08)">
+      <div class="sc-val" style="color:var(--red)">${pending}</div>
+      <div class="sc-lbl">شکایات باز</div>
+      <div class="sc-sub" style="color:var(--t2)">تیکت: ${openTk} باز</div>
+    </div>
   `;
-  const recent = (reqs||[]).slice(0,10);
-  document.getElementById('recentReqs').innerHTML = `
-    <div class="ch"><div class="ci">📋</div><span class="ct">آخرین درخواست‌ها (${(reqs||[]).length} مورد)</span></div>
-    ${recent.length ? recent.map(r=>`
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:.75rem">
-        <div>
-          <span style="color:var(--gold);font-size:.7rem">${r.unique_code}</span>
-          <span style="color:var(--text2);margin-right:6px">${r.location||'—'} · ${r.property_type||'—'}</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:6px">
-          <span style="color:var(--text2)">${r.users?.full_name||r.users?.username||'—'}</span>
-          <span style="color:var(--text3);font-size:.65rem">${fd(r.created_at)}</span>
-        </div>
+
+  // bar chart 7 days
+  const days=[]; const counts=[];
+  for(let i=6;i>=0;i--){
+    const d=new Date(); d.setDate(d.getDate()-i);
+    const ds=d.toISOString().split('T')[0];
+    days.push(d.toLocaleDateString('fa-IR',{weekday:'short'}));
+    counts.push((reqs||[]).filter(r=>r.created_at&&r.created_at.startsWith(ds)).length);
+  }
+  const mx=Math.max(...counts,1);
+  document.getElementById('barChart').innerHTML=counts.map((c,i)=>
+    `<div class="bar ${i===6?'today':''}" style="height:${Math.max((c/mx)*100,4)}%" title="${days[i]}: ${c}"></div>`
+  ).join('');
+  document.getElementById('barLabels').innerHTML=days.map(d=>`<span class="bar-lbl">${d}</span>`).join('');
+
+  // recent
+  const recent=(reqs||[]).slice(0,8);
+  document.getElementById('recentList').innerHTML = recent.length ? recent.map(r=>`
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:.72rem">
+      <div style="flex:1;min-width:0">
+        <div style="color:var(--gold);font-size:.68rem;margin-bottom:1px">${r.unique_code}</div>
+        <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.location||'—'} · ${r.property_type||'—'}</div>
       </div>
-    `).join('') : '<div class="empty"><div class="empty-icon">📭</div><p>درخواستی ثبت نشده</p></div>'}
-  `;
+      <div style="text-align:left;flex-shrink:0;margin-right:8px">
+        <div style="color:var(--t2);font-size:.65rem">${r.users?.full_name||r.users?.username||r.user_id}</div>
+        <div style="color:var(--t3);font-size:.6rem">${fds(r.created_at)}</div>
+      </div>
+    </div>
+  `).join('') : '<div class="empty"><div class="empty-i">📭</div><p>آگهی‌ای ثبت نشده</p></div>';
 }
 
 // ── USERS ──
-let allUsers=[];
+let allU=[], bannedIds=[];
 async function loadUsers(){
   const [users,banned] = await Promise.all([
     db('GET','users?select=*&order=created_at.desc'),
     db('GET','banned_users?select=user_id')
   ]);
-  allUsers = users||[];
-  const bannedIds = (banned||[]).map(b=>b.user_id);
-  renderUsers(allUsers, bannedIds);
+  allU=users||[];
+  bannedIds=(banned||[]).map(b=>b.user_id);
+  renderU(allU);
 }
 function filterU(q){
-  const bannedIds=[];
-  renderUsers(allUsers.filter(u=>(u.full_name||'').includes(q)||(u.username||'').includes(q)||(u.phone||'').includes(q)), bannedIds);
+  const f=allU.filter(u=>(u.full_name||'').includes(q)||(u.username||'').includes(q)||(u.phone||'').includes(q));
+  renderU(f);
 }
-function renderUsers(users, bannedIds=[]){
+function renderU(users){
   document.getElementById('uTbl').innerHTML = users.length ? users.map(u=>`
     <tr>
-      <td>${u.full_name||'—'}<br><span style="color:var(--text2);font-size:.65rem">${u.username?'@'+u.username:''}</span></td>
-      <td><code style="font-size:.68rem">${u.phone||'—'}</code></td>
-      <td>${(u.wallet||0).toLocaleString('fa')} ت</td>
-      <td>${bannedIds.includes(u.id)?'<span class="bdg bdg-r">بن</span>':'<span class="bdg bdg-g">فعال</span>'}</td>
-      <td style="display:flex;gap:4px;flex-wrap:wrap">
-        <button class="ab ab-gold" onclick="openWallet(${u.id},'${u.full_name||u.username||u.id}')">💰</button>
-        ${bannedIds.includes(u.id)
-          ?`<button class="ab ab-g" onclick="doUnban(${u.id})">رفع بن</button>`
-          :`<button class="ab ab-r" onclick="openBan(${u.id})">بن</button>`}
+      <td>
+        <div style="font-weight:500">${u.full_name||'—'}</div>
+        <div style="color:var(--t2);font-size:.62rem">${u.username?'@'+u.username:u.id}</div>
       </td>
+      <td><code style="font-size:.66rem">${u.phone||'—'}</code></td>
+      <td style="font-weight:600;color:var(--gold)">${(u.wallet||0).toLocaleString('fa')}</td>
+      <td style="font-size:.65rem;color:var(--t2)">${fds(u.created_at)}</td>
+      <td>${bannedIds.includes(u.id)?'<span class="b br">بن</span>':'<span class="b bg">فعال</span>'}</td>
+      <td><div class="abs">
+        <button class="ab ao" onclick="openWallet(${u.id},'${(u.full_name||u.username||u.id).replace(/'/g,"\\'")}',${u.wallet||0})">💰</button>
+        ${bannedIds.includes(u.id)
+          ?`<button class="ab ag" onclick="doUnban(${u.id})">رفع بن</button>`
+          :`<button class="ab ar" onclick="openBan(${u.id},'${(u.full_name||u.username||u.id).replace(/'/g,"\\'")}')">بن</button>`}
+      </div></td>
     </tr>
-  `).join('') : '<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--text2)">کاربری یافت نشد</td></tr>';
+  `).join('') : '<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--t2)">کاربری یافت نشد</td></tr>';
 }
 
 // ── REQUESTS ──
+let allR=[];
 async function loadReqs(){
-  const data = await db('GET','requests?select=*,users(full_name,username)&order=created_at.desc');
-  document.getElementById('rTbl').innerHTML = (data||[]).length ? data.map(r=>`
+  const data = await db('GET','requests?select=*,users(full_name,username,phone)&order=created_at.desc');
+  allR=data||[];
+  renderR(allR);
+}
+function filterR(q){
+  const f=allR.filter(r=>(r.unique_code||'').includes(q.toUpperCase())||(r.location||'').includes(q)||(r.property_type||'').includes(q));
+  renderR(f);
+}
+function renderR(reqs){
+  document.getElementById('rTbl').innerHTML = reqs.length ? reqs.map(r=>`
     <tr>
-      <td><code style="color:var(--gold);font-size:.7rem">${r.unique_code}</code></td>
+      <td><code style="color:var(--gold);font-size:.68rem">${r.unique_code}</code></td>
       <td>${r.location||'—'}</td>
       <td>${r.property_type||'—'}</td>
-      <td>${r.budget||'—'}</td>
-      <td><button class="ab ab-r" onclick="delReq(${r.id})">🗑</button></td>
+      <td style="font-size:.68rem">${r.budget||'—'}</td>
+      <td>
+        <div style="font-size:.68rem">${r.users?.full_name||'—'}</div>
+        <div style="color:var(--t2);font-size:.6rem">${r.users?.username?'@'+r.users.username:''}</div>
+      </td>
+      <td style="font-size:.62rem;color:var(--t2)">${fds(r.created_at)}</td>
+      <td><div class="abs">
+        <button class="ab abl" onclick="openReqDetail(${JSON.stringify(r).replace(/"/g,'&quot;')})">جزئیات</button>
+        <button class="ab ar" onclick="delReq(${r.id})">🗑</button>
+      </div></td>
     </tr>
-  `).join('') : '<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--text2)">درخواستی یافت نشد</td></tr>';
+  `).join('') : '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--t2)">آگهی‌ای یافت نشد</td></tr>';
 }
 async function delReq(id){ if(!confirm('حذف شود؟'))return; await db('DELETE',`requests?id=eq.${id}`); toast('✅ حذف شد'); loadReqs(); }
+function openReqDetail(r){
+  if(typeof r === 'string') r = JSON.parse(r.replace(/&quot;/g,'"'));
+  document.getElementById('mReqBody').innerHTML=`
+    <div class="dcard">
+      ${[['کد یونیک',r.unique_code],['موقعیت',r.location],['نوع',r.property_type],['هدف',r.purpose],['بودجه',r.budget],['متراژ',r.area],['اتاق',r.rooms],['طبقه',r.floor],['الزامات',r.requirements],['توضیحات',r.description||'—'],['صاحب',r.users?.full_name||r.user_id],['تلفن',r.users?.phone||'—'],['تاریخ',fd(r.created_at)]].map(([k,v])=>
+        `<div class="drow"><span class="dk">${k}</span><span class="dv">${v||'—'}</span></div>`
+      ).join('')}
+    </div>
+  `;
+  document.getElementById('mReqDelBtn').onclick = ()=>{ delReq(r.id); cm('mReqDetail'); };
+  om('mReqDetail');
+}
 
-// ── TXS ──
+// ── TRANSACTIONS ──
 async function loadTxs(){
-  const data = await db('GET','transactions?select=*,users(full_name,username)&order=created_at.desc&limit=50');
-  document.getElementById('txTbl').innerHTML = (data||[]).length ? data.map(t=>`
+  const data = await db('GET','transactions?select=*,users(full_name,username)&order=created_at.desc&limit=100');
+  const rows=data||[];
+  const income=rows.filter(t=>t.amount>0).reduce((s,t)=>s+t.amount,0);
+  const spend=rows.filter(t=>t.amount<0).reduce((s,t)=>s+Math.abs(t.amount),0);
+  document.getElementById('txStats').innerHTML=`
+    <div class="sc"><div class="sc-val" style="color:var(--green)">${income.toLocaleString('fa')}</div><div class="sc-lbl">کل شارژ (تومان)</div></div>
+    <div class="sc"><div class="sc-val" style="color:var(--red)">${spend.toLocaleString('fa')}</div><div class="sc-lbl">کل کسر (تومان)</div></div>
+  `;
+  document.getElementById('txTbl').innerHTML = rows.length ? rows.map(t=>`
     <tr>
       <td>${t.users?.full_name||t.users?.username||t.user_id}</td>
-      <td style="color:${t.amount>0?'var(--green)':'var(--red)'};font-weight:600">${t.amount>0?'+':''}${t.amount.toLocaleString('fa')} ت</td>
-      <td><span class="bdg ${t.type==='deduct'?'bdg-r':'bdg-g'}">${t.type==='deduct'?'کسر':'شارژ'}</span></td>
-      <td>${t.description||'—'}</td>
+      <td style="color:${t.amount>0?'var(--green)':'var(--red)'};font-weight:600">${t.amount>0?'+':''}${(t.amount||0).toLocaleString('fa')} ت</td>
+      <td><span class="b ${t.type==='deduct'?'br':'bg'}">${t.type==='deduct'?'کسر':'شارژ'}</span></td>
+      <td style="font-size:.68rem">${t.description||'—'}</td>
+      <td style="font-size:.62rem;color:var(--t2)">${fds(t.created_at)}</td>
     </tr>
-  `).join('') : '<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--text2)">تراکنشی یافت نشد</td></tr>';
+  `).join('') : '<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--t2)">تراکنشی یافت نشد</td></tr>';
 }
 
 // ── REPORTS ──
 async function loadReports(){
   const data = await db('GET','reports?select=*&order=created_at.desc');
-  document.getElementById('rpTbl').innerHTML = (data||[]).length ? data.map(r=>`
+  const rows=data||[];
+  document.getElementById('rpTbl').innerHTML = rows.length ? rows.map(r=>`
     <tr>
-      <td>${r.reporter_id}</td>
-      <td>${r.reported_id}</td>
-      <td style="max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.reason||'—'}</td>
-      <td><span class="bdg ${r.status==='pending'?'bdg-o':r.status==='resolved'?'bdg-g':'bdg-r'}">${r.status==='pending'?'در انتظار':r.status==='resolved'?'حل‌شده':'رد'}</span></td>
-      <td>${r.status==='pending'?`<button class="ab ab-b" onclick="openReport(${r.id},${r.reported_id},'${(r.reason||'').replace(/'/g,"\\'")}')">بررسی</button>`:'—'}</td>
+      <td style="font-size:.68rem">${r.reporter_id}</td>
+      <td style="font-size:.68rem">${r.reported_id}</td>
+      <td style="font-size:.68rem;color:var(--gold)">${r.unique_code||'—'}</td>
+      <td style="max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.68rem">${r.reason||'—'}</td>
+      <td><span class="b ${r.status==='pending'?'bo':r.status==='resolved'?'bg':'bx'}">${r.status==='pending'?'در انتظار':r.status==='resolved'?'حل‌شده':'رد'}</span></td>
+      <td style="font-size:.62rem;color:var(--t2)">${fds(r.created_at)}</td>
+      <td>${r.status==='pending'?`<button class="ab abl" onclick="openReport(${r.id},${r.reported_id},'${(r.reason||'').replace(/'/g,"\\'")}')">بررسی</button>`:'—'}</td>
     </tr>
-  `).join('') : '<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--text2)">شکایتی یافت نشد</td></tr>';
+  `).join('') : '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--t2)">شکایتی یافت نشد</td></tr>';
 }
 
 // ── TICKETS ──
 async function loadTickets(){
   const data = await db('GET','tickets?select=*,users(full_name,username)&order=created_at.desc');
-  document.getElementById('tkTbl').innerHTML = (data||[]).length ? data.map(t=>`
+  const rows=data||[];
+  document.getElementById('tkTbl').innerHTML = rows.length ? rows.map(t=>`
     <tr>
-      <td>${t.users?.full_name||t.users?.username||t.user_id}</td>
-      <td>${t.subject||'—'}</td>
-      <td style="max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.message||'—'}</td>
-      <td><span class="bdg ${t.status==='open'?'bdg-o':'bdg-g'}">${t.status==='open'?'باز':'بسته'}</span></td>
-      <td>${t.status==='open'?`<button class="ab ab-b" onclick="openTicket(${t.id},${t.user_id},'${(t.message||'').replace(/'/g,"\\'")}')">پاسخ</button>`:'—'}</td>
+      <td>
+        <div style="font-size:.72rem">${t.users?.full_name||'—'}</div>
+        <div style="color:var(--t2);font-size:.62rem">${t.users?.username?'@'+t.users.username:t.user_id}</div>
+      </td>
+      <td style="font-size:.7rem">${t.subject||'—'}</td>
+      <td style="max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.68rem">${t.message||'—'}</td>
+      <td><span class="b ${t.status==='open'?'bo':'bg'}">${t.status==='open'?'باز':'بسته'}</span></td>
+      <td style="font-size:.62rem;color:var(--t2)">${fds(t.created_at)}</td>
+      <td>${t.status==='open'?`<button class="ab abl" onclick="openTicket(${t.id},${t.user_id},'${(t.subject||'').replace(/'/g,"\\'")}','${(t.message||'').replace(/'/g,"\\'")}')">پاسخ</button>`:'<span style="color:var(--t2);font-size:.65rem">پاسخ داده شد</span>'}</td>
     </tr>
-  `).join('') : '<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--text2)">تیکتی یافت نشد</td></tr>';
+  `).join('') : '<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--t2)">تیکتی یافت نشد</td></tr>';
 }
 
 // ── BANNED ──
 async function loadBanned(){
-  const data = await db('GET','banned_users?select=*,users(full_name,username)&order=created_at.desc');
-  document.getElementById('bnTbl').innerHTML = (data||[]).length ? data.map(b=>`
+  const data = await db('GET','banned_users?select=*,users(full_name,username,phone)&order=created_at.desc');
+  const rows=data||[];
+  document.getElementById('bnTbl').innerHTML = rows.length ? rows.map(b=>`
     <tr>
-      <td>${b.users?.full_name||b.users?.username||b.user_id}</td>
-      <td>${b.reason||'—'}</td>
-      <td><button class="ab ab-g" onclick="doUnban(${b.user_id})">رفع بن</button></td>
+      <td>
+        <div style="font-size:.72rem">${b.users?.full_name||'—'}</div>
+        <div style="color:var(--t2);font-size:.62rem">${b.users?.username?'@'+b.users.username:b.user_id}</div>
+      </td>
+      <td style="font-size:.68rem"><code>${b.users?.phone||'—'}</code></td>
+      <td style="font-size:.68rem;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${b.reason||'—'}</td>
+      <td style="font-size:.62rem;color:var(--t2)">${fds(b.created_at)}</td>
+      <td><button class="ab ag" onclick="doUnban(${b.user_id})">رفع بن</button></td>
     </tr>
-  `).join('') : '<tr><td colspan="3" style="text-align:center;padding:20px;color:var(--text2)">کاربر بن‌شده‌ای وجود ندارد</td></tr>';
+  `).join('') : '<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--t2)">کاربر بن‌شده‌ای وجود ندارد</td></tr>';
 }
 
 // ── MODAL ACTIONS ──
-function openBan(id){ document.getElementById('mBanId').value=id; document.getElementById('mBanReason').value=''; om('mBan') }
+function openBan(id,name){
+  document.getElementById('mBanId').value=id;
+  document.getElementById('mBanName').value=name;
+  document.getElementById('mBanReason').value='';
+  om('mBan');
+}
 async function doBan(){
   const id=document.getElementById('mBanId').value;
-  const reason=document.getElementById('mBanReason').value;
-  if(!reason.trim()){alert('دلیل بن را وارد کنید');return}
-  tg.sendData(JSON.stringify({type:'admin_action',action:'ban_user',user_id:parseInt(id),reason}));
-  cm('mBan'); toast('🚫 درخواست بن ارسال شد');
+  const reason=document.getElementById('mBanReason').value.trim();
+  if(!reason){alert('دلیل بن را وارد کنید');return}
+  await db('POST','banned_users',{user_id:parseInt(id),reason,banned_by:0});
+  cm('mBan'); toast('🚫 کاربر بن شد','var(--red)');
+  loadUsers();
 }
 async function doUnban(id){
   await db('DELETE',`banned_users?user_id=eq.${id}`);
-  toast('✅ بن رفع شد','var(--green)');
+  toast('✅ بن رفع شد');
   loadUsers(); loadBanned();
 }
-function openWallet(id,name){ document.getElementById('mWalletId').value=id; document.getElementById('mWalletName').value=name; document.getElementById('mWalletAmt').value=''; om('mWallet') }
+
+function openWallet(id,name,cur){
+  document.getElementById('mWid').value=id;
+  document.getElementById('mWName').value=name;
+  document.getElementById('mWCur').value=(cur||0).toLocaleString('fa')+' تومان';
+  document.getElementById('mWAmt').value='';
+  om('mWallet');
+}
 async function doCharge(){
-  const id=parseInt(document.getElementById('mWalletId').value);
-  const amt=parseInt(document.getElementById('mWalletAmt').value);
+  const id=parseInt(document.getElementById('mWid').value);
+  const amt=parseInt(document.getElementById('mWAmt').value);
   if(!amt||amt<=0){alert('مبلغ معتبر وارد کنید');return}
   const u=await db('GET',`users?id=eq.${id}&select=wallet`);
-  const cur=(u?.[0]?.wallet||0);
+  const cur=u?.[0]?.wallet||0;
   await db('PATCH',`users?id=eq.${id}`,{wallet:cur+amt});
   await db('POST','transactions',{user_id:id,amount:amt,type:'charge',description:'شارژ توسط ادمین'});
   cm('mWallet'); toast(`✅ ${amt.toLocaleString('fa')} تومان شارژ شد`);
   loadUsers();
 }
-function openTicket(id,uid,msg){ document.getElementById('mTkId').value=id; document.getElementById('mTkUid').value=uid; document.getElementById('mTkMsg').value=msg; document.getElementById('mTkReply').value=''; om('mTicket') }
+
+function openTicket(id,uid,subj,msg){
+  document.getElementById('mTkId').value=id;
+  document.getElementById('mTkUid').value=uid;
+  document.getElementById('mTkSubj').value=subj;
+  document.getElementById('mTkMsg').value=msg;
+  document.getElementById('mTkReply').value='';
+  om('mTicket');
+}
 async function doTicketReply(){
   const id=document.getElementById('mTkId').value;
   const uid=document.getElementById('mTkUid').value;
-  const reply=document.getElementById('mTkReply').value;
-  if(!reply.trim()){alert('پاسخ را وارد کنید');return}
+  const reply=document.getElementById('mTkReply').value.trim();
+  if(!reply){alert('پاسخ را وارد کنید');return}
   await db('PATCH',`tickets?id=eq.${id}`,{admin_reply:reply,status:'closed'});
   tg.sendData(JSON.stringify({type:'admin_action',action:'reply_ticket',ticket_id:parseInt(id),user_id:parseInt(uid),reply}));
   cm('mTicket'); toast('✅ پاسخ ارسال شد');
   loadTickets();
 }
-function openReport(id,uid,reason){ document.getElementById('mRpId').value=id; document.getElementById('mRpUid').value=uid; document.getElementById('mRpReason').value=reason; om('mReport') }
+
+function openReport(id,uid,reason){
+  document.getElementById('mRid').value=id;
+  document.getElementById('mRuid').value=uid;
+  document.getElementById('mRReason').value=reason;
+  document.getElementById('mRReported').value='کاربر '+uid;
+  om('mReport');
+}
 async function doBanReport(){
-  const rid=document.getElementById('mRpId').value;
-  const uid=document.getElementById('mRpUid').value;
-  await db('POST','banned_users',{user_id:parseInt(uid),reason:'بن از طریق شکایت'});
+  const rid=document.getElementById('mRid').value;
+  const uid=document.getElementById('mRuid').value;
+  const reason='بن از طریق شکایت: '+document.getElementById('mRReason').value;
+  await db('POST','banned_users',{user_id:parseInt(uid),reason,banned_by:0});
   await db('PATCH',`reports?id=eq.${rid}`,{status:'resolved'});
-  cm('mReport'); toast('🚫 کاربر بن و شکایت حل شد');
+  cm('mReport'); toast('🚫 کاربر بن و شکایت حل شد','var(--red)');
   loadReports();
 }
 async function doResolve(){
-  const rid=document.getElementById('mRpId').value;
+  const rid=document.getElementById('mRid').value;
   await db('PATCH',`reports?id=eq.${rid}`,{status:'dismissed'});
-  cm('mReport'); toast('شکایت رد شد','var(--text2)');
+  cm('mReport'); toast('شکایت رد شد','var(--t2)');
   loadReports();
 }
 </script>
