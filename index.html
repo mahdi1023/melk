@@ -19,8 +19,21 @@
 body{font-family:'Vazirmatn',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:90px}
 
 /* ── SCREENS ── */
-.screen{display:none}.screen.show{display:block}
-#adminLoginScreen.show{display:flex!important}
+.screen{display:none}
+#formScreen{display:block}
+#adminLoginScreen{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:24px}
+#adminScreen{display:none;background:var(--bg);min-height:100vh}
+
+/* ── LOGIN ── */
+.login-icon{width:72px;height:72px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 20px;box-shadow:0 8px 32px rgba(201,168,76,.25)}
+.login-title{font-size:1.3rem;font-weight:700;color:#fff;margin-bottom:6px;text-align:center}
+.login-sub{font-size:.8rem;color:var(--text2);margin-bottom:32px;text-align:center}
+.login-box{width:100%;max-width:320px;margin:0 auto}
+.login-input{width:100%;background:var(--s);border:1px solid var(--border);border-radius:12px;padding:14px 16px;color:var(--text);font-family:'Vazirmatn',sans-serif;font-size:1rem;outline:none;text-align:center;margin-bottom:10px;transition:border-color .2s}
+.login-input:focus{border-color:var(--gold)}
+.login-err{display:none;color:var(--red);font-size:.78rem;text-align:center;margin-bottom:10px}
+.login-btn{width:100%;background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;border-radius:12px;padding:14px;color:#000;font-family:'Vazirmatn',sans-serif;font-size:.95rem;font-weight:700;cursor:pointer;box-shadow:0 4px 18px rgba(201,168,76,.22)}
+.login-btn:active{transform:scale(.98)}
 
 /* ── HERO ── */
 .hero{
@@ -28,7 +41,6 @@ body{font-family:'Vazirmatn',sans-serif;background:var(--bg);color:var(--text);m
   background:linear-gradient(160deg,#0D1017,#111520);
   border-bottom:1px solid var(--border);
 }
-.hero::after{content:'';position:absolute;bottom:-50px;left:50%;transform:translateX(-50%);width:260px;height:100px;background:radial-gradient(ellipse,rgba(201,168,76,.06) 0%,transparent 70%);pointer-events:none}
 .hero-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
 .logo{display:flex;align-items:center;gap:10px}
 .logo-mark{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-size:17px;box-shadow:0 4px 16px rgba(201,168,76,.25)}
@@ -41,7 +53,7 @@ body{font-family:'Vazirmatn',sans-serif;background:var(--bg);color:var(--text);m
 /* ── PROGRESS ── */
 .prog-wrap{padding:14px 20px 0}
 .prog-track{height:2px;background:var(--border);border-radius:99px;overflow:hidden;margin-bottom:7px}
-.prog-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--gold),var(--gold2));transition:width .5s cubic-bezier(.4,0,.2,1);box-shadow:0 0 8px rgba(201,168,76,.4)}
+.prog-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--gold),var(--gold2));transition:width .5s cubic-bezier(.4,0,.2,1)}
 .prog-labels{display:flex;justify-content:space-between}
 .pl{font-size:.62rem;color:var(--text3);letter-spacing:.3px}
 .pl.on{color:var(--gold)}
@@ -52,68 +64,64 @@ body{font-family:'Vazirmatn',sans-serif;background:var(--bg);color:var(--text);m
 @keyframes up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 
 /* ── CARD ── */
-.card{background:var(--s);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:10px;position:relative;overflow:hidden}
-.card::before{content:'';position:absolute;top:0;right:0;width:50px;height:50px;background:radial-gradient(circle,rgba(201,168,76,.04) 0%,transparent 70%)}
+.card{background:var(--s);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:10px}
 .ch{display:flex;align-items:center;gap:8px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border)}
 .ci{width:26px;height:26px;border-radius:7px;background:var(--gold-dim);display:flex;align-items:center;justify-content:center;font-size:12px}
-.ct{font-size:.72rem;color:var(--text2);font-weight:500;letter-spacing:.3px}
+.ct{font-size:.72rem;color:var(--text2);font-weight:500}
 
 /* ── FIELD ── */
 .f{margin-bottom:10px}
-.f label{display:block;font-size:.65rem;color:var(--text3);margin-bottom:4px;letter-spacing:.3px;text-transform:uppercase}
+.f label{display:block;font-size:.65rem;color:var(--text3);margin-bottom:4px}
 .f input,.f select,.f textarea{
   width:100%;background:var(--s2);border:1px solid var(--border);border-radius:9px;
   padding:10px 13px;color:var(--text);font-family:'Vazirmatn',sans-serif;font-size:.88rem;
-  outline:none;transition:border-color .2s,box-shadow .2s;direction:rtl;appearance:none;
+  outline:none;transition:border-color .2s;direction:rtl;
 }
 .f input:focus,.f select:focus,.f textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.07)}
-.f select option{background:#111520}
-.f textarea{resize:none;height:72px;line-height:1.5}
+.f textarea{resize:none;height:72px}
 .f2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 
 /* ── CHIPS ── */
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{padding:6px 11px;border-radius:99px;border:1px solid var(--border);background:var(--s2);font-size:.72rem;cursor:pointer;transition:all .2s;color:var(--text2);user-select:none}
-.chip.on{background:var(--gold-dim);border-color:var(--gold);color:var(--gold);box-shadow:0 0 10px rgba(201,168,76,.08)}
+.chip.on{background:var(--gold-dim);border-color:var(--gold);color:var(--gold)}
 
 /* ── SUMMARY ── */
-.sr{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);font-size:.8rem}
-.sr:last-child{border:none}
-.sk{color:var(--text3);white-space:nowrap;font-size:.68rem;letter-spacing:.3px;text-transform:uppercase}
-.sv{color:var(--text);font-weight:500;text-align:left;font-size:.8rem}
+.sr{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);font-size:.8rem}
+.sk{color:var(--text3);white-space:nowrap;font-size:.68rem}
+.sv{color:var(--text);font-weight:500;text-align:left}
 
 /* ── BOTTOM ── */
 .bot{position:fixed;bottom:0;left:0;right:0;padding:10px 14px 14px;background:linear-gradient(to top,var(--bg) 60%,transparent);display:flex;gap:8px;z-index:10}
 .btn{flex:1;padding:13px;border-radius:11px;border:none;font-family:'Vazirmatn',sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;transition:all .2s}
 .btn-main{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#080A0F;box-shadow:0 4px 18px rgba(201,168,76,.22)}
 .btn-main:active{transform:scale(.97)}
-.btn-back{background:var(--s);color:var(--text2);border:1px solid var(--border);flex:0 0 50px;padding:13px 0}
+.btn-back{background:var(--s);color:var(--text2);border:1px solid var(--border);flex:0 0 50px}
 .btn-back:active{transform:scale(.97)}
 
 /* ── SUCCESS ── */
 .succ{display:none;text-align:center;padding:36px 20px}
-.succ.show{display:block;animation:up .5s cubic-bezier(.4,0,.2,1)}
-.succ-ring{width:76px;height:76px;border-radius:50%;background:linear-gradient(135deg,rgba(201,168,76,.15),rgba(201,168,76,.04));border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:1.8rem;box-shadow:0 0 36px rgba(201,168,76,.12);animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{box-shadow:0 0 36px rgba(201,168,76,.12)}50%{box-shadow:0 0 52px rgba(201,168,76,.25)}}
+.succ.show{display:block}
+.succ-ring{width:76px;height:76px;border-radius:50%;background:linear-gradient(135deg,rgba(201,168,76,.15),rgba(201,168,76,.04));border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:1.8rem}
 .succ h2{font-size:1.35rem;font-weight:700;margin-bottom:6px}
-.succ p{font-size:.78rem;color:var(--text2);line-height:1.6;margin-bottom:16px}
+.succ p{font-size:.78rem;color:var(--text2);margin-bottom:16px}
 .code-box{background:var(--s);border:1px dashed var(--gold);border-radius:13px;padding:16px;margin:14px 0}
-.code-lbl{font-size:.6rem;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:5px}
+.code-lbl{font-size:.6rem;color:var(--text3);margin-bottom:5px}
 .code-val{font-size:1.7rem;font-weight:700;color:var(--gold);letter-spacing:4px}
-.succ-note{background:var(--s);border:1px solid var(--border);border-radius:11px;padding:12px;font-size:.76rem;color:var(--text2);line-height:1.7;text-align:right}
+.succ-note{background:var(--s);border:1px solid var(--border);border-radius:11px;padding:12px;font-size:.76rem;color:var(--text2)}
 .succ-note strong{color:var(--gold)}
 
 /* ── ADMIN PANEL ── */
-#adminScreen{background:var(--bg);min-height:100vh}
 .adm-header{padding:20px 16px 16px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
 .adm-title{font-size:1.1rem;font-weight:700}
 .adm-sub{font-size:.7rem;color:var(--text2)}
 .adm-tabs{display:flex;overflow-x:auto;gap:6px;padding:12px 14px;border-bottom:1px solid var(--border);scrollbar-width:none}
 .adm-tabs::-webkit-scrollbar{display:none}
-.atab{padding:7px 14px;border-radius:99px;border:1px solid var(--border);background:var(--s2);font-size:.72rem;cursor:pointer;color:var(--text2);white-space:nowrap;transition:all .2s;flex-shrink:0}
+.atab{padding:7px 14px;border-radius:99px;border:1px solid var(--border);background:var(--s2);font-size:.72rem;cursor:pointer;color:var(--text2);white-space:nowrap;flex-shrink:0}
 .atab.on{background:var(--gold-dim);border-color:var(--gold);color:var(--gold)}
 .adm-content{padding:14px}
-.adm-page{display:none}.adm-page.show{display:block}
+.adm-page{display:none}
+.adm-page.show{display:block}
 
 /* ── STAT CARDS ── */
 .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
@@ -134,23 +142,22 @@ tr:hover td{background:rgba(255,255,255,.02)}
 .bdg-g{background:rgba(46,204,113,.1);color:var(--green)}
 .bdg-r{background:rgba(231,76,60,.1);color:var(--red)}
 .bdg-o{background:rgba(245,158,11,.1);color:var(--orange)}
-.bdg-b{background:rgba(59,130,246,.1);color:var(--blue)}
 
 /* ── ACTION BTN ── */
-.ab{padding:5px 10px;border-radius:7px;border:none;font-family:'Vazirmatn',sans-serif;font-size:.68rem;font-weight:600;cursor:pointer;transition:all .2s}
-.ab-r{background:rgba(231,76,60,.1);color:var(--red)}.ab-r:hover{background:rgba(231,76,60,.2)}
-.ab-g{background:rgba(46,204,113,.1);color:var(--green)}.ab-g:hover{background:rgba(46,204,113,.2)}
-.ab-b{background:rgba(59,130,246,.1);color:var(--blue)}.ab-b:hover{background:rgba(59,130,246,.2)}
-.ab-gold{background:var(--gold-dim);color:var(--gold)}.ab-gold:hover{background:rgba(201,168,76,.2)}
+.ab{padding:5px 10px;border-radius:7px;border:none;font-family:'Vazirmatn',sans-serif;font-size:.68rem;font-weight:600;cursor:pointer}
+.ab-r{background:rgba(231,76,60,.1);color:var(--red)}
+.ab-g{background:rgba(46,204,113,.1);color:var(--green)}
+.ab-b{background:rgba(59,130,246,.1);color:var(--blue)}
+.ab-gold{background:var(--gold-dim);color:var(--gold)}
 
 /* ── MODAL ── */
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;align-items:center;justify-content:center;padding:16px}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;align-items:center;justify-content:center;padding:16px}
 .overlay.show{display:flex}
 .modal{background:var(--s);border:1px solid var(--border);border-radius:var(--r);padding:20px;width:100%;max-width:380px}
 .modal h3{font-size:.95rem;font-weight:700;margin-bottom:14px}
 .mf{margin-bottom:10px}
 .mf label{display:block;font-size:.68rem;color:var(--text2);margin-bottom:4px}
-.mf input,.mf textarea,.mf select{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:9px 11px;color:var(--text);font-family:'Vazirmatn',sans-serif;font-size:.82rem;outline:none}
+.mf input,.mf textarea{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:9px 11px;color:var(--text);font-family:'Vazirmatn',sans-serif;font-size:.82rem;outline:none}
 .mf textarea{height:70px;resize:none}
 .mbtns{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
 .mbtn{padding:9px 16px;border-radius:9px;border:none;font-family:'Vazirmatn',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer}
@@ -160,7 +167,6 @@ tr:hover td{background:rgba(255,255,255,.02)}
 /* ── EMPTY ── */
 .empty{text-align:center;padding:32px;color:var(--text2)}
 .empty-icon{font-size:2rem;margin-bottom:8px}
-.empty p{font-size:.78rem}
 
 /* ── LOADING ── */
 .skel{background:linear-gradient(90deg,var(--s2) 25%,var(--s) 50%,var(--s2) 75%);background-size:200% 100%;animation:sh 1.5s infinite;border-radius:6px;height:13px;margin-bottom:7px}
@@ -174,7 +180,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
 <body>
 
 <!-- ══════════ FORM SCREEN ══════════ -->
-<div class="screen show" id="formScreen">
+<div id="formScreen" class="screen">
   <div class="hero">
     <div class="hero-top">
       <div class="logo"><div class="logo-mark">🏛</div><span class="logo-text">ملک‌یاب</span></div>
@@ -285,11 +291,22 @@ tr:hover td{background:rgba(255,255,255,.02)}
   </div>
 </div>
 
+<!-- ══════════ ADMIN LOGIN SCREEN ══════════ -->
+<div id="adminLoginScreen" class="screen">
+  <div class="login-icon">🔐</div>
+  <div class="login-title">پنل مدیریت</div>
+  <div class="login-sub">ملک‌یاب Admin Panel</div>
+  <div class="login-box">
+    <input id="adminPassInput" class="login-input" type="password" placeholder="رمز عبور را وارد کنید" onkeydown="if(event.key==='Enter')tryAdminLogin()"/>
+    <div id="loginErr" class="login-err">❌ رمز اشتباه است</div>
+    <button class="login-btn" onclick="tryAdminLogin()">ورود به پنل ←</button>
+  </div>
+</div>
 
-<!-- ══════════ ADMIN SCREEN ══════════ -->
-<div class="screen" id="adminScreen">
+<!-- ══════════ ADMIN PANEL ══════════ -->
+<div id="adminScreen" class="screen">
   <div class="adm-header">
-    <div class="logo-mark" style="width:32px;height:32px;font-size:15px;border-radius:9px;background:linear-gradient(135deg,#C9A84C,#E8C97A);display:flex;align-items:center;justify-content:center">📊</div>
+    <div class="logo-mark" style="width:32px;height:32px;font-size:15px">📊</div>
     <div><div class="adm-title">پنل مدیریت</div><div class="adm-sub">ملک‌یاب Admin</div></div>
   </div>
 
@@ -304,14 +321,13 @@ tr:hover td{background:rgba(255,255,255,.02)}
   </div>
 
   <div class="adm-content">
-
     <!-- DASH -->
     <div class="adm-page show" id="ap-dash">
       <div class="stat-grid" id="statGrid">
-        <div class="stat"><div class="skel" style="width:40px;height:32px;border-radius:6px"></div><div class="skel" style="width:80px"></div></div>
-        <div class="stat"><div class="skel" style="width:40px;height:32px;border-radius:6px"></div><div class="skel" style="width:80px"></div></div>
-        <div class="stat"><div class="skel" style="width:40px;height:32px;border-radius:6px"></div><div class="skel" style="width:80px"></div></div>
-        <div class="stat"><div class="skel" style="width:40px;height:32px;border-radius:6px"></div><div class="skel" style="width:80px"></div></div>
+        <div class="stat"><div class="skel" style="width:40px;height:32px"></div><div class="skel" style="width:80px"></div></div>
+        <div class="stat"><div class="skel" style="width:40px;height:32px"></div><div class="skel" style="width:80px"></div></div>
+        <div class="stat"><div class="skel" style="width:40px;height:32px"></div><div class="skel" style="width:80px"></div></div>
+        <div class="stat"><div class="skel" style="width:40px;height:32px"></div><div class="skel" style="width:80px"></div></div>
       </div>
       <div class="card" id="recentReqs"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
     </div>
@@ -319,410 +335,425 @@ tr:hover td{background:rgba(255,255,255,.02)}
     <!-- USERS -->
     <div class="adm-page" id="ap-users">
       <div style="margin-bottom:10px">
-        <input style="width:100%;background:var(--s2);border:1px solid var(--border);border-radius:9px;padding:9px 12px;color:var(--text);font-family:'Vazirmatn',sans-serif;font-size:.8rem;outline:none" placeholder="جستجو..." oninput="filterU(this.value)" id="uSearch"/>
+        <input id="uSearch" style="width:100%;background:var(--s2);border:1px solid var(--border);border-radius:9px;padding:9px 12px;color:var(--text);font-size:.8rem;outline:none" placeholder="جستجو..." oninput="filterU(this.value)"/>
       </div>
-      <div class="card" style="padding:0"><div class="tbl-wrap"><table><thead><tr><th>نام</th><th>تلفن</th><th>کیف پول</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody id="uTbl"><tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text2)">در حال بارگذاری...</td></tr></tbody></table></div></div>
+      <div class="card" style="padding:0"><div class="tbl-wrap"><table><thead><tr><th>نام</th><th>تلفن</th><th>کیف پول</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody id="uTbl"><tr><td colspan="5" style="text-align:center;padding:24px">در حال بارگذاری...</td></tr></tbody></table></div></div>
     </div>
 
-    <!-- REQS -->
+    <!-- REQUESTS -->
     <div class="adm-page" id="ap-reqs">
-      <div class="card" style="padding:0"><div class="tbl-wrap"><table><thead><tr><th>کد</th><th>موقعیت</th><th>نوع</th><th>بودجه</th><th>عملیات</th></tr></thead><tbody id="rTbl"><tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text2)">در حال بارگذاری...</td></tr></tbody></table></div></div>
+      <div class="card" style="padding:0"><div class="tbl-wrap"><table><thead><tr><th>کد</th><th>موقعیت</th><th>نوع</th><th>بودجه</th><th>عملیات</th></tr></thead><tbody id="rTbl"><tr><td colspan="5" style="text-align:center;padding:24px">در حال بارگذاری...</td></tr></tbody></table></div></div>
     </div>
 
-    <!-- TXS -->
+    <!-- TRANSACTIONS -->
     <div class="adm-page" id="ap-txs">
-      <div class="card" style="padding:0"><div class="tbl-wrap"><table><thead><tr><th>کاربر</th><th>مبلغ</th><th>نوع</th><th>توضیحات</th></tr></thead><tbody id="txTbl"><tr><td colspan="4" style="text-align:center;padding:24px;color:var(--text2)">در حال بارگذاری...</td></tr></tbody></table></div></div>
+      <div class="card" style="padding:0"><div class="tbl-wrap"><table><thead><tr><th>کاربر</th><th>مبلغ</th><th>نوع</th><th>توضیحات</th></tr></thead><tbody id="txTbl"><tr><td colspan="4" style="text-align:center;padding:24px">در حال بارگذاری...</td></tr></tbody></table></div></div>
     </div>
 
     <!-- REPORTS -->
     <div class="adm-page" id="ap-reports">
-      <div class="card" style="padding:0"><div class="tbl-wrap"><table><thead><tr><th>شاکی</th><th>متهم</th><th>دلیل</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody id="rpTbl"><tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text2)">در حال بارگذاری...</td></tr></tbody></table></div></div>
+      <div class="card" style="padding:0"><div class="tbl-wrap"><table><thead><tr><th>شاکی</th><th>متهم</th><th>دلیل</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody id="rpTbl"><tr><td colspan="5" style="text-align:center;padding:24px">در حال بارگذاری...</td></tr></tbody></table></div></div>
     </div>
 
     <!-- TICKETS -->
     <div class="adm-page" id="ap-tickets">
-      <div class="card" style="padding:0"><div class="tbl-wrap"><table><thead><tr><th>کاربر</th><th>موضوع</th><th>پیام</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody id="tkTbl"><tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text2)">در حال بارگذاری...</td></tr></tbody></table></div></div>
+      <div class="card" style="padding:0"><div class="tbl-wrap"><table><thead><tr><th>کاربر</th><th>موضوع</th><th>پیام</th><th>وضعیت</th><th>عملیات</th></tr></thead><tbody id="tkTbl"><tr><td colspan="5" style="text-align:center;padding:24px">در حال بارگذاری...</td></tr></tbody></table></div></div>
     </div>
 
     <!-- BANNED -->
     <div class="adm-page" id="ap-banned">
-      <div class="card" style="padding:0"><div class="tbl-wrap"><table><thead><tr><th>کاربر</th><th>دلیل</th><th>عملیات</th></tr></thead><tbody id="bnTbl"><tr><td colspan="3" style="text-align:center;padding:24px;color:var(--text2)">در حال بارگذاری...</td></tr></tbody></table></div></div>
+      <div class="card" style="padding:0"><div class="tbl-wrap"><td><thead><tr><th>کاربر</th><th>دلیل</th><th>عملیات</th></tr></thead><tbody id="bnTbl"><tr><td colspan="3" style="text-align:center;padding:24px">در حال بارگذاری...</td></tr></tbody></table></div></div>
     </div>
-
   </div>
 </div>
 
 <!-- MODALS -->
-<div class="overlay" id="mBan">
-  <div class="modal">
-    <h3>🚫 بن کردن کاربر</h3>
-    <input type="hidden" id="mBanId"/>
-    <div class="mf"><label>دلیل بن</label><textarea id="mBanReason" placeholder="دلیل مسدودسازی..."></textarea></div>
-    <div class="mbtns"><button class="mbtn mbtn-main" onclick="doBan()">🚫 بن کن</button><button class="mbtn mbtn-cancel" onclick="cm('mBan')">انصراف</button></div>
-  </div>
-</div>
-<div class="overlay" id="mWallet">
-  <div class="modal">
-    <h3>💰 شارژ کیف پول</h3>
-    <input type="hidden" id="mWalletId"/>
-    <div class="mf"><label>نام کاربر</label><input type="text" id="mWalletName" readonly/></div>
-    <div class="mf"><label>مبلغ (تومان)</label><input type="number" id="mWalletAmt" placeholder="مثلاً 50000"/></div>
-    <div class="mbtns"><button class="mbtn mbtn-main" onclick="doCharge()">💳 شارژ</button><button class="mbtn mbtn-cancel" onclick="cm('mWallet')">انصراف</button></div>
-  </div>
-</div>
-<div class="overlay" id="mTicket">
-  <div class="modal">
-    <h3>💬 پاسخ به تیکت</h3>
-    <input type="hidden" id="mTkId"/><input type="hidden" id="mTkUid"/>
-    <div class="mf"><label>پیام کاربر</label><textarea id="mTkMsg" readonly style="background:var(--bg2)"></textarea></div>
-    <div class="mf"><label>پاسخ شما</label><textarea id="mTkReply" placeholder="پاسخ خود را بنویسید..."></textarea></div>
-    <div class="mbtns"><button class="mbtn mbtn-main" onclick="doTicketReply()">📨 ارسال</button><button class="mbtn mbtn-cancel" onclick="cm('mTicket')">انصراف</button></div>
-  </div>
-</div>
-<div class="overlay" id="mReport">
-  <div class="modal">
-    <h3>🚨 بررسی شکایت</h3>
-    <input type="hidden" id="mRpId"/><input type="hidden" id="mRpUid"/>
-    <div class="mf"><label>دلیل شکایت</label><textarea id="mRpReason" readonly style="background:var(--bg2)"></textarea></div>
-    <div class="mbtns">
-      <button class="mbtn mbtn-main" style="background:var(--red);color:#fff" onclick="doBanReport()">🚫 بن متهم</button>
-      <button class="mbtn" style="background:rgba(46,204,113,.1);color:var(--green)" onclick="doResolve()">✅ رد شکایت</button>
-      <button class="mbtn mbtn-cancel" onclick="cm('mReport')">بستن</button>
-    </div>
-  </div>
-</div>
+<div class="overlay" id="mBan"><div class="modal"><h3>🚫 بن کاربر</h3><input type="hidden" id="mBanId"/><div class="mf"><label>دلیل بن</label><textarea id="mBanReason" placeholder="دلیل بن را بنویسید..."></textarea></div><div class="mbtns"><button class="mbtn mbtn-cancel" onclick="cm('mBan')">انصراف</button><button class="mbtn mbtn-main" onclick="doBan()">بن کاربر</button></div></div></div>
+<div class="overlay" id="mWallet"><div class="modal"><h3>💰 شارژ کیف پول</h3><input type="hidden" id="mWalletId"/><div class="mf"><label>نام کاربر</label><input id="mWalletName" readonly style="background:var(--bg2)"/></div><div class="mf"><label>مبلغ (تومان)</label><input id="mWalletAmt" type="number" placeholder="مثال: 50000"/></div><div class="mbtns"><button class="mbtn mbtn-cancel" onclick="cm('mWallet')">انصراف</button><button class="mbtn mbtn-main" onclick="doCharge()">شارژ</button></div></div></div>
+<div class="overlay" id="mTicket"><div class="modal"><h3>💬 پاسخ به تیکت</h3><input type="hidden" id="mTkId"/><input type="hidden" id="mTkUid"/><div class="mf"><label>پیام کاربر</label><textarea id="mTkMsg" readonly style="background:var(--bg2)"></textarea></div><div class="mf"><label>پاسخ شما</label><textarea id="mTkReply" placeholder="پاسخ را بنویسید..."></textarea></div><div class="mbtns"><button class="mbtn mbtn-cancel" onclick="cm('mTicket')">انصراف</button><button class="mbtn mbtn-main" onclick="doTicketReply()">ارسال پاسخ</button></div></div></div>
+<div class="overlay" id="mReport"><div class="modal"><h3>🚨 بررسی شکایت</h3><input type="hidden" id="mRpId"/><input type="hidden" id="mRpUid"/><div class="mf"><label>دلیل شکایت</label><textarea id="mRpReason" readonly style="background:var(--bg2)"></textarea></div><div class="mbtns"><button class="mbtn mbtn-cancel" onclick="cm('mReport')">انصراف</button><button class="mbtn mbtn-main" onclick="doBanReport()">🚫 بن متهم</button><button class="mbtn" style="background:rgba(46,204,113,.1);color:var(--green)" onclick="doResolve()">✅ رد شکایت</button></div></div></div>
 
 <div class="toast" id="toast"></div>
 
 <script>
 const tg = window.Telegram.WebApp;
 tg.expand(); tg.ready();
-tg.setHeaderColor && tg.setHeaderColor('#080A0F');
-tg.setBackgroundColor && tg.setBackgroundColor('#080A0F');
+if(tg.setHeaderColor) tg.setHeaderColor('#080A0F');
+if(tg.setBackgroundColor) tg.setBackgroundColor('#080A0F');
 
-const SB = "https://vwbyxjhyrrclmpcbkpgj.supabase.co";
-// anon key برای فرم عادی
+// ─── CONFIG ────────────────────────────────────────────────
+const SB_URL = "https://vwbyxjhyrrclmpcbkpgj.supabase.co";
 const ANON_KEY = "sb_publishable_0xEgmVLQ_fm_XrYMaiF8_Q_z4OyxWpC";
-// service_role key برای ادمین — این رو از Supabase > Settings > API بگیر
-// و جای YOUR_SERVICE_ROLE_KEY بذار
 const SERVICE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3Ynl4amh5cnJjbG1wY2JrcGdqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MDA0MjM1MywiZXhwIjoyMDk1NjE4MzUzfQ.TkwxuDCxx5KfMXBElT9emglmO5EcAng0juGghhAj1Eo";
-// رمز ورود ادمین — هر چیزی که می‌خوای بذار
 const ADMIN_PASS = "mahdi1111";
+const BOT_TOKEN = "8767855704:AAEir-uPTLu3w1wdtKteDSBSeoT_XPStz4I";
 
 let adminUnlocked = false;
+let allUsers = [];
 
-// ─── Supabase fetch ────────────────────────────────────
-async function db(method, path, data=null){
-  const key = adminUnlocked ? SERVICE_KEY : ANON_KEY;
-  const r = await fetch(`${SB}/rest/v1/${path}`,{
-    method, headers:{"apikey":key,"Authorization":`Bearer ${key}`,"Content-Type":"application/json","Prefer":"return=representation"},
-    body: data ? JSON.stringify(data) : null
-  });
-  if(!r.ok){ console.error('DB error:', r.status, await r.text()); return null; }
-  const t = await r.text();
-  return t ? JSON.parse(t) : [];
+// ─── CHECK ADMIN MODE ──────────────────────────────────────
+const urlParams = new URLSearchParams(window.location.search);
+const isAdminMode = urlParams.get('admin') === '1';
+
+if(isAdminMode) {
+    document.getElementById('formScreen').style.display = 'none';
+    document.getElementById('adminLoginScreen').style.display = 'flex';
+    document.getElementById('adminScreen').style.display = 'none';
+} else {
+    document.getElementById('formScreen').style.display = 'block';
+    document.getElementById('adminLoginScreen').style.display = 'none';
+    document.getElementById('adminScreen').style.display = 'none';
 }
 
-// ─── Check if admin mode ───────────────────────────────
-const isAdmin = new URLSearchParams(window.location.search).get('admin') === '1';
-if(isAdmin){
-  document.getElementById('formScreen').classList.remove('show');
-  document.getElementById('adminLoginScreen').classList.add('show');
+// ─── SUPABASE ──────────────────────────────────────────────
+async function db(method, path, data=null, useService=false) {
+    const key = (useService || adminUnlocked) ? SERVICE_KEY : ANON_KEY;
+    try {
+        const res = await fetch(`${SB_URL}/rest/v1/${path}`, {
+            method,
+            headers: {
+                "apikey": key,
+                "Authorization": `Bearer ${key}`,
+                "Content-Type": "application/json",
+                "Prefer": "return=representation"
+            },
+            body: data ? JSON.stringify(data) : null
+        });
+        if(!res.ok) {
+            console.error('DB error:', res.status);
+            return null;
+        }
+        const text = await res.text();
+        return text ? JSON.parse(text) : [];
+    } catch(e) {
+        console.error('DB exception:', e);
+        return null;
+    }
 }
 
-function tryAdminLogin(){
-  const pass = document.getElementById('adminPassInput').value;
-  if(pass === ADMIN_PASS){
-    adminUnlocked = true;
-    document.getElementById('adminLoginScreen').classList.remove('show');
-    document.getElementById('adminScreen').classList.add('show');
-    loadDash();
-  } else {
-    document.getElementById('loginErr').style.display='block';
-    document.getElementById('adminPassInput').value='';
-  }
+// ─── ADMIN LOGIN ───────────────────────────────────────────
+async function tryAdminLogin() {
+    const pass = document.getElementById('adminPassInput').value;
+    if(pass === ADMIN_PASS) {
+        adminUnlocked = true;
+        document.getElementById('adminLoginScreen').style.display = 'none';
+        document.getElementById('adminScreen').style.display = 'block';
+        await loadDash();
+        await loadUsers();
+        await loadReqs();
+        await loadTxs();
+        await loadReports();
+        await loadTickets();
+        await loadBanned();
+        toast('✅ وارد پنل مدیریت شدید');
+    } else {
+        document.getElementById('loginErr').style.display = 'block';
+        document.getElementById('adminPassInput').value = '';
+    }
 }
 
-// ─── FORM LOGIC ───────────────────────────────────────
+// ─── TOAST ─────────────────────────────────────────────────
+function toast(msg, color='var(--gold)') {
+    const t = document.getElementById('toast');
+    t.innerHTML = `<span style="color:${color}">${msg}</span>`;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+function om(id) { document.getElementById(id).classList.add('show'); }
+function cm(id) { document.getElementById(id).classList.remove('show'); }
+function fd(d) { return d ? new Date(d).toLocaleDateString('fa-IR',{month:'short',day:'numeric'}) : '—'; }
+
+// ─── TABS ──────────────────────────────────────────────────
+function atab(name, el) {
+    document.querySelectorAll('.atab').forEach(t => t.classList.remove('on'));
+    document.querySelectorAll('.adm-page').forEach(p => p.classList.remove('show'));
+    el.classList.add('on');
+    document.getElementById('ap-'+name).classList.add('show');
+    const loaders = {users:loadUsers, reqs:loadReqs, txs:loadTxs, reports:loadReports, tickets:loadTickets, banned:loadBanned};
+    if(loaders[name]) loaders[name]();
+}
+
+// ─── DASHBOARD ─────────────────────────────────────────────
+async function loadDash() {
+    const [users, reqs, txs, banned, tickets, reports] = await Promise.all([
+        db('GET','users?select=id', null, true),
+        db('GET','requests?select=id,location,property_type,unique_code,created_at,user_id&order=created_at.desc&limit=50', null, true),
+        db('GET','transactions?select=amount,type', null, true),
+        db('GET','banned_users?select=id', null, true),
+        db('GET','tickets?select=id,status', null, true),
+        db('GET','reports?select=id,status', null, true)
+    ]);
+    
+    const revenue = (txs||[]).filter(t=>t.type==='deduct').reduce((s,t)=>s+Math.abs(t.amount),0);
+    const openTickets = (tickets||[]).filter(t=>t.status==='open').length;
+    const pendingReports = (reports||[]).filter(r=>r.status==='pending').length;
+    
+    document.getElementById('statGrid').innerHTML = `
+        <div class="stat"><div class="stat-val" style="color:var(--blue)">${(users||[]).length}</div><div class="stat-lbl">👥 کاربران</div></div>
+        <div class="stat"><div class="stat-val" style="color:var(--gold)">${(reqs||[]).length}</div><div class="stat-lbl">📋 درخواست‌ها</div></div>
+        <div class="stat"><div class="stat-val" style="color:var(--green)">${revenue.toLocaleString('fa')}</div><div class="stat-lbl">💰 درآمد (ت)</div></div>
+        <div class="stat"><div class="stat-val" style="color:var(--red)">${(banned||[]).length}</div><div class="stat-lbl">🚫 بن‌شده‌ها</div></div>
+        <div class="stat"><div class="stat-val" style="color:var(--orange)">${openTickets}</div><div class="stat-lbl">🎫 تیکت باز</div></div>
+        <div class="stat"><div class="stat-val" style="color:var(--red)">${pendingReports}</div><div class="stat-lbl">🚨 شکایت در انتظار</div></div>
+    `;
+    
+    const recent = (reqs||[]).slice(0,8);
+    document.getElementById('recentReqs').innerHTML = `
+        <div class="ch"><div class="ci">📋</div><span class="ct">آخرین درخواست‌ها</span></div>
+        ${recent.length ? recent.map(r=>`
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:.75rem">
+                <div><span style="color:var(--gold);font-size:.7rem">${r.unique_code}</span><span style="color:var(--text2);margin-right:6px">${r.location||'—'} · ${r.property_type||'—'}</span></div>
+                <span style="color:var(--text3);font-size:.65rem">${fd(r.created_at)}</span>
+            </div>
+        `).join('') : '<div class="empty"><div class="empty-icon">📭</div><p>درخواستی ثبت نشده</p></div>'}
+    `;
+}
+
+// ─── USERS ─────────────────────────────────────────────────
+async function loadUsers() {
+    const [users, banned] = await Promise.all([
+        db('GET','users?select=*&order=created_at.desc', null, true),
+        db('GET','banned_users?select=user_id', null, true)
+    ]);
+    allUsers = users||[];
+    const bannedIds = (banned||[]).map(b=>b.user_id);
+    renderUsers(allUsers, bannedIds);
+}
+
+function filterU(q) {
+    const bannedIds = [];
+    renderUsers(allUsers.filter(u=>(u.full_name||'').includes(q)||(u.username||'').includes(q)||(u.phone||'').includes(q)), bannedIds);
+}
+
+function renderUsers(users, bannedIds=[]) {
+    document.getElementById('uTbl').innerHTML = users.length ? users.map(u=>`
+        <tr>
+            <td>${u.full_name||'—'}<br><span style="color:var(--text2);font-size:.65rem">${u.username?'@'+u.username:''}</span></td>
+            <td><code style="font-size:.68rem">${u.phone||'—'}</code></td>
+            <td style="color:var(--gold)">${(u.wallet||0).toLocaleString('fa')} ت</td>
+            <td>${bannedIds.includes(u.id)?'<span class="bdg bdg-r">بن</span>':'<span class="bdg bdg-g">فعال</span>'}</td>
+            <td style="display:flex;gap:4px;flex-wrap:wrap">
+                <button class="ab ab-gold" onclick="openWallet(${u.id},'${(u.full_name||u.username||u.id).replace(/'/g,"\\'")}')">💰 شارژ</button>
+                ${bannedIds.includes(u.id) ? `<button class="ab ab-g" onclick="doUnban(${u.id})">رفع بن</button>` : `<button class="ab ab-r" onclick="openBan(${u.id})">بن</button>`}
+            </td>
+        </tr>
+    `).join('') : '<tr><td colspan="5" style="text-align:center;padding:24px">کاربری یافت نشد</td></tr>';
+}
+
+// ─── REQUESTS ──────────────────────────────────────────────
+async function loadReqs() {
+    const data = await db('GET','requests?select=id,unique_code,location,property_type,budget&order=created_at.desc', null, true);
+    document.getElementById('rTbl').innerHTML = (data||[]).length ? data.map(r=>`
+        <tr>
+            <td><code style="color:var(--gold);font-size:.7rem">${r.unique_code}</code></td>
+            <td>${r.location||'—'}</td>
+            <td>${r.property_type||'—'}</td>
+            <td>${r.budget||'—'}</td>
+            <td><button class="ab ab-r" onclick="delReq(${r.id})">🗑</button></td>
+        </tr>
+    `).join('') : '<tr><td colspan="5" style="text-align:center;padding:24px">درخواستی یافت نشد</td></tr>';
+}
+
+async function delReq(id) {
+    if(!confirm('این درخواست حذف شود؟')) return;
+    await db('DELETE',`requests?id=eq.${id}`, null, true);
+    toast('✅ درخواست حذف شد');
+    loadReqs();
+}
+
+// ─── TRANSACTIONS ──────────────────────────────────────────
+async function loadTxs() {
+    const data = await db('GET','transactions?select=*,users(full_name,username)&order=created_at.desc&limit=100', null, true);
+    document.getElementById('txTbl').innerHTML = (data||[]).length ? data.map(t=>`
+        <tr>
+            <td>${t.users?.full_name||t.users?.username||t.user_id}</td>
+            <td style="color:${t.amount>0?'var(--green)':'var(--red)'};font-weight:600">${t.amount>0?'+':''}${(t.amount||0).toLocaleString('fa')} ت</td>
+            <td><span class="bdg ${t.type==='deduct'?'bdg-r':'bdg-g'}">${t.type==='deduct'?'کسر':'شارژ'}</span></td>
+            <td>${t.description||'—'}</td>
+        </tr>
+    `).join('') : '<tr><td colspan="4" style="text-align:center;padding:24px">تراکنشی یافت نشد</td></tr>';
+}
+
+// ─── REPORTS ───────────────────────────────────────────────
+async function loadReports() {
+    const data = await db('GET','reports?select=*,users!reports_reporter_id_fkey(full_name,username)&order=created_at.desc', null, true);
+    document.getElementById('rpTbl').innerHTML = (data||[]).length ? data.map(r=>`
+        <tr>
+            <td>${r.users?.full_name||r.users?.username||r.reporter_id}</td>
+            <td>${r.reported_id}</td>
+            <td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.reason||'—'}</td>
+            <td><span class="bdg ${r.status==='pending'?'bdg-o':r.status==='resolved'?'bdg-g':'bdg-r'}">${r.status==='pending'?'در انتظار':r.status==='resolved'?'حل‌شده':'رد'}</span></td>
+            <td>${r.status==='pending'?`<button class="ab ab-b" onclick="openReport(${r.id},${r.reported_id},'${(r.reason||'').replace(/'/g,"\\'")}')">بررسی</button>`:'—'}</td>
+        </tr>
+    `).join('') : '<tr><td colspan="5" style="text-align:center;padding:24px">شکایتی یافت نشد</td></tr>';
+}
+
+// ─── TICKETS ───────────────────────────────────────────────
+async function loadTickets() {
+    const data = await db('GET','tickets?select=*,users(full_name,username)&order=created_at.desc', null, true);
+    document.getElementById('tkTbl').innerHTML = (data||[]).length ? data.map(t=>`
+        <tr>
+            <td>${t.users?.full_name||t.users?.username||t.user_id}</td>
+            <td style="max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.subject||'—'}</td>
+            <td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.message||'—'}</td>
+            <td><span class="bdg ${t.status==='open'?'bdg-o':'bdg-g'}">${t.status==='open'?'باز':'بسته'}</span></td>
+            <td>${t.status==='open'?`<button class="ab ab-b" onclick="openTicket(${t.id},${t.user_id},'${(t.message||'').replace(/'/g,"\\'").replace(/\n/g,' ')}')">پاسخ</button>`:'—'}</td>
+        </tr>
+    `).join('') : '<tr><td colspan="5" style="text-align:center;padding:24px">تیکتی یافت نشد</td></tr>';
+}
+
+// ─── BANNED ────────────────────────────────────────────────
+async function loadBanned() {
+    const data = await db('GET','banned_users?select=*,users(full_name,username)&order=created_at.desc', null, true);
+    document.getElementById('bnTbl').innerHTML = (data||[]).length ? data.map(b=>`
+        <tr>
+            <td>${b.users?.full_name||b.users?.username||b.user_id}</td>
+            <td>${b.reason||'—'}</td>
+            <td><button class="ab ab-g" onclick="doUnban(${b.user_id})">رفع بن</button></td>
+        </tr>
+    `).join('') : '<tr><td colspan="3" style="text-align:center;padding:24px">کاربر بن‌شده‌ای وجود ندارد</td></tr>';
+}
+
+// ─── MODAL ACTIONS ─────────────────────────────────────────
+function openBan(id) {
+    document.getElementById('mBanId').value = id;
+    document.getElementById('mBanReason').value = '';
+    om('mBan');
+}
+
+async function doBan() {
+    const id = document.getElementById('mBanId').value;
+    const reason = document.getElementById('mBanReason').value;
+    if(!reason.trim()) { alert('دلیل بن را وارد کنید'); return; }
+    tg.sendData(JSON.stringify({type:'admin_action', action:'ban_user', user_id:parseInt(id), reason}));
+    cm('mBan');
+    toast('🚫 درخواست بن ارسال شد');
+}
+
+async function doUnban(id) {
+    tg.sendData(JSON.stringify({type:'admin_action', action:'unban_user', user_id:id}));
+    toast('✅ درخواست رفع بن ارسال شد');
+}
+
+function openWallet(id, name) {
+    document.getElementById('mWalletId').value = id;
+    document.getElementById('mWalletName').value = name;
+    document.getElementById('mWalletAmt').value = '';
+    om('mWallet');
+}
+
+async function doCharge() {
+    const id = parseInt(document.getElementById('mWalletId').value);
+    const amt = parseInt(document.getElementById('mWalletAmt').value);
+    if(!amt || amt<=0) { alert('مبلغ معتبر وارد کنید'); return; }
+    tg.sendData(JSON.stringify({type:'admin_action', action:'charge_wallet', user_id:id, amount:amt}));
+    cm('mWallet');
+    toast(`✅ درخواست شارژ ${amt.toLocaleString('fa')} تومان ارسال شد`);
+}
+
+function openTicket(id, uid, msg) {
+    document.getElementById('mTkId').value = id;
+    document.getElementById('mTkUid').value = uid;
+    document.getElementById('mTkMsg').value = msg;
+    document.getElementById('mTkReply').value = '';
+    om('mTicket');
+}
+
+async function doTicketReply() {
+    const id = document.getElementById('mTkId').value;
+    const uid = document.getElementById('mTkUid').value;
+    const reply = document.getElementById('mTkReply').value;
+    if(!reply.trim()) { alert('پاسخ را وارد کنید'); return; }
+    tg.sendData(JSON.stringify({type:'admin_action', action:'reply_ticket', ticket_id:parseInt(id), user_id:parseInt(uid), reply}));
+    cm('mTicket');
+    toast('✅ پاسخ ارسال شد');
+}
+
+function openReport(id, uid, reason) {
+    document.getElementById('mRpId').value = id;
+    document.getElementById('mRpUid').value = uid;
+    document.getElementById('mRpReason').value = reason;
+    om('mReport');
+}
+
+async function doBanReport() {
+    const uid = document.getElementById('mRpUid').value;
+    tg.sendData(JSON.stringify({type:'admin_action', action:'ban_user', user_id:parseInt(uid), reason:'بن از طریق شکایت'}));
+    cm('mReport');
+    toast('🚫 درخواست بن ارسال شد');
+}
+
+async function doResolve() {
+    const rid = document.getElementById('mRpId').value;
+    // اینجا می‌تونی وضعیت شکایت رو تغییر بدی
+    await db('PATCH',`reports?id=eq.${rid}`,{status:'dismissed'}, true);
+    cm('mReport');
+    toast('شکایت رد شد');
+    loadReports();
+}
+
+// ─── FORM LOGIC ────────────────────────────────────────────
 let step = 1;
 document.querySelectorAll('.chip').forEach(c=>c.onclick=()=>c.classList.toggle('on'));
-function chips(){ return [...document.querySelectorAll('.chip.on')].map(c=>c.dataset.v) }
 
-function next(){
-  if(step===1){
-    if(!document.getElementById('loc').value.trim()){alert('موقعیت را وارد کنید');return}
-    if(!document.getElementById('ptype').value){alert('نوع ملک را انتخاب کنید');return}
-  }
-  if(step===2) buildSummary();
-  if(step<3){step++;uiStep()}
-  else submit();
+function chips() { return [...document.querySelectorAll('.chip.on')].map(c=>c.dataset.v); }
+
+function next() {
+    if(step===1){
+        if(!document.getElementById('loc').value.trim()){alert('موقعیت را وارد کنید');return}
+        if(!document.getElementById('ptype').value){alert('نوع ملک را انتخاب کنید');return}
+    }
+    if(step===2) buildSummary();
+    if(step<3){step++;uiStep()}
+    else submit();
 }
+
 function prev(){ if(step>1){step--;uiStep()} }
 
 function uiStep(){
-  const pcts=['33%','66%','100%'];
-  document.getElementById('pf').style.width = pcts[step-1];
-  for(let i=1;i<=3;i++){
-    document.getElementById('pl'+i).className='pl'+(i===step?' on':'');
-    document.getElementById('s'+i).className='sec'+(i===step?' show':'');
-  }
-  document.getElementById('backBtn').style.display = step>1?'flex':'none';
-  document.getElementById('nextBtn').textContent = step===3?'✓ ثبت درخواست':'ادامه ←';
+    const pcts=['33%','66%','100%'];
+    document.getElementById('pf').style.width = pcts[step-1];
+    for(let i=1;i<=3;i++){
+        document.getElementById('pl'+i).className='pl'+(i===step?' on':'');
+        document.getElementById('s'+i).className='sec'+(i===step?' show':'');
+    }
+    document.getElementById('backBtn').style.display = step>1?'flex':'none';
+    document.getElementById('nextBtn').textContent = step===3?'✓ ثبت درخواست':'ادامه ←';
 }
 
 function buildSummary(){
-  const rows=[
-    ['موقعیت',document.getElementById('loc').value||'—'],
-    ['نوع ملک',document.getElementById('ptype').value||'—'],
-    ['هدف',document.getElementById('purp').value],
-    ['بودجه',(document.getElementById('bmin').value||'۰')+' تا '+(document.getElementById('bmax').value||'∞')+' میلیون'],
-    ['متراژ',(document.getElementById('amin').value||'۰')+' تا '+(document.getElementById('amax').value||'∞')+' متر'],
-    ['اتاق',document.getElementById('rooms').value],
-    ['طبقه',document.getElementById('floor').value],
-    ['الزامات',chips().join('، ')||'—'],
-  ];
-  document.getElementById('summary').innerHTML = rows.map(r=>
-    `<div class="sr"><span class="sk">${r[0]}</span><span class="sv">${r[1]}</span></div>`
-  ).join('');
+    const rows=[
+        ['موقعیت',document.getElementById('loc').value||'—'],
+        ['نوع ملک',document.getElementById('ptype').value||'—'],
+        ['هدف',document.getElementById('purp').value],
+        ['بودجه',(document.getElementById('bmin').value||'۰')+' تا '+(document.getElementById('bmax').value||'∞')+' میلیون'],
+        ['متراژ',(document.getElementById('amin').value||'۰')+' تا '+(document.getElementById('amax').value||'∞')+' متر'],
+        ['اتاق',document.getElementById('rooms').value],
+        ['طبقه',document.getElementById('floor').value],
+        ['الزامات',chips().join('، ')||'—'],
+    ];
+    document.getElementById('summary').innerHTML = rows.map(r=>`<div class="sr"><span class="sk">${r[0]}</span><span class="sv">${r[1]}</span></div>`).join('');
 }
 
 function submit(){
-  const data={
-    location:document.getElementById('loc').value,
-    property_type:document.getElementById('ptype').value,
-    purpose:document.getElementById('purp').value,
-    budget:document.getElementById('bmin').value+'-'+document.getElementById('bmax').value+' میلیون تومان',
-    area:document.getElementById('amin').value+'-'+document.getElementById('amax').value+' متر',
-    rooms:document.getElementById('rooms').value,
-    floor:document.getElementById('floor').value,
-    requirements:chips(),
-    description:document.getElementById('desc').value,
-  };
-  try{
+    const data={
+        location:document.getElementById('loc').value,
+        property_type:document.getElementById('ptype').value,
+        purpose:document.getElementById('purp').value,
+        budget:document.getElementById('bmin').value+'-'+document.getElementById('bmax').value+' میلیون تومان',
+        area:document.getElementById('amin').value+'-'+document.getElementById('amax').value+' متر',
+        rooms:document.getElementById('rooms').value,
+        floor:document.getElementById('floor').value,
+        requirements:chips(),
+        description:document.getElementById('desc').value,
+    };
     tg.sendData(JSON.stringify(data));
     document.querySelector('.hero').style.display='none';
     document.querySelector('.prog-wrap').style.display='none';
     document.querySelectorAll('.sec').forEach(s=>s.classList.remove('show'));
     document.getElementById('formBot').style.display='none';
     document.getElementById('succScreen').classList.add('show');
-  }catch(e){ alert('خطا: '+e.message) }
-}
-
-// ─── ADMIN PANEL ──────────────────────────────────────
-function atab(name, el){
-  document.querySelectorAll('.atab').forEach(t=>t.classList.remove('on'));
-  document.querySelectorAll('.adm-page').forEach(p=>p.classList.remove('show'));
-  el.classList.add('on');
-  document.getElementById('ap-'+name).classList.add('show');
-  const loaders={users:loadUsers,reqs:loadReqs,txs:loadTxs,reports:loadReports,tickets:loadTickets,banned:loadBanned};
-  if(loaders[name]) loaders[name]();
-}
-
-function toast(msg,c='var(--green)'){
-  const t=document.getElementById('toast');
-  t.innerHTML=`<span style="color:${c}">${msg}</span>`;
-  t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),2800);
-}
-
-function om(id){ document.getElementById(id).classList.add('show') }
-function cm(id){ document.getElementById(id).classList.remove('show') }
-function fd(d){ return d ? new Date(d).toLocaleDateString('fa-IR',{month:'short',day:'numeric'}) : '—' }
-
-// ── DASHBOARD ──
-async function loadDash(){
-  document.getElementById('statGrid').innerHTML = `<div style="color:var(--text2);font-size:.8rem;padding:12px;text-align:center;grid-column:1/-1">در حال بارگذاری...</div>`;
-  const [users,reqs,txs,banned,tickets,reports] = await Promise.all([
-    db('GET','users?select=id'),
-    db('GET','requests?select=id,location,property_type,unique_code,created_at,users(full_name,username)&order=created_at.desc&limit=50'),
-    db('GET','transactions?select=amount,type'),
-    db('GET','banned_users?select=id'),
-    db('GET','tickets?select=id,status'),
-    db('GET','reports?select=id,status'),
-  ]);
-  const revenue = (txs||[]).filter(t=>t.amount<0).reduce((s,t)=>s+Math.abs(t.amount),0);
-  const openTickets = (tickets||[]).filter(t=>t.status==='open').length;
-  const pendingReports = (reports||[]).filter(r=>r.status==='pending').length;
-  document.getElementById('statGrid').innerHTML=`
-    <div class="stat"><div class="stat-val" style="color:var(--blue)">${(users||[]).length}</div><div class="stat-lbl">کاربران ربات</div></div>
-    <div class="stat"><div class="stat-val" style="color:var(--gold)">${(reqs||[]).length}</div><div class="stat-lbl">کل درخواست‌ها</div></div>
-    <div class="stat"><div class="stat-val" style="color:var(--green)">${revenue.toLocaleString('fa')}</div><div class="stat-lbl">درآمد (ت)</div></div>
-    <div class="stat"><div class="stat-val" style="color:var(--red)">${(banned||[]).length}</div><div class="stat-lbl">بن‌شده‌ها</div></div>
-    <div class="stat"><div class="stat-val" style="color:#f59e0b">${openTickets}</div><div class="stat-lbl">تیکت باز</div></div>
-    <div class="stat"><div class="stat-val" style="color:#ef4444">${pendingReports}</div><div class="stat-lbl">شکایت در انتظار</div></div>
-  `;
-  if(users===null){
-    document.getElementById('statGrid').innerHTML += `<div style="color:#ef4444;font-size:.75rem;grid-column:1/-1;text-align:center;padding:8px">⚠️ خطا در اتصال به دیتابیس — Service Role Key را بررسی کن</div>`;
-  }
-  const recent = (reqs||[]).slice(0,10);
-  document.getElementById('recentReqs').innerHTML = `
-    <div class="ch"><div class="ci">📋</div><span class="ct">آخرین درخواست‌ها (${(reqs||[]).length} مورد)</span></div>
-    ${recent.length ? recent.map(r=>`
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:.75rem">
-        <div>
-          <span style="color:var(--gold);font-size:.7rem">${r.unique_code}</span>
-          <span style="color:var(--text2);margin-right:6px">${r.location||'—'} · ${r.property_type||'—'}</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:6px">
-          <span style="color:var(--text2)">${r.users?.full_name||r.users?.username||'—'}</span>
-          <span style="color:var(--text3);font-size:.65rem">${fd(r.created_at)}</span>
-        </div>
-      </div>
-    `).join('') : '<div class="empty"><div class="empty-icon">📭</div><p>درخواستی ثبت نشده</p></div>'}
-  `;
-}
-
-// ── USERS ──
-let allUsers=[];
-async function loadUsers(){
-  const [users,banned] = await Promise.all([
-    db('GET','users?select=*&order=created_at.desc'),
-    db('GET','banned_users?select=user_id')
-  ]);
-  allUsers = users||[];
-  const bannedIds = (banned||[]).map(b=>b.user_id);
-  renderUsers(allUsers, bannedIds);
-}
-function filterU(q){
-  const bannedIds=[];
-  renderUsers(allUsers.filter(u=>(u.full_name||'').includes(q)||(u.username||'').includes(q)||(u.phone||'').includes(q)), bannedIds);
-}
-function renderUsers(users, bannedIds=[]){
-  document.getElementById('uTbl').innerHTML = users.length ? users.map(u=>`
-    <tr>
-      <td>${u.full_name||'—'}<br><span style="color:var(--text2);font-size:.65rem">${u.username?'@'+u.username:''}</span></td>
-      <td><code style="font-size:.68rem">${u.phone||'—'}</code></td>
-      <td>${(u.wallet||0).toLocaleString('fa')} ت</td>
-      <td>${bannedIds.includes(u.id)?'<span class="bdg bdg-r">بن</span>':'<span class="bdg bdg-g">فعال</span>'}</td>
-      <td style="display:flex;gap:4px;flex-wrap:wrap">
-        <button class="ab ab-gold" onclick="openWallet(${u.id},'${u.full_name||u.username||u.id}')">💰</button>
-        ${bannedIds.includes(u.id)
-          ?`<button class="ab ab-g" onclick="doUnban(${u.id})">رفع بن</button>`
-          :`<button class="ab ab-r" onclick="openBan(${u.id})">بن</button>`}
-      </td>
-    </tr>
-  `).join('') : '<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--text2)">کاربری یافت نشد</td></tr>';
-}
-
-// ── REQUESTS ──
-async function loadReqs(){
-  const data = await db('GET','requests?select=*,users(full_name,username)&order=created_at.desc');
-  document.getElementById('rTbl').innerHTML = (data||[]).length ? data.map(r=>`
-    <tr>
-      <td><code style="color:var(--gold);font-size:.7rem">${r.unique_code}</code></td>
-      <td>${r.location||'—'}</td>
-      <td>${r.property_type||'—'}</td>
-      <td>${r.budget||'—'}</td>
-      <td><button class="ab ab-r" onclick="delReq(${r.id})">🗑</button></td>
-    </tr>
-  `).join('') : '<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--text2)">درخواستی یافت نشد</td></tr>';
-}
-async function delReq(id){ if(!confirm('حذف شود؟'))return; await db('DELETE',`requests?id=eq.${id}`); toast('✅ حذف شد'); loadReqs(); }
-
-// ── TXS ──
-async function loadTxs(){
-  const data = await db('GET','transactions?select=*,users(full_name,username)&order=created_at.desc&limit=50');
-  document.getElementById('txTbl').innerHTML = (data||[]).length ? data.map(t=>`
-    <tr>
-      <td>${t.users?.full_name||t.users?.username||t.user_id}</td>
-      <td style="color:${t.amount>0?'var(--green)':'var(--red)'};font-weight:600">${t.amount>0?'+':''}${t.amount.toLocaleString('fa')} ت</td>
-      <td><span class="bdg ${t.type==='deduct'?'bdg-r':'bdg-g'}">${t.type==='deduct'?'کسر':'شارژ'}</span></td>
-      <td>${t.description||'—'}</td>
-    </tr>
-  `).join('') : '<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--text2)">تراکنشی یافت نشد</td></tr>';
-}
-
-// ── REPORTS ──
-async function loadReports(){
-  const data = await db('GET','reports?select=*&order=created_at.desc');
-  document.getElementById('rpTbl').innerHTML = (data||[]).length ? data.map(r=>`
-    <tr>
-      <td>${r.reporter_id}</td>
-      <td>${r.reported_id}</td>
-      <td style="max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.reason||'—'}</td>
-      <td><span class="bdg ${r.status==='pending'?'bdg-o':r.status==='resolved'?'bdg-g':'bdg-r'}">${r.status==='pending'?'در انتظار':r.status==='resolved'?'حل‌شده':'رد'}</span></td>
-      <td>${r.status==='pending'?`<button class="ab ab-b" onclick="openReport(${r.id},${r.reported_id},'${(r.reason||'').replace(/'/g,"\\'")}')">بررسی</button>`:'—'}</td>
-    </tr>
-  `).join('') : '<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--text2)">شکایتی یافت نشد</td></tr>';
-}
-
-// ── TICKETS ──
-async function loadTickets(){
-  const data = await db('GET','tickets?select=*,users(full_name,username)&order=created_at.desc');
-  document.getElementById('tkTbl').innerHTML = (data||[]).length ? data.map(t=>`
-    <tr>
-      <td>${t.users?.full_name||t.users?.username||t.user_id}</td>
-      <td>${t.subject||'—'}</td>
-      <td style="max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.message||'—'}</td>
-      <td><span class="bdg ${t.status==='open'?'bdg-o':'bdg-g'}">${t.status==='open'?'باز':'بسته'}</span></td>
-      <td>${t.status==='open'?`<button class="ab ab-b" onclick="openTicket(${t.id},${t.user_id},'${(t.message||'').replace(/'/g,"\\'")}')">پاسخ</button>`:'—'}</td>
-    </tr>
-  `).join('') : '<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--text2)">تیکتی یافت نشد</td></tr>';
-}
-
-// ── BANNED ──
-async function loadBanned(){
-  const data = await db('GET','banned_users?select=*,users(full_name,username)&order=created_at.desc');
-  document.getElementById('bnTbl').innerHTML = (data||[]).length ? data.map(b=>`
-    <tr>
-      <td>${b.users?.full_name||b.users?.username||b.user_id}</td>
-      <td>${b.reason||'—'}</td>
-      <td><button class="ab ab-g" onclick="doUnban(${b.user_id})">رفع بن</button></td>
-    </tr>
-  `).join('') : '<tr><td colspan="3" style="text-align:center;padding:20px;color:var(--text2)">کاربر بن‌شده‌ای وجود ندارد</td></tr>';
-}
-
-// ── MODAL ACTIONS ──
-function openBan(id){ document.getElementById('mBanId').value=id; document.getElementById('mBanReason').value=''; om('mBan') }
-async function doBan(){
-  const id=document.getElementById('mBanId').value;
-  const reason=document.getElementById('mBanReason').value;
-  if(!reason.trim()){alert('دلیل بن را وارد کنید');return}
-  tg.sendData(JSON.stringify({type:'admin_action',action:'ban_user',user_id:parseInt(id),reason}));
-  cm('mBan'); toast('🚫 درخواست بن ارسال شد');
-}
-async function doUnban(id){
-  await db('DELETE',`banned_users?user_id=eq.${id}`);
-  toast('✅ بن رفع شد','var(--green)');
-  loadUsers(); loadBanned();
-}
-function openWallet(id,name){ document.getElementById('mWalletId').value=id; document.getElementById('mWalletName').value=name; document.getElementById('mWalletAmt').value=''; om('mWallet') }
-async function doCharge(){
-  const id=parseInt(document.getElementById('mWalletId').value);
-  const amt=parseInt(document.getElementById('mWalletAmt').value);
-  if(!amt||amt<=0){alert('مبلغ معتبر وارد کنید');return}
-  const u=await db('GET',`users?id=eq.${id}&select=wallet`);
-  const cur=(u?.[0]?.wallet||0);
-  await db('PATCH',`users?id=eq.${id}`,{wallet:cur+amt});
-  await db('POST','transactions',{user_id:id,amount:amt,type:'charge',description:'شارژ توسط ادمین'});
-  cm('mWallet'); toast(`✅ ${amt.toLocaleString('fa')} تومان شارژ شد`);
-  loadUsers();
-}
-function openTicket(id,uid,msg){ document.getElementById('mTkId').value=id; document.getElementById('mTkUid').value=uid; document.getElementById('mTkMsg').value=msg; document.getElementById('mTkReply').value=''; om('mTicket') }
-async function doTicketReply(){
-  const id=document.getElementById('mTkId').value;
-  const uid=document.getElementById('mTkUid').value;
-  const reply=document.getElementById('mTkReply').value;
-  if(!reply.trim()){alert('پاسخ را وارد کنید');return}
-  await db('PATCH',`tickets?id=eq.${id}`,{admin_reply:reply,status:'closed'});
-  tg.sendData(JSON.stringify({type:'admin_action',action:'reply_ticket',ticket_id:parseInt(id),user_id:parseInt(uid),reply}));
-  cm('mTicket'); toast('✅ پاسخ ارسال شد');
-  loadTickets();
-}
-function openReport(id,uid,reason){ document.getElementById('mRpId').value=id; document.getElementById('mRpUid').value=uid; document.getElementById('mRpReason').value=reason; om('mReport') }
-async function doBanReport(){
-  const rid=document.getElementById('mRpId').value;
-  const uid=document.getElementById('mRpUid').value;
-  await db('POST','banned_users',{user_id:parseInt(uid),reason:'بن از طریق شکایت'});
-  await db('PATCH',`reports?id=eq.${rid}`,{status:'resolved'});
-  cm('mReport'); toast('🚫 کاربر بن و شکایت حل شد');
-  loadReports();
-}
-async function doResolve(){
-  const rid=document.getElementById('mRpId').value;
-  await db('PATCH',`reports?id=eq.${rid}`,{status:'dismissed'});
-  cm('mReport'); toast('شکایت رد شد','var(--text2)');
-  loadReports();
 }
 </script>
 </body>
