@@ -355,15 +355,47 @@ async function loadChannel() {
 }
 
 // USERS
+// جایگزین تابع loadUsers
 async function loadUsers() {
-    const [users, banned] = await Promise.all([db('GET','users?select=*&order=created_at.desc', null, true), db('GET','banned_users?select=user_id', null, true)]);
-    allUsers = users||[];
-    const bannedIds = (banned||[]).map(b=>b.user_id);
-    renderUsers(allUsers, bannedIds);
+    try {
+        const [users, banned] = await Promise.all([
+            db('GET','users?select=*&order=created_at.desc', null, true),
+            db('GET','banned_users?select=user_id', null, true)
+        ]);
+        if (!users || users === null) {
+            console.error('خطا در دریافت کاربران');
+            document.getElementById('uTbl').innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--red)">⚠️ خطا در اتصال به دیتابیس. Service Role Key را بررسی کنید.</td></tr>';
+            return;
+        }
+        allUsers = users;
+        const bannedIds = (banned||[]).map(b=>b.user_id);
+        renderUsers(allUsers, bannedIds);
+    } catch(e) {
+        console.error('loadUsers error:', e);
+        document.getElementById('uTbl').innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--red)">⚠️ خطا: ' + e.message + '</td></tr>';
+    }
 }
 function filterU(q) { renderUsers(allUsers.filter(u=>(u.full_name||'').includes(q)||(u.username||'').includes(q)||(u.phone||'').includes(q)), []); }
+// جایگزین تابع renderUsers
 function renderUsers(users, bannedIds=[]) {
-    document.getElementById('uTbl').innerHTML = users.length ? users.map(u=>`<tr><td>${u.full_name||'—'}<br><span style="color:var(--text2);font-size:.65rem">${u.username?'@'+u.username:''}</span></td><td><code style="font-size:.68rem">${u.phone||'—'}</code></td><td style="color:var(--gold)">${(u.wallet||0).toLocaleString('fa')} ت</td><td>${bannedIds.includes(u.id)?'<span class="bdg bdg-r">بن</span>':'<span class="bdg bdg-g">فعال</span>'}</td><td style="display:flex;gap:4px;flex-wrap:wrap"><button class="ab ab-gold" onclick="openWallet(${u.id},'${(u.full_name||u.username||u.id).replace(/'/g,"\\'")}')">💰 شارژ</button>${bannedIds.includes(u.id) ? `<button class="ab ab-g" onclick="doUnban(${u.id})">رفع بن</button>` : `<button class="ab ab-r" onclick="openBan(${u.id})">بن</button>`}</td></tr>`).join('') : '<tr><td colspan="5" style="text-align:center;padding:24px">کاربری یافت نشد</td></tr>';
+    if (!users || users.length === 0) {
+        document.getElementById('uTbl').innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px">کاربری یافت نشد</td></tr>';
+        return;
+    }
+    document.getElementById('uTbl').innerHTML = users.map(u => `
+        <tr>
+            <td>${u.full_name||'—'}<br><span style="color:var(--text2);font-size:.65rem">${u.username?'@'+u.username:''}</span></td>
+            <td><code style="font-size:.68rem">${u.phone||'—'}</code></td>
+            <td style="color:var(--gold)">${(u.wallet||0).toLocaleString('fa')} ت</td>
+            <td>${bannedIds.includes(u.id)?'<span class="bdg bdg-r">بن</span>':'<span class="bdg bdg-g">فعال</span>'}</td>
+            <td style="display:flex;gap:4px;flex-wrap:wrap">
+                <button class="ab ab-gold" onclick="openWallet(${u.id},'${(u.full_name||u.username||u.id).replace(/'/g,"\\'")}')">💰 شارژ</button>
+                ${bannedIds.includes(u.id) 
+                    ? `<button class="ab ab-g" onclick="doUnban(${u.id})">رفع بن</button>` 
+                    : `<button class="ab ab-r" onclick="openBan(${u.id})">بن</button>`}
+            </td>
+        </tr>
+    `).join('');
 }
 
 // REQUESTS
