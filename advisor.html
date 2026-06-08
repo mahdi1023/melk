@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>پنل مشاور | ملک‌یاب</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --gold:#C9A84C;--gold2:#E8C97A;--gold-dim:rgba(201,168,76,0.12);
+  --bg:#080A0F;--bg2:#0D1017;--s:#111520;--s2:#161B28;
+  --border:rgba(255,255,255,0.07);--border-gold:rgba(201,168,76,0.15);
+  --text:#F0EDE8;--text2:#8A8580;--text3:#3A3530;
+  --green:#2ECC71;--red:#E74C3C;--blue:#3B82F6;--orange:#F59E0B;
+  --r:14px;
+}
+body{font-family:'Vazirmatn',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* ─── SCREEN SYSTEM ─── */
+.screen{display:none!important}
+.screen.show{display:flex!important;flex-direction:column}
+#chatScreen.show{display:flex!important;flex-direction:column;height:100vh}
+
+/* ─── LOGIN ─── */
+#loginScreen{
+  align-items:center;justify-content:center;min-height:100vh;
+  padding:28px 24px;background:var(--bg);
+}
+.login-glow{
+  position:fixed;top:-100px;left:50%;transform:translateX(-50%);
+  width:300px;height:300px;
+  background:radial-gradient(circle,rgba(201,168,76,.06) 0%,transparent 70%);
+  pointer-events:none;
+}
+.login-icon{
+  width:76px;height:76px;border-radius:22px;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:34px;margin-bottom:22px;
+  box-shadow:0 8px 36px rgba(201,168,76,.28);
+}
+.login-title{font-size:1.4rem;font-weight:700;margin-bottom:6px;text-align:center}
+.login-sub{font-size:.8rem;color:var(--text2);margin-bottom:36px;text-align:center;line-height:1.6}
+.login-box{width:100%;max-width:340px}
+.l-label{font-size:.68rem;color:var(--text3);letter-spacing:.4px;text-transform:uppercase;margin-bottom:5px}
+.l-input{
+  width:100%;background:var(--s);border:1px solid var(--border);border-radius:12px;
+  padding:14px 16px;color:var(--text);font-family:'Vazirmatn',sans-serif;
+  font-size:1rem;outline:none;text-align:center;margin-bottom:12px;
+  transition:border-color .2s,box-shadow .2s;direction:ltr;letter-spacing:2px;
+}
+.l-input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.08)}
+.l-btn{
+  width:100%;background:linear-gradient(135deg,var(--gold),var(--gold2));
+  border:none;border-radius:12px;padding:15px;color:#000;
+  font-family:'Vazirmatn',sans-serif;font-size:.95rem;font-weight:700;
+  cursor:pointer;box-shadow:0 4px 20px rgba(201,168,76,.24);transition:all .2s;
+  margin-bottom:10px;
+}
+.l-btn:active{transform:scale(.98)}
+.l-btn:disabled{opacity:.5;cursor:not-allowed}
+.l-btn-ghost{
+  width:100%;background:transparent;border:1px solid var(--border);
+  border-radius:12px;padding:13px;color:var(--text2);
+  font-family:'Vazirmatn',sans-serif;font-size:.85rem;cursor:pointer;transition:all .2s;
+}
+.l-btn-ghost:active{background:var(--s)}
+.l-err{display:none;color:var(--red);font-size:.78rem;text-align:center;margin-bottom:10px;padding:8px;background:rgba(231,76,60,.08);border-radius:8px;border:1px solid rgba(231,76,60,.2)}
+.l-err.show{display:block}
+.l-timer{font-size:.75rem;color:var(--text2);text-align:center;margin-bottom:12px}
+.l-timer span{color:var(--gold);font-weight:600}
+.otp-row{display:flex;gap:8px;margin-bottom:12px}
+.otp-row .l-input{flex:1;font-size:1.2rem;font-weight:700;padding:12px 8px;margin-bottom:0;letter-spacing:4px}
+
+/* ─── MAIN PANEL ─── */
+#mainScreen{min-height:100vh;padding-bottom:70px}
+.panel-header{
+  padding:16px 16px 14px;background:var(--bg2);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:20;
+}
+.ph-left{display:flex;align-items:center;gap:10px}
+.ph-logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-size:16px}
+.ph-title{font-size:1rem;font-weight:700}
+.ph-sub{font-size:.65rem;color:var(--gold);margin-top:1px}
+.ph-logout{padding:7px 13px;border-radius:8px;border:1px solid var(--border);background:var(--s2);color:var(--text2);font-family:'Vazirmatn',sans-serif;font-size:.7rem;cursor:pointer;transition:all .2s}
+.ph-logout:active{background:var(--s)}
+
+/* ─── TABS ─── */
+.tabs{display:flex;gap:6px;padding:14px 14px 0;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{padding:8px 16px;border-radius:99px;border:1px solid var(--border);background:var(--s2);font-size:.74rem;cursor:pointer;color:var(--text2);white-space:nowrap;transition:all .2s;flex-shrink:0}
+.tab.on{background:var(--gold-dim);border-color:var(--gold);color:var(--gold)}
+
+/* ─── TAB PAGES ─── */
+.tab-page{display:none;padding:14px}
+.tab-page.show{display:block;animation:fadeUp .25s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ─── STATS GRID ─── */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.stat-card{background:var(--s);border:1px solid var(--border);border-radius:13px;padding:16px;position:relative;overflow:hidden}
+.stat-card::after{content:'';position:absolute;top:-20px;right:-20px;width:60px;height:60px;background:radial-gradient(circle,rgba(201,168,76,.05) 0%,transparent 70%)}
+.stat-ico{font-size:1.1rem;margin-bottom:8px;opacity:.6}
+.stat-val{font-size:1.7rem;font-weight:700;margin-bottom:2px}
+.stat-lbl{font-size:.63rem;color:var(--text2);letter-spacing:.3px}
+
+/* ─── SECTION TITLE ─── */
+.sec-title{font-size:.68rem;color:var(--text2);letter-spacing:.8px;text-transform:uppercase;margin:14px 0 8px;display:flex;align-items:center;gap:8px}
+.sec-title::before{content:'';width:3px;height:13px;background:var(--gold);border-radius:2px}
+
+/* ─── CONVERSATION CARD ─── */
+.conv-card{
+  background:var(--s);border:1px solid var(--border);border-radius:13px;
+  padding:14px;margin-bottom:10px;cursor:pointer;transition:all .2s;
+  display:flex;align-items:center;gap:12px;
+}
+.conv-card:active{transform:scale(.99)}
+.conv-card.has-unread{border-color:var(--border-gold)}
+.conv-avatar{
+  width:44px;height:44px;border-radius:12px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--s2),var(--s));
+  border:1px solid var(--border);display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;position:relative;
+}
+.unread-dot{
+  position:absolute;top:-3px;right:-3px;width:10px;height:10px;
+  background:var(--gold);border-radius:50%;border:2px solid var(--bg);
+}
+.conv-info{flex:1;min-width:0}
+.conv-name{font-size:.88rem;font-weight:600;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.conv-preview{font-size:.73rem;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.conv-meta{text-align:left;flex-shrink:0}
+.conv-time{font-size:.63rem;color:var(--text3);margin-bottom:4px}
+.conv-badge{
+  display:inline-block;background:var(--gold);color:#000;
+  font-size:.6rem;font-weight:700;padding:2px 7px;border-radius:99px;
+}
+.conv-code{font-size:.65rem;color:var(--gold);font-family:monospace;margin-top:2px}
+
+/* ─── REQUEST CARD ─── */
+.req-card{background:var(--s);border:1px solid var(--border);border-radius:13px;padding:14px;margin-bottom:10px}
+.req-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.req-code{font-size:.75rem;font-family:monospace;color:var(--gold);font-weight:700}
+.req-status{padding:3px 10px;border-radius:99px;font-size:.62rem;font-weight:600;letter-spacing:.3px}
+.req-status.active{background:rgba(46,204,113,.1);color:var(--green);border:1px solid rgba(46,204,113,.2)}
+.req-status.closed{background:rgba(138,133,128,.08);color:var(--text3);border:1px solid var(--border)}
+.req-rows{display:grid;gap:6px}
+.req-row{display:flex;gap:8px;align-items:center;font-size:.78rem}
+.req-icon{opacity:.5;width:16px;text-align:center;flex-shrink:0}
+.req-val{color:var(--text);flex:1}
+.req-actions{display:flex;gap:8px;margin-top:12px}
+.btn-sm{
+  flex:1;padding:9px;border-radius:9px;border:none;
+  font-family:'Vazirmatn',sans-serif;font-size:.78rem;font-weight:600;
+  cursor:pointer;transition:all .2s;
+}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#000}
+.btn-ghost{background:var(--s2);color:var(--text2);border:1px solid var(--border)}
+.btn-ghost:active,.btn-gold:active{transform:scale(.98)}
+
+/* ─── CHAT SCREEN ─── */
+#chatScreen{background:var(--bg)}
+.chat-header{
+  padding:14px 16px;background:var(--bg2);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:12px;
+  position:sticky;top:0;z-index:20;flex-shrink:0;
+}
+.chat-back{
+  width:36px;height:36px;border-radius:9px;background:var(--s);
+  border:1px solid var(--border);display:flex;align-items:center;justify-content:center;
+  font-size:1rem;cursor:pointer;flex-shrink:0;
+}
+.chat-avatar{width:38px;height:38px;border-radius:10px;background:var(--gold-dim);border:1px solid var(--border-gold);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.chat-info{flex:1;min-width:0}
+.chat-name{font-size:.92rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chat-sub{font-size:.65rem;color:var(--text2);margin-top:1px}
+.online-dot{display:inline-block;width:7px;height:7px;background:var(--green);border-radius:50%;margin-left:4px;vertical-align:middle}
+
+/* ─── MESSAGES ─── */
+.chat-body{
+  flex:1;overflow-y:auto;padding:14px;
+  display:flex;flex-direction:column;gap:8px;
+  scroll-behavior:smooth;
+}
+.msg{max-width:80%;display:flex;flex-direction:column;gap:2px}
+.msg.me{align-self:flex-end;align-items:flex-end}
+.msg.them{align-self:flex-start;align-items:flex-start}
+.msg-bubble{
+  padding:10px 14px;border-radius:14px;font-size:.85rem;line-height:1.55;
+  word-break:break-word;position:relative;
+}
+.msg.me .msg-bubble{
+  background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0a0a;
+  border-bottom-right-radius:4px;
+}
+.msg.them .msg-bubble{
+  background:var(--s);border:1px solid var(--border);color:var(--text);
+  border-bottom-left-radius:4px;
+}
+.msg-time{font-size:.6rem;color:var(--text3);padding:0 4px}
+.msg-date-sep{
+  text-align:center;font-size:.65rem;color:var(--text3);
+  padding:10px 0;letter-spacing:.3px;
+}
+.msg-date-sep span{background:var(--bg);padding:3px 10px;border-radius:99px;border:1px solid var(--border)}
+
+/* ─── CHAT INPUT ─── */
+.chat-footer{
+  padding:10px 14px 14px;background:var(--bg2);
+  border-top:1px solid var(--border);flex-shrink:0;
+}
+.chat-input-row{display:flex;gap:8px;align-items:flex-end}
+.chat-input{
+  flex:1;background:var(--s);border:1px solid var(--border);border-radius:12px;
+  padding:11px 14px;color:var(--text);font-family:'Vazirmatn',sans-serif;
+  font-size:.88rem;outline:none;resize:none;max-height:100px;line-height:1.5;
+  transition:border-color .2s;direction:rtl;
+}
+.chat-input:focus{border-color:var(--gold)}
+.chat-send{
+  width:42px;height:42px;border-radius:11px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;transition:all .2s;
+}
+.chat-send:active{transform:scale(.95)}
+.chat-send:disabled{opacity:.4;cursor:not-allowed}
+
+/* ─── BOTTOM NAV ─── */
+.bottom-nav{
+  position:fixed;bottom:0;left:0;right:0;
+  background:var(--bg2);border-top:1px solid var(--border);
+  display:flex;z-index:30;
+}
+.nav-item{
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  padding:10px 4px 12px;cursor:pointer;transition:all .2s;
+  position:relative;
+}
+.nav-item.on .nav-ico{color:var(--gold)}
+.nav-item.on .nav-lbl{color:var(--gold)}
+.nav-ico{font-size:1.2rem;margin-bottom:3px;color:var(--text3);transition:color .2s}
+.nav-lbl{font-size:.6rem;color:var(--text3);letter-spacing:.2px;transition:color .2s}
+.nav-badge{
+  position:absolute;top:6px;right:calc(50% - 18px);
+  width:16px;height:16px;background:var(--gold);border-radius:50%;
+  font-size:.55rem;font-weight:700;color:#000;
+  display:flex;align-items:center;justify-content:center;
+  border:2px solid var(--bg2);
+}
+
+/* ─── PROFILE ─── */
+.profile-card{background:var(--s);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:14px;text-align:center}
+.profile-avatar{width:68px;height:68px;border-radius:18px;background:linear-gradient(135deg,var(--gold-dim),var(--s2));border:1px solid var(--border-gold);display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin:0 auto 12px}
+.profile-name{font-size:1.05rem;font-weight:700;margin-bottom:4px}
+.profile-phone{font-size:.8rem;color:var(--gold);direction:ltr;margin-bottom:12px}
+.profile-badges{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.badge{padding:4px 12px;border-radius:99px;font-size:.65rem;font-weight:600}
+.badge-green{background:rgba(46,204,113,.1);color:var(--green);border:1px solid rgba(46,204,113,.2)}
+.badge-gold{background:var(--gold-dim);color:var(--gold);border:1px solid var(--border-gold)}
+
+.info-rows{display:grid;gap:8px}
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--s);border:1px solid var(--border);border-radius:10px;font-size:.82rem}
+.info-key{color:var(--text2)}
+.info-val{font-weight:600;direction:ltr}
+
+/* ─── EMPTY STATE ─── */
+.empty-state{text-align:center;padding:48px 20px}
+.empty-ico{font-size:2.5rem;margin-bottom:12px;opacity:.4}
+.empty-title{font-size:.95rem;font-weight:600;color:var(--text2);margin-bottom:6px}
+.empty-sub{font-size:.78rem;color:var(--text3);line-height:1.6}
+
+/* ─── LOADING ─── */
+.loading{display:flex;align-items:center;justify-content:center;padding:32px;gap:10px;color:var(--text2);font-size:.82rem}
+.spinner{width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ─── TOAST ─── */
+#toast{
+  position:fixed;bottom:86px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--s);border:1px solid var(--border-gold);border-radius:10px;
+  padding:10px 20px;font-size:.8rem;color:var(--text);
+  opacity:0;transition:all .3s;z-index:999;white-space:nowrap;
+  pointer-events:none;
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ─── REQUEST DETAIL MODAL ─── */
+#reqModal{
+  display:none;position:fixed;inset:0;z-index:100;
+  background:rgba(8,10,15,.85);backdrop-filter:blur(4px);
+  align-items:flex-end;justify-content:center;
+}
+#reqModal.show{display:flex;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal-sheet{
+  width:100%;max-width:500px;background:var(--bg2);
+  border-radius:20px 20px 0 0;border:1px solid var(--border);
+  border-bottom:none;padding:20px;max-height:85vh;overflow-y:auto;
+}
+.modal-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 16px}
+.modal-title{font-size:1rem;font-weight:700;margin-bottom:16px;text-align:center}
+.modal-field{margin-bottom:12px;padding:12px;background:var(--s);border-radius:10px;border:1px solid var(--border)}
+.modal-field-lbl{font-size:.62rem;color:var(--text3);letter-spacing:.4px;text-transform:uppercase;margin-bottom:4px}
+.modal-field-val{font-size:.88rem;color:var(--text);line-height:1.5}
+.modal-actions{display:flex;gap:8px;margin-top:16px}
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+</style>
+</head>
+<body>
+
+<!-- ─── TOAST ─── -->
+<div id="toast"></div>
+
+<!-- ─── LOGIN SCREEN ─── -->
+<div id="loginScreen" class="screen show">
+  <div class="login-glow"></div>
+  <div class="login-icon">🏛</div>
+  <div class="login-title">پنل مشاور</div>
+  <div class="login-sub">با شماره تلفن ثبت‌شده در سیستم وارد شوید</div>
+  <div class="login-box">
+    <!-- Step 1: phone -->
+    <div id="stepPhone">
+      <div class="l-label">شماره تلفن</div>
+      <input class="l-input" id="phoneInput" type="tel" placeholder="09123456789" maxlength="11" inputmode="numeric" autocomplete="off"/>
+      <div class="l-err" id="phoneErr"></div>
+      <button class="l-btn" id="sendOtpBtn" onclick="sendOTP()">دریافت کد تأیید</button>
+    </div>
+    <!-- Step 2: OTP -->
+    <div id="stepOtp" style="display:none">
+      <div class="l-label">کد ۶ رقمی ارسال شده</div>
+      <div class="otp-row">
+        <input class="l-input" id="otpInput" type="text" placeholder="------" maxlength="6" inputmode="numeric" autocomplete="one-time-code"/>
+      </div>
+      <div class="l-timer" id="otpTimer">کد تا <span id="timerVal">120</span> ثانیه معتبر است</div>
+      <div class="l-err" id="otpErr"></div>
+      <button class="l-btn" id="verifyBtn" onclick="verifyOTP()">تأیید و ورود</button>
+      <button class="l-btn-ghost" onclick="backToPhone()">← تغییر شماره</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── MAIN PANEL SCREEN ─── -->
+<div id="mainScreen" class="screen">
+
+  <!-- Header -->
+  <div class="panel-header">
+    <div class="ph-left">
+      <div class="ph-logo">🏛</div>
+      <div>
+        <div class="ph-title">پنل مشاور</div>
+        <div class="ph-sub" id="headerName">ملک‌یاب</div>
+      </div>
+    </div>
+    <button class="ph-logout" onclick="logout()">خروج</button>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <div class="tab on" onclick="switchTab('dashboard',this)">📊 داشبورد</div>
+    <div class="tab" onclick="switchTab('chats',this)">💬 مکالمات <span id="chatsBadge" style="display:none;background:var(--gold);color:#000;font-size:.6rem;padding:1px 6px;border-radius:99px;margin-right:4px"></span></div>
+    <div class="tab" onclick="switchTab('requests',this)">📋 درخواست‌ها</div>
+    <div class="tab" onclick="switchTab('profile',this)">👤 پروفایل</div>
+  </div>
+
+  <!-- ── Dashboard Tab ── -->
+  <div class="tab-page show" id="tab-dashboard">
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-ico">💬</div>
+        <div class="stat-val" id="statChats">—</div>
+        <div class="stat-lbl">مکالمات فعال</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-ico">📋</div>
+        <div class="stat-val" id="statRequests">—</div>
+        <div class="stat-lbl">درخواست مشاهده‌شده</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-ico">✅</div>
+        <div class="stat-val" id="statClosed">—</div>
+        <div class="stat-lbl">معامله موفق</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-ico">📩</div>
+        <div class="stat-val" id="statUnread">—</div>
+        <div class="stat-lbl">پیام خوانده‌نشده</div>
+      </div>
+    </div>
+
+    <div class="sec-title">آخرین مکالمات</div>
+    <div id="dashRecentChats">
+      <div class="loading"><div class="spinner"></div> در حال بارگذاری...</div>
+    </div>
+  </div>
+
+  <!-- ── Chats Tab ── -->
+  <div class="tab-page" id="tab-chats">
+    <div id="chatsList">
+      <div class="loading"><div class="spinner"></div> در حال بارگذاری...</div>
+    </div>
+  </div>
+
+  <!-- ── Requests Tab ── -->
+  <div class="tab-page" id="tab-requests">
+    <div id="requestsList">
+      <div class="loading"><div class="spinner"></div> در حال بارگذاری...</div>
+    </div>
+  </div>
+
+  <!-- ── Profile Tab ── -->
+  <div class="tab-page" id="tab-profile">
+    <div id="profileContent">
+      <div class="loading"><div class="spinner"></div> در حال بارگذاری...</div>
+    </div>
+  </div>
+
+  <!-- Bottom Nav -->
+  <div class="bottom-nav">
+    <div class="nav-item on" id="nav-dashboard" onclick="switchTab('dashboard',null,this)">
+      <div class="nav-ico">📊</div>
+      <div class="nav-lbl">داشبورد</div>
+    </div>
+    <div class="nav-item" id="nav-chats" onclick="switchTab('chats',null,this)">
+      <div class="nav-ico">💬</div>
+      <div class="nav-lbl">مکالمات</div>
+      <div class="nav-badge" id="navUnreadBadge" style="display:none">0</div>
+    </div>
+    <div class="nav-item" id="nav-requests" onclick="switchTab('requests',null,this)">
+      <div class="nav-ico">📋</div>
+      <div class="nav-lbl">درخواست‌ها</div>
+    </div>
+    <div class="nav-item" id="nav-profile" onclick="switchTab('profile',null,this)">
+      <div class="nav-ico">👤</div>
+      <div class="nav-lbl">پروفایل</div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── CHAT SCREEN ─── -->
+<div id="chatScreen" class="screen">
+  <div class="chat-header">
+    <div class="chat-back" onclick="closeChat()">←</div>
+    <div class="chat-avatar" id="chatAvatar">👤</div>
+    <div class="chat-info">
+      <div class="chat-name" id="chatName">نام متقاضی</div>
+      <div class="chat-sub" id="chatSub">کد: —</div>
+    </div>
+  </div>
+  <div class="chat-body" id="chatBody"></div>
+  <div class="chat-footer">
+    <div class="chat-input-row">
+      <textarea class="chat-input" id="chatInputEl" placeholder="پیام بنویسید..." rows="1" onkeydown="handleChatKey(event)" oninput="autoGrow(this)"></textarea>
+      <button class="chat-send" id="sendBtn" onclick="sendMessage()">➤</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── REQUEST DETAIL MODAL ─── -->
+<div id="reqModal" onclick="closeModal(event)">
+  <div class="modal-sheet" id="modalSheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modalTitle">جزئیات درخواست</div>
+    <div id="modalBody"></div>
+    <div class="modal-actions" id="modalActions"></div>
+  </div>
+</div>
+
+<script>
+// ─── CONFIG ────────────────────────────────────────────────
+const SB_URL = "https://vwbyxjhyrrclmpcbkpgj.supabase.co";
+const SB_KEY = "sb_publishable_0xEgmVLQ_fm_XrYMaiF8_Q_z4OyxWpC";
+
+// ─── STATE ─────────────────────────────────────────────────
+let advisorUser = null;         // کاربر لاگین‌شده (از جدول users)
+let currentConvId = null;       // مکالمه باز
+let currentConvData = null;
+let realtimeSub = null;         // Supabase realtime channel
+let otpTimerInterval = null;
+let pendingOTP = null;          // کد OTP ارسال‌شده (برای حالت demo)
+let unreadCounts = {};          // { conv_id: count }
+
+// ─── TELEGRAM WEBAPP ────────────────────────────────────────
+const tg = window.Telegram?.WebApp;
+if (tg) { tg.ready(); tg.expand(); }
+
+// ─── SUPABASE HELPER ────────────────────────────────────────
+async function sb(method, path, data = null, params = "") {
+  const url = `${SB_URL}/rest/v1/${path}${params}`;
+  const headers = {
+    "apikey": SB_KEY,
+    "Authorization": `Bearer ${SB_KEY}`,
+    "Content-Type": "application/json",
+    "Prefer": "return=representation"
+  };
+  const opts = { method, headers };
+  if (data) opts.body = JSON.stringify(data);
+  try {
+    const res = await fetch(url, opts);
+    if (!res.ok) { const t = await res.text(); console.error("SB error:", t); return null; }
+    const txt = await res.text();
+    return txt ? JSON.parse(txt) : [];
+  } catch(e) { console.error("SB fetch error:", e); return null; }
+}
+
+// ─── SUPABASE REALTIME ──────────────────────────────────────
+function connectRealtime(convId, onMessage) {
+  if (realtimeSub) disconnectRealtime();
+  const channel = `messages:conversation_id=eq.${convId}`;
+  const ws = new WebSocket(`wss://vwbyxjhyrrclmpcbkpgj.supabase.co/realtime/v1/websocket?apikey=${SB_KEY}&vsn=1.0.0`);
+  let hbInterval;
+
+  ws.onopen = () => {
+    ws.send(JSON.stringify({ topic: "realtime:public:" + channel, event: "phx_join", payload: {}, ref: "1" }));
+    hbInterval = setInterval(() => ws.send(JSON.stringify({ topic: "phoenix", event: "heartbeat", payload: {}, ref: "hb" })), 25000);
+  };
+  ws.onmessage = (e) => {
+    try {
+      const msg = JSON.parse(e.data);
+      if (msg.event === "INSERT" && msg.payload?.record) onMessage(msg.payload.record);
+    } catch {}
+  };
+  ws.onclose = () => clearInterval(hbInterval);
+  realtimeSub = { ws, hbInterval };
+}
+
+function disconnectRealtime() {
+  if (realtimeSub) {
+    clearInterval(realtimeSub.hbInterval);
+    realtimeSub.ws.close();
+    realtimeSub = null;
+  }
+}
+
+// ─── TOAST ──────────────────────────────────────────────────
+function showToast(msg, dur = 2500) {
+  const el = document.getElementById("toast");
+  el.textContent = msg;
+  el.classList.add("show");
+  setTimeout(() => el.classList.remove("show"), dur);
+}
+
+// ─── SCREEN SWITCH ──────────────────────────────────────────
+function showScreen(id) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("show"));
+  document.getElementById(id).classList.add("show");
+}
+
+// ─── OTP LOGIN ──────────────────────────────────────────────
+async function sendOTP() {
+  const phone = document.getElementById("phoneInput").value.trim();
+  const errEl = document.getElementById("phoneErr");
+  errEl.classList.remove("show");
+
+  if (!/^09\d{9}$/.test(phone)) {
+    errEl.textContent = "شماره معتبر نیست. مثال: 09123456789";
+    errEl.classList.add("show");
+    return;
+  }
+
+  const btn = document.getElementById("sendOtpBtn");
+  btn.disabled = true;
+  btn.textContent = "در حال ارسال...";
+
+  // بررسی وجود مشاور در DB
+  const users = await sb("GET", "users", null, `?phone=eq.${phone}&select=*`);
+  if (!users || users.length === 0) {
+    errEl.textContent = "این شماره در سیستم ثبت‌نام نشده است.";
+    errEl.classList.add("show");
+    btn.disabled = false;
+    btn.textContent = "دریافت کد تأیید";
+    return;
+  }
+
+  // بررسی اینکه مشاور است (جدول advisors)
+  const advisorCheck = await sb("GET", "advisors", null, `?user_id=eq.${users[0].id}&select=id,is_active`);
+  if (!advisorCheck || advisorCheck.length === 0) {
+    errEl.textContent = "دسترسی مشاور برای این شماره فعال نیست.";
+    errEl.classList.add("show");
+    btn.disabled = false;
+    btn.textContent = "دریافت کد تأیید";
+    return;
+  }
+
+  if (!advisorCheck[0].is_active) {
+    errEl.textContent = "حساب مشاور شما غیرفعال است. با پشتیبانی تماس بگیرید.";
+    errEl.classList.add("show");
+    btn.disabled = false;
+    btn.textContent = "دریافت کد تأیید";
+    return;
+  }
+
+  // ساخت OTP 6 رقمی
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  pendingOTP = { code: otp, phone, userId: users[0].id, ts: Date.now() };
+
+  // ذخیره OTP در Supabase برای bot بفرسته
+  await sb("POST", "otp_requests", { user_id: users[0].id, code: otp, phone, expires_at: new Date(Date.now() + 120000).toISOString() });
+
+  // نمایش مرحله OTP
+  document.getElementById("stepPhone").style.display = "none";
+  document.getElementById("stepOtp").style.display = "block";
+  startOtpTimer(120);
+  btn.disabled = false;
+  btn.textContent = "دریافت کد تأیید";
+
+  showToast("✅ کد به ربات تلگرام شما ارسال شد");
+}
+
+function startOtpTimer(sec) {
+  clearInterval(otpTimerInterval);
+  let t = sec;
+  const el = document.getElementById("timerVal");
+  el.textContent = t;
+  otpTimerInterval = setInterval(() => {
+    t--;
+    el.textContent = t;
+    if (t <= 0) {
+      clearInterval(otpTimerInterval);
+      document.getElementById("otpTimer").innerHTML = '<span style="color:var(--red)">کد منقضی شد</span>';
+    }
+  }, 1000);
+}
+
+async function verifyOTP() {
+  const code = document.getElementById("otpInput").value.trim();
+  const errEl = document.getElementById("otpErr");
+  errEl.classList.remove("show");
+
+  if (!pendingOTP) { errEl.textContent = "ابتدا کد دریافت کنید."; errEl.classList.add("show"); return; }
+  if (Date.now() - pendingOTP.ts > 120000) { errEl.textContent = "کد منقضی شده. مجدداً دریافت کنید."; errEl.classList.add("show"); return; }
+
+  const btn = document.getElementById("verifyBtn");
+  btn.disabled = true;
+  btn.textContent = "در حال تأیید...";
+
+  // بررسی OTP از Supabase
+  const otpRows = await sb("GET", "otp_requests", null, `?user_id=eq.${pendingOTP.userId}&code=eq.${code}&select=id&order=created_at.desc&limit=1`);
+  if (!otpRows || otpRows.length === 0) {
+    errEl.textContent = "کد اشتباه است.";
+    errEl.classList.add("show");
+    btn.disabled = false;
+    btn.textContent = "تأیید و ورود";
+    return;
+  }
+
+  // پاک کردن OTP استفاده‌شده
+  await sb("DELETE", "otp_requests", null, `?id=eq.${otpRows[0].id}`);
+
+  // دریافت اطلاعات کامل کاربر و مشاور
+  const user = await sb("GET", "users", null, `?id=eq.${pendingOTP.userId}&select=*`);
+  const advisor = await sb("GET", "advisors", null, `?user_id=eq.${pendingOTP.userId}&select=*`);
+  advisorUser = { ...user[0], advisor: advisor[0] };
+
+  // ذخیره در localStorage (برای session)
+  localStorage.setItem("advisor_session", JSON.stringify({ userId: advisorUser.id, phone: advisorUser.phone, exp: Date.now() + 7 * 86400000 }));
+
+  clearInterval(otpTimerInterval);
+  pendingOTP = null;
+
+  btn.disabled = false;
+  btn.textContent = "تأیید و ورود";
+
+  await loadMainPanel();
+}
+
+function backToPhone() {
+  clearInterval(otpTimerInterval);
+  pendingOTP = null;
+  document.getElementById("stepOtp").style.display = "none";
+  document.getElementById("stepPhone").style.display = "block";
+  document.getElementById("otpInput").value = "";
+  document.getElementById("otpErr").classList.remove("show");
+}
+
+// ─── SESSION CHECK ───────────────────────────────────────────
+async function checkSession() {
+  try {
+    const s = JSON.parse(localStorage.getItem("advisor_session") || "null");
+    if (!s || Date.now() > s.exp) return false;
+    const user = await sb("GET", "users", null, `?id=eq.${s.userId}&select=*`);
+    const advisor = await sb("GET", "advisors", null, `?user_id=eq.${s.userId}&select=*`);
+    if (!user || !user[0] || !advisor || !advisor[0] || !advisor[0].is_active) return false;
+    advisorUser = { ...user[0], advisor: advisor[0] };
+    return true;
+  } catch { return false; }
+}
+
+function logout() {
+  if (!confirm("از پنل خارج می‌شوید؟")) return;
+  localStorage.removeItem("advisor_session");
+  advisorUser = null;
+  disconnectRealtime();
+  showScreen("loginScreen");
+}
+
+// ─── MAIN PANEL ─────────────────────────────────────────────
+async function loadMainPanel() {
+  showScreen("mainScreen");
+  document.getElementById("headerName").textContent = advisorUser.full_name || advisorUser.username || "مشاور";
+  await Promise.all([loadDashboard(), loadChats(), loadRequests(), loadProfile()]);
+  startUnreadPoller();
+}
+
+// ─── TAB SYSTEM ─────────────────────────────────────────────
+function switchTab(name, tabEl = null, navEl = null) {
+  document.querySelectorAll(".tab-page").forEach(p => p.classList.remove("show"));
+  document.getElementById("tab-" + name).classList.add("show");
+
+  if (tabEl) {
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("on"));
+    tabEl.classList.add("on");
+  }
+  if (navEl) {
+    document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("on"));
+    navEl.classList.add("on");
+  } else {
+    document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("on"));
+    const navId = "nav-" + name;
+    const nav = document.getElementById(navId);
+    if (nav) nav.classList.add("on");
+  }
+}
+
+// ─── DASHBOARD ──────────────────────────────────────────────
+async function loadDashboard() {
+  const convs = await sb("GET", "conversations", null, `?advisor_id=eq.${advisorUser.id}&select=*`);
+  const activeConvs = (convs || []).filter(c => c.status === "active");
+  const closedConvs = (convs || []).filter(c => c.status === "closed");
+
+  // آمار درخواست‌های مشاهده‌شده
+  const requests = await sb("GET", "advisor_requests", null, `?advisor_id=eq.${advisorUser.id}&select=id`);
+
+  document.getElementById("statChats").textContent = activeConvs.length;
+  document.getElementById("statRequests").textContent = (requests || []).length;
+  document.getElementById("statClosed").textContent = closedConvs.length;
+
+  // پیام‌های خوانده‌نشده
+  let totalUnread = 0;
+  for (const c of activeConvs) {
+    const msgs = await sb("GET", "messages", null, `?conversation_id=eq.${c.id}&sender_id=neq.${advisorUser.id}&is_read=eq.false&select=id`);
+    totalUnread += (msgs || []).length;
+  }
+  document.getElementById("statUnread").textContent = totalUnread;
+
+  // آخرین مکالمات
+  const recent = activeConvs.slice(0, 3);
+  renderConvCards(recent, "dashRecentChats");
+}
+
+// ─── CHATS ──────────────────────────────────────────────────
+async function loadChats() {
+  const convs = await sb("GET", "conversations", null, `?advisor_id=eq.${advisorUser.id}&select=*,owner:owner_id(full_name,username,phone)&order=created_at.desc`);
+  renderConvCards(convs || [], "chatsList");
+}
+
+async function renderConvCards(convs, containerId) {
+  const el = document.getElementById(containerId);
+  if (!convs || convs.length === 0) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-ico">💬</div><div class="empty-title">هنوز مکالمه‌ای نیست</div><div class="empty-sub">پس از تأیید آگهی توسط متقاضی، مکالمه اینجا نمایش داده می‌شود</div></div>`;
+    return;
+  }
+
+  // آخرین پیام هر مکالمه
+  const cards = await Promise.all(convs.map(async (c) => {
+    const lastMsg = await sb("GET", "messages", null, `?conversation_id=eq.${c.id}&select=content,created_at,sender_id&order=created_at.desc&limit=1`);
+    const unread = await sb("GET", "messages", null, `?conversation_id=eq.${c.id}&sender_id=neq.${advisorUser.id}&is_read=eq.false&select=id`);
+    const unreadCount = (unread || []).length;
+    const owner = c.owner || {};
+    const ownerName = owner.full_name || owner.username || "متقاضی";
+    const preview = lastMsg && lastMsg[0] ? lastMsg[0].content : "مکالمه را شروع کنید";
+    const time = lastMsg && lastMsg[0] ? formatTime(lastMsg[0].created_at) : "";
+    return { c, ownerName, preview, time, unreadCount };
+  }));
+
+  el.innerHTML = cards.map(({ c, ownerName, preview, time, unreadCount }) => `
+    <div class="conv-card ${unreadCount > 0 ? 'has-unread' : ''}" onclick="openChat(${c.id})">
+      <div class="conv-avatar">
+        👤
+        ${unreadCount > 0 ? '<div class="unread-dot"></div>' : ''}
+      </div>
+      <div class="conv-info">
+        <div class="conv-name">${ownerName}</div>
+        <div class="conv-preview">${preview.substring(0, 50)}</div>
+        <div class="conv-code">${c.request_code}</div>
+      </div>
+      <div class="conv-meta">
+        <div class="conv-time">${time}</div>
+        ${unreadCount > 0 ? `<div class="conv-badge">${unreadCount}</div>` : ''}
+      </div>
+    </div>
+  `).join("");
+}
+
+// ─── REQUESTS ───────────────────────────────────────────────
+async function loadRequests() {
+  // درخواست‌هایی که این مشاور به اطلاعاتشان دسترسی داشته
+  const advisorReqs = await sb("GET", "advisor_requests", null, `?advisor_id=eq.${advisorUser.id}&select=*,request:request_code(*)&order=created_at.desc`);
+  const el = document.getElementById("requestsList");
+
+  if (!advisorReqs || advisorReqs.length === 0) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-ico">📋</div><div class="empty-title">هنوز درخواستی نیست</div><div class="empty-sub">با کلیک روی دکمه آگهی در کانال، به اطلاعات متقاضی دسترسی پیدا کنید</div></div>`;
+    return;
+  }
+
+  el.innerHTML = advisorReqs.map(ar => {
+    const req = ar.request || {};
+    const status = req.status || "active";
+    return `
+    <div class="req-card">
+      <div class="req-head">
+        <div class="req-code">${ar.request_code}</div>
+        <div class="req-status ${status}">${status === 'active' ? 'فعال' : 'منقضی'}</div>
+      </div>
+      <div class="req-rows">
+        <div class="req-row"><div class="req-icon">📍</div><div class="req-val">${req.location || '—'}</div></div>
+        <div class="req-row"><div class="req-icon">🏗</div><div class="req-val">${req.property_type || '—'} — ${req.purpose || '—'}</div></div>
+        <div class="req-row"><div class="req-icon">💰</div><div class="req-val">${req.budget || '—'}</div></div>
+        <div class="req-row"><div class="req-icon">📐</div><div class="req-val">${req.area || '—'}</div></div>
+      </div>
+      <div class="req-actions">
+        <button class="btn-sm btn-ghost" onclick="showReqDetail('${ar.request_code}')">جزئیات بیشتر</button>
+        <button class="btn-sm btn-gold" onclick="openChatByCode('${ar.request_code}')">باز کردن چت</button>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+// ─── PROFILE ────────────────────────────────────────────────
+async function loadProfile() {
+  const u = advisorUser;
+  const advisor = u.advisor || {};
+  const el = document.getElementById("profileContent");
+
+  el.innerHTML = `
+    <div class="profile-card">
+      <div class="profile-avatar">👤</div>
+      <div class="profile-name">${u.full_name || u.username || 'مشاور'}</div>
+      <div class="profile-phone">${u.phone || '—'}</div>
+      <div class="profile-badges">
+        <div class="badge badge-gold">🏛 مشاور ملک</div>
+        <div class="badge badge-green">✅ تأیید شده</div>
+      </div>
+    </div>
+    <div class="sec-title">اطلاعات حساب</div>
+    <div class="info-rows">
+      <div class="info-row"><div class="info-key">یوزرنیم تلگرام</div><div class="info-val">${u.username ? '@'+u.username : '—'}</div></div>
+      <div class="info-row"><div class="info-key">شماره تلفن</div><div class="info-val">${u.phone || '—'}</div></div>
+      <div class="info-row"><div class="info-key">وضعیت حساب</div><div class="info-val" style="color:var(--green)">فعال</div></div>
+      <div class="info-row"><div class="info-key">تاریخ عضویت</div><div class="info-val">${formatDate(u.created_at)}</div></div>
+    </div>
+    <br>
+    <button class="l-btn-ghost" onclick="logout()">خروج از حساب</button>
+  `;
+}
+
+// ─── CHAT ────────────────────────────────────────────────────
+async function openChat(convId) {
+  const conv = await sb("GET", "conversations", null, `?id=eq.${convId}&select=*,owner:owner_id(full_name,username,phone)`);
+  if (!conv || !conv[0]) return;
+  currentConvData = conv[0];
+  currentConvId = convId;
+
+  const owner = conv[0].owner || {};
+  document.getElementById("chatName").textContent = owner.full_name || owner.username || "متقاضی";
+  document.getElementById("chatSub").textContent = `کد: ${conv[0].request_code}`;
+
+  showScreen("chatScreen");
+  await loadMessages();
+
+  // Realtime
+  connectRealtime(convId, (newMsg) => {
+    if (newMsg.sender_id !== advisorUser.id) {
+      appendMessage(newMsg, false);
+      markRead(newMsg.id);
+    }
+  });
+
+  // mark all as read
+  await sb("PATCH", "messages", { is_read: true }, `?conversation_id=eq.${convId}&sender_id=neq.${advisorUser.id}`);
+}
+
+async function openChatByCode(code) {
+  const conv = await sb("GET", "conversations", null, `?request_code=eq.${code}&advisor_id=eq.${advisorUser.id}&select=id&limit=1`);
+  if (conv && conv[0]) {
+    await openChat(conv[0].id);
+  } else {
+    showToast("⚠️ مکالمه‌ای برای این درخواست یافت نشد");
+  }
+}
+
+async function loadMessages() {
+  const body = document.getElementById("chatBody");
+  body.innerHTML = `<div class="loading"><div class="spinner"></div></div>`;
+
+  const msgs = await sb("GET", "messages", null, `?conversation_id=eq.${currentConvId}&order=created_at.asc&select=*`);
+  body.innerHTML = "";
+
+  if (!msgs || msgs.length === 0) {
+    body.innerHTML = `<div class="empty-state"><div class="empty-ico">💬</div><div class="empty-title">مکالمه را شروع کنید</div><div class="empty-sub">اولین پیام را بنویسید</div></div>`;
+    return;
+  }
+
+  let lastDate = "";
+  msgs.forEach(msg => {
+    const d = new Date(msg.created_at).toLocaleDateString("fa-IR");
+    if (d !== lastDate) {
+      const sep = document.createElement("div");
+      sep.className = "msg-date-sep";
+      sep.innerHTML = `<span>${d}</span>`;
+      body.appendChild(sep);
+      lastDate = d;
+    }
+    appendMessage(msg, false);
+  });
+  scrollToBottom();
+}
+
+function appendMessage(msg, scroll = true) {
+  const body = document.getElementById("chatBody");
+  // حذف empty state
+  const empty = body.querySelector(".empty-state");
+  if (empty) empty.remove();
+
+  const isMe = msg.sender_id === advisorUser.id;
+  const div = document.createElement("div");
+  div.className = `msg ${isMe ? 'me' : 'them'}`;
+  div.innerHTML = `
+    <div class="msg-bubble">${escHtml(msg.content)}</div>
+    <div class="msg-time">${formatTime(msg.created_at)}</div>
+  `;
+  body.appendChild(div);
+  if (scroll) scrollToBottom();
+}
+
+async function sendMessage() {
+  const input = document.getElementById("chatInputEl");
+  const text = input.value.trim();
+  if (!text || !currentConvId) return;
+
+  input.value = "";
+  autoGrow(input);
+
+  const msgData = {
+    conversation_id: currentConvId,
+    sender_id: advisorUser.id,
+    content: text,
+    type: "text",
+    is_read: false
+  };
+
+  // نمایش فوری
+  appendMessage({ ...msgData, created_at: new Date().toISOString() });
+
+  const res = await sb("POST", "messages", msgData);
+  if (!res) showToast("⚠️ خطا در ارسال پیام");
+}
+
+function closeChat() {
+  disconnectRealtime();
+  currentConvId = null;
+  currentConvData = null;
+  showScreen("mainScreen");
+  loadChats();
+  loadDashboard();
+}
+
+function handleChatKey(e) {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+}
+
+function autoGrow(el) {
+  el.style.height = "auto";
+  el.style.height = Math.min(el.scrollHeight, 100) + "px";
+}
+
+function scrollToBottom() {
+  const body = document.getElementById("chatBody");
+  body.scrollTop = body.scrollHeight;
+}
+
+async function markRead(msgId) {
+  await sb("PATCH", "messages", { is_read: true }, `?id=eq.${msgId}`);
+}
+
+// ─── REQUEST DETAIL MODAL ───────────────────────────────────
+async function showReqDetail(code) {
+  const req = await sb("GET", "requests", null, `?unique_code=eq.${code}&select=*`);
+  if (!req || !req[0]) return;
+  const r = req[0];
+
+  document.getElementById("modalTitle").textContent = `درخواست ${code}`;
+  document.getElementById("modalBody").innerHTML = `
+    <div class="modal-field"><div class="modal-field-lbl">موقعیت</div><div class="modal-field-val">${r.location || '—'}</div></div>
+    <div class="modal-field"><div class="modal-field-lbl">نوع ملک</div><div class="modal-field-val">${r.property_type || '—'}</div></div>
+    <div class="modal-field"><div class="modal-field-lbl">هدف</div><div class="modal-field-val">${r.purpose || '—'}</div></div>
+    <div class="modal-field"><div class="modal-field-lbl">بودجه</div><div class="modal-field-val">${r.budget || '—'}</div></div>
+    <div class="modal-field"><div class="modal-field-lbl">متراژ</div><div class="modal-field-val">${r.area || '—'}</div></div>
+    <div class="modal-field"><div class="modal-field-lbl">اتاق</div><div class="modal-field-val">${r.rooms || '—'}</div></div>
+    <div class="modal-field"><div class="modal-field-lbl">طبقه</div><div class="modal-field-val">${r.floor || '—'}</div></div>
+    ${r.requirements ? `<div class="modal-field"><div class="modal-field-lbl">الزامات</div><div class="modal-field-val">${r.requirements}</div></div>` : ''}
+    ${r.description ? `<div class="modal-field"><div class="modal-field-lbl">توضیحات</div><div class="modal-field-val">${r.description}</div></div>` : ''}
+  `;
+  document.getElementById("modalActions").innerHTML = `
+    <button class="btn-sm btn-ghost" onclick="closeModal()">بستن</button>
+    <button class="btn-sm btn-gold" onclick="closeModal();openChatByCode('${code}')">باز کردن چت</button>
+  `;
+  document.getElementById("reqModal").classList.add("show");
+}
+
+function closeModal(e) {
+  if (!e || e.target === document.getElementById("reqModal")) {
+    document.getElementById("reqModal").classList.remove("show");
+  }
+}
+
+// ─── UNREAD POLLER ──────────────────────────────────────────
+function startUnreadPoller() {
+  setInterval(async () => {
+    if (currentConvId) return; // اگر داخل چت هستیم نیازی نیست
+    const convs = await sb("GET", "conversations", null, `?advisor_id=eq.${advisorUser.id}&status=eq.active&select=id`);
+    if (!convs) return;
+    let total = 0;
+    for (const c of convs) {
+      const u = await sb("GET", "messages", null, `?conversation_id=eq.${c.id}&sender_id=neq.${advisorUser.id}&is_read=eq.false&select=id`);
+      total += (u || []).length;
+    }
+    const badge = document.getElementById("navUnreadBadge");
+    if (total > 0) { badge.style.display = "flex"; badge.textContent = total; }
+    else badge.style.display = "none";
+    document.getElementById("statUnread").textContent = total;
+  }, 30000);
+}
+
+// ─── HELPERS ────────────────────────────────────────────────
+function formatTime(iso) {
+  if (!iso) return "";
+  try {
+    return new Date(iso).toLocaleTimeString("fa-IR", { hour: "2-digit", minute: "2-digit" });
+  } catch { return ""; }
+}
+function formatDate(iso) {
+  if (!iso) return "—";
+  try { return new Date(iso).toLocaleDateString("fa-IR"); } catch { return "—"; }
+}
+function escHtml(s) {
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/g,"<br>");
+}
+
+// ─── INIT ────────────────────────────────────────────────────
+(async () => {
+  const ok = await checkSession();
+  if (ok) await loadMainPanel();
+  else showScreen("loginScreen");
+})();
+</script>
+</body>
+</html>
