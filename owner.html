@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>پنل من | ملک‌یاب</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --gold:#C9A84C;--gold2:#E8C97A;--gold-dim:rgba(201,168,76,0.12);
+  --bg:#080A0F;--bg2:#0D1017;--s:#111520;--s2:#161B28;
+  --border:rgba(255,255,255,0.07);--border-gold:rgba(201,168,76,0.15);
+  --text:#F0EDE8;--text2:#8A8580;--text3:#3A3530;
+  --green:#2ECC71;--red:#E74C3C;--blue:#3B82F6;--orange:#F59E0B;
+  --r:14px;
+}
+body{font-family:'Vazirmatn',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* ─── SCREENS ─── */
+.screen{display:none!important}
+.screen.show{display:flex!important;flex-direction:column}
+#chatScreen.show{display:flex!important;flex-direction:column;height:100vh}
+
+/* ─── LOGIN ─── */
+#loginScreen{align-items:center;justify-content:center;min-height:100vh;padding:28px 24px;background:var(--bg)}
+.login-glow{position:fixed;top:-100px;left:50%;transform:translateX(-50%);width:300px;height:300px;background:radial-gradient(circle,rgba(201,168,76,.06) 0%,transparent 70%);pointer-events:none}
+.login-icon{width:76px;height:76px;border-radius:22px;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-size:34px;margin-bottom:22px;box-shadow:0 8px 36px rgba(201,168,76,.28)}
+.login-title{font-size:1.4rem;font-weight:700;margin-bottom:6px;text-align:center}
+.login-sub{font-size:.8rem;color:var(--text2);margin-bottom:36px;text-align:center;line-height:1.6}
+.login-box{width:100%;max-width:340px}
+.l-label{font-size:.68rem;color:var(--text3);letter-spacing:.4px;text-transform:uppercase;margin-bottom:5px}
+.l-input{width:100%;background:var(--s);border:1px solid var(--border);border-radius:12px;padding:14px 16px;color:var(--text);font-family:'Vazirmatn',sans-serif;font-size:1rem;outline:none;text-align:center;margin-bottom:12px;transition:border-color .2s,box-shadow .2s;direction:ltr;letter-spacing:2px}
+.l-input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.08)}
+.l-btn{width:100%;background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;border-radius:12px;padding:15px;color:#000;font-family:'Vazirmatn',sans-serif;font-size:.95rem;font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(201,168,76,.24);transition:all .2s;margin-bottom:10px}
+.l-btn:active{transform:scale(.98)}
+.l-btn:disabled{opacity:.5;cursor:not-allowed}
+.l-btn-ghost{width:100%;background:transparent;border:1px solid var(--border);border-radius:12px;padding:13px;color:var(--text2);font-family:'Vazirmatn',sans-serif;font-size:.85rem;cursor:pointer;transition:all .2s}
+.l-btn-ghost:active{background:var(--s)}
+.l-err{display:none;color:var(--red);font-size:.78rem;text-align:center;margin-bottom:10px;padding:8px;background:rgba(231,76,60,.08);border-radius:8px;border:1px solid rgba(231,76,60,.2)}
+.l-err.show{display:block}
+.l-timer{font-size:.75rem;color:var(--text2);text-align:center;margin-bottom:12px}
+.l-timer span{color:var(--gold);font-weight:600}
+.otp-row{display:flex;gap:8px;margin-bottom:12px}
+.otp-row .l-input{flex:1;font-size:1.2rem;font-weight:700;padding:12px 8px;margin-bottom:0;letter-spacing:6px}
+
+/* ─── MAIN PANEL ─── */
+#mainScreen{min-height:100vh;padding-bottom:70px}
+.panel-header{padding:16px 16px 14px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:20}
+.ph-left{display:flex;align-items:center;gap:10px}
+.ph-logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-size:16px}
+.ph-title{font-size:1rem;font-weight:700}
+.ph-sub{font-size:.65rem;color:var(--gold);margin-top:1px}
+.ph-logout{padding:7px 13px;border-radius:8px;border:1px solid var(--border);background:var(--s2);color:var(--text2);font-family:'Vazirmatn',sans-serif;font-size:.7rem;cursor:pointer}
+
+/* ─── TABS ─── */
+.tabs{display:flex;gap:6px;padding:14px 14px 0;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{padding:8px 16px;border-radius:99px;border:1px solid var(--border);background:var(--s2);font-size:.74rem;cursor:pointer;color:var(--text2);white-space:nowrap;transition:all .2s;flex-shrink:0}
+.tab.on{background:var(--gold-dim);border-color:var(--gold);color:var(--gold)}
+
+/* ─── TAB PAGES ─── */
+.tab-page{display:none;padding:14px}
+.tab-page.show{display:block;animation:fadeUp .25s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ─── STATS GRID ─── */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.stat-card{background:var(--s);border:1px solid var(--border);border-radius:13px;padding:16px;position:relative;overflow:hidden}
+.stat-card::after{content:'';position:absolute;top:-20px;right:-20px;width:60px;height:60px;background:radial-gradient(circle,rgba(201,168,76,.05) 0%,transparent 70%)}
+.stat-ico{font-size:1.1rem;margin-bottom:8px;opacity:.6}
+.stat-val{font-size:1.7rem;font-weight:700;margin-bottom:2px}
+.stat-lbl{font-size:.63rem;color:var(--text2);letter-spacing:.3px}
+
+/* ─── SECTION TITLE ─── */
+.sec-title{font-size:.68rem;color:var(--text2);letter-spacing:.8px;text-transform:uppercase;margin:14px 0 8px;display:flex;align-items:center;gap:8px}
+.sec-title::before{content:'';width:3px;height:13px;background:var(--gold);border-radius:2px}
+
+/* ─── REQUEST CARD ─── */
+.req-card{background:var(--s);border:1px solid var(--border);border-radius:13px;padding:14px;margin-bottom:10px;cursor:pointer;transition:all .2s}
+.req-card:active{transform:scale(.99)}
+.req-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.req-code{font-size:.78rem;font-family:monospace;color:var(--gold);font-weight:700}
+.req-status{padding:3px 10px;border-radius:99px;font-size:.62rem;font-weight:600;letter-spacing:.3px}
+.req-status.active{background:rgba(46,204,113,.1);color:var(--green);border:1px solid rgba(46,204,113,.2)}
+.req-status.closed{background:rgba(138,133,128,.08);color:var(--text3);border:1px solid var(--border)}
+.req-rows{display:grid;gap:6px;margin-bottom:10px}
+.req-row{display:flex;gap:8px;align-items:center;font-size:.78rem}
+.req-icon{opacity:.5;width:16px;text-align:center;flex-shrink:0}
+.req-val{color:var(--text);flex:1}
+.req-footer{display:flex;align-items:center;justify-content:space-between;font-size:.68rem}
+.req-stat{color:var(--gold)}
+.req-date{color:var(--text3)}
+
+/* ─── CONVERSATION CARD ─── */
+.conv-card{background:var(--s);border:1px solid var(--border);border-radius:13px;padding:14px;margin-bottom:10px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:12px}
+.conv-card:active{transform:scale(.99)}
+.conv-card.has-unread{border-color:var(--border-gold)}
+.conv-avatar{width:44px;height:44px;border-radius:12px;flex-shrink:0;background:linear-gradient(135deg,var(--s2),var(--s));border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.1rem;position:relative}
+.unread-dot{position:absolute;top:-3px;right:-3px;width:10px;height:10px;background:var(--gold);border-radius:50%;border:2px solid var(--bg)}
+.conv-info{flex:1;min-width:0}
+.conv-name{font-size:.88rem;font-weight:600;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.conv-preview{font-size:.73rem;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.conv-code{font-size:.65rem;color:var(--gold);font-family:monospace;margin-top:2px}
+.conv-meta{text-align:left;flex-shrink:0}
+.conv-time{font-size:.63rem;color:var(--text3);margin-bottom:4px}
+.conv-badge{display:inline-block;background:var(--gold);color:#000;font-size:.6rem;font-weight:700;padding:2px 7px;border-radius:99px}
+
+/* ─── BOTTOM NAV ─── */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);display:flex;z-index:30}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 4px 12px;cursor:pointer;transition:all .2s;position:relative}
+.nav-item.on .nav-ico{color:var(--gold)}
+.nav-item.on .nav-lbl{color:var(--gold)}
+.nav-ico{font-size:1.2rem;margin-bottom:3px;color:var(--text3);transition:color .2s}
+.nav-lbl{font-size:.6rem;color:var(--text3);letter-spacing:.2px;transition:color .2s}
+.nav-badge{position:absolute;top:6px;right:calc(50% - 18px);width:16px;height:16px;background:var(--gold);border-radius:50%;font-size:.55rem;font-weight:700;color:#000;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg2)}
+
+/* ─── PROFILE ─── */
+.profile-card{background:var(--s);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:14px;text-align:center}
+.profile-avatar{width:68px;height:68px;border-radius:18px;background:linear-gradient(135deg,var(--gold-dim),var(--s2));border:1px solid var(--border-gold);display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin:0 auto 12px}
+.profile-name{font-size:1.05rem;font-weight:700;margin-bottom:4px}
+.profile-phone{font-size:.8rem;color:var(--gold);direction:ltr;margin-bottom:12px}
+.profile-badges{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.badge{padding:4px 12px;border-radius:99px;font-size:.65rem;font-weight:600}
+.badge-gold{background:var(--gold-dim);color:var(--gold);border:1px solid var(--border-gold)}
+.info-rows{display:grid;gap:8px}
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--s);border:1px solid var(--border);border-radius:10px;font-size:.82rem}
+.info-key{color:var(--text2)}
+.info-val{font-weight:600;direction:ltr}
+
+/* ─── CHAT SCREEN ─── */
+#chatScreen{background:var(--bg)}
+.chat-header{padding:14px 16px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:20;flex-shrink:0}
+.chat-back{width:36px;height:36px;border-radius:9px;background:var(--s);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1rem;cursor:pointer;flex-shrink:0}
+.chat-avatar{width:38px;height:38px;border-radius:10px;background:var(--gold-dim);border:1px solid var(--border-gold);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.chat-info{flex:1;min-width:0}
+.chat-name{font-size:.92rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chat-sub{font-size:.65rem;color:var(--text2);margin-top:1px}
+.chat-body{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:8px;scroll-behavior:smooth}
+.msg{max-width:80%;display:flex;flex-direction:column;gap:2px}
+.msg.me{align-self:flex-end;align-items:flex-end}
+.msg.them{align-self:flex-start;align-items:flex-start}
+.msg-bubble{padding:10px 14px;border-radius:14px;font-size:.85rem;line-height:1.55;word-break:break-word}
+.msg.me .msg-bubble{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0a0a0a;border-bottom-right-radius:4px}
+.msg.them .msg-bubble{background:var(--s);border:1px solid var(--border);color:var(--text);border-bottom-left-radius:4px}
+.msg-time{font-size:.6rem;color:var(--text3);padding:0 4px}
+.msg-date-sep{text-align:center;font-size:.65rem;color:var(--text3);padding:10px 0}
+.msg-date-sep span{background:var(--bg);padding:3px 10px;border-radius:99px;border:1px solid var(--border)}
+.chat-footer{padding:10px 14px 14px;background:var(--bg2);border-top:1px solid var(--border);flex-shrink:0}
+.chat-input-row{display:flex;gap:8px;align-items:flex-end}
+.chat-input{flex:1;background:var(--s);border:1px solid var(--border);border-radius:12px;padding:11px 14px;color:var(--text);font-family:'Vazirmatn',sans-serif;font-size:.88rem;outline:none;resize:none;max-height:100px;line-height:1.5;transition:border-color .2s;direction:rtl}
+.chat-input:focus{border-color:var(--gold)}
+.chat-send{width:42px;height:42px;border-radius:11px;flex-shrink:0;background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;transition:all .2s}
+.chat-send:active{transform:scale(.95)}
+
+/* ─── MODALS ─── */
+.overlay{display:none;position:fixed;inset:0;z-index:100;background:rgba(8,10,15,.85);backdrop-filter:blur(4px);align-items:flex-end;justify-content:center}
+.overlay.show{display:flex;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.bottom-sheet{width:100%;max-width:520px;background:var(--bg2);border-radius:20px 20px 0 0;border:1px solid var(--border);border-bottom:none;padding:20px;max-height:88vh;overflow-y:auto}
+.sheet-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 16px}
+.sheet-title{font-size:1rem;font-weight:700;margin-bottom:16px;text-align:center}
+.modal-section{margin-bottom:16px}
+.modal-sec-title{font-size:.68rem;color:var(--text2);letter-spacing:.8px;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.modal-sec-title::before{content:'';width:3px;height:11px;background:var(--gold);border-radius:2px}
+.modal-field{background:var(--s);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:6px}
+.modal-field-lbl{font-size:.6rem;color:var(--text3);letter-spacing:.4px;text-transform:uppercase;margin-bottom:3px}
+.modal-field-val{font-size:.85rem;color:var(--text);line-height:1.5}
+.advisor-row{display:flex;align-items:center;gap:10px;padding:10px;background:var(--s);border-radius:10px;margin-bottom:6px;border:1px solid var(--border)}
+.advisor-info{flex:1;min-width:0}
+.advisor-name{font-size:.82rem;font-weight:600}
+.advisor-phone{font-size:.7rem;color:var(--gold);direction:ltr;margin-top:2px}
+.advisor-date{font-size:.65rem;color:var(--text3);flex-shrink:0}
+.sheet-actions{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+.btn-sm{flex:1;padding:10px;border-radius:9px;border:none;font-family:'Vazirmatn',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;transition:all .2s;min-width:80px}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#000}
+.btn-ghost{background:var(--s2);color:var(--text2);border:1px solid var(--border)}
+.btn-red{background:rgba(231,76,60,.1);color:var(--red);border:1px solid rgba(231,76,60,.2)}
+.btn-green{background:rgba(46,204,113,.1);color:var(--green);border:1px solid rgba(46,204,113,.2)}
+.btn-sm:active{transform:scale(.98)}
+
+/* ─── EDIT FORM ─── */
+.form-field{margin-bottom:12px}
+.form-label{display:block;font-size:.65rem;color:var(--text3);letter-spacing:.3px;text-transform:uppercase;margin-bottom:5px}
+.form-input,.form-select,.form-textarea{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:9px;padding:10px 12px;color:var(--text);font-family:'Vazirmatn',sans-serif;font-size:.85rem;outline:none;direction:rtl;appearance:none;transition:border-color .2s}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--gold)}
+.form-select option{background:#111520}
+.form-textarea{resize:none;height:70px;line-height:1.5}
+.form-2col{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.chip{padding:6px 10px;border-radius:99px;border:1px solid var(--border);background:var(--s2);font-size:.7rem;cursor:pointer;transition:all .2s;color:var(--text2);user-select:none}
+.chip.on{background:var(--gold-dim);border-color:var(--gold);color:var(--gold)}
+
+/* ─── EMPTY / LOADING ─── */
+.empty-state{text-align:center;padding:48px 20px}
+.empty-ico{font-size:2.5rem;margin-bottom:12px;opacity:.4}
+.empty-title{font-size:.95rem;font-weight:600;color:var(--text2);margin-bottom:6px}
+.empty-sub{font-size:.78rem;color:var(--text3);line-height:1.6}
+.loading{display:flex;align-items:center;justify-content:center;padding:32px;gap:10px;color:var(--text2);font-size:.82rem}
+.spinner{width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ─── TOAST ─── */
+#toast{position:fixed;bottom:86px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--s);border:1px solid var(--border-gold);border-radius:10px;padding:10px 20px;font-size:.8rem;color:var(--text);opacity:0;transition:all .3s;z-index:999;white-space:nowrap;pointer-events:none}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+</style>
+</head>
+<body>
+
+<div id="toast"></div>
+
+<!-- ─── LOGIN ─── -->
+<div id="loginScreen" class="screen show">
+  <div class="login-glow"></div>
+  <div class="login-icon">🏠</div>
+  <div class="login-title">پنل درخواست‌هایم</div>
+  <div class="login-sub">با شماره تلفن ثبت‌شده در سیستم وارد شوید</div>
+  <div class="login-box">
+    <div id="stepPhone">
+      <div class="l-label">شماره تلفن</div>
+      <input class="l-input" id="phoneInput" type="tel" placeholder="09123456789" maxlength="11" inputmode="numeric" autocomplete="off"/>
+      <div class="l-err" id="phoneErr"></div>
+      <button class="l-btn" id="sendOtpBtn" onclick="sendOTP()">دریافت کد تأیید</button>
+    </div>
+    <div id="stepOtp" style="display:none">
+      <div class="l-label">کد ۶ رقمی ارسال‌شده به ربات</div>
+      <div class="otp-row">
+        <input class="l-input" id="otpInput" type="text" placeholder="------" maxlength="6" inputmode="numeric" autocomplete="one-time-code"/>
+      </div>
+      <div class="l-timer" id="otpTimer">کد تا <span id="timerVal">120</span> ثانیه معتبر است</div>
+      <div class="l-err" id="otpErr"></div>
+      <button class="l-btn" id="verifyBtn" onclick="verifyOTP()">تأیید و ورود</button>
+      <button class="l-btn-ghost" onclick="backToPhone()">← تغییر شماره</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── MAIN PANEL ─── -->
+<div id="mainScreen" class="screen">
+  <div class="panel-header">
+    <div class="ph-left">
+      <div class="ph-logo">🏠</div>
+      <div>
+        <div class="ph-title">پنل من</div>
+        <div class="ph-sub" id="headerName">ملک‌یاب</div>
+      </div>
+    </div>
+    <button class="ph-logout" onclick="logout()">خروج</button>
+  </div>
+
+  <div class="tabs">
+    <div class="tab on" onclick="switchTab('dashboard',this)">📊 داشبورد</div>
+    <div class="tab" onclick="switchTab('requests',this)">🏠 درخواست‌هایم</div>
+    <div class="tab" onclick="switchTab('chats',this)">💬 مکالمات <span id="chatsBadge" style="display:none;background:var(--gold);color:#000;font-size:.6rem;padding:1px 6px;border-radius:99px;margin-right:4px"></span></div>
+    <div class="tab" onclick="switchTab('profile',this)">👤 پروفایل</div>
+  </div>
+
+  <!-- داشبورد -->
+  <div class="tab-page show" id="tab-dashboard">
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-ico">🏠</div>
+        <div class="stat-val" id="statActive" style="color:var(--green)">—</div>
+        <div class="stat-lbl">درخواست‌های فعال</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-ico">👤</div>
+        <div class="stat-val" id="statContacts" style="color:var(--gold)">—</div>
+        <div class="stat-lbl">مشاوران تماس‌گرفته</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-ico">💬</div>
+        <div class="stat-val" id="statChats" style="color:var(--blue)">—</div>
+        <div class="stat-lbl">مکالمات فعال</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-ico">📩</div>
+        <div class="stat-val" id="statUnread" style="color:var(--orange)">—</div>
+        <div class="stat-lbl">پیام‌های جدید</div>
+      </div>
+    </div>
+    <div class="sec-title">آخرین مکالمات</div>
+    <div id="dashRecentChats">
+      <div class="loading"><div class="spinner"></div> در حال بارگذاری...</div>
+    </div>
+  </div>
+
+  <!-- درخواست‌هایم -->
+  <div class="tab-page" id="tab-requests">
+    <div id="requestsList">
+      <div class="loading"><div class="spinner"></div> در حال بارگذاری...</div>
+    </div>
+  </div>
+
+  <!-- مکالمات -->
+  <div class="tab-page" id="tab-chats">
+    <div id="chatsList">
+      <div class="loading"><div class="spinner"></div> در حال بارگذاری...</div>
+    </div>
+  </div>
+
+  <!-- پروفایل -->
+  <div class="tab-page" id="tab-profile">
+    <div id="profileContent">
+      <div class="loading"><div class="spinner"></div> در حال بارگذاری...</div>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <div class="nav-item on" id="nav-dashboard" onclick="switchTab('dashboard',null,this)">
+      <div class="nav-ico">📊</div><div class="nav-lbl">داشبورد</div>
+    </div>
+    <div class="nav-item" id="nav-requests" onclick="switchTab('requests',null,this)">
+      <div class="nav-ico">🏠</div><div class="nav-lbl">درخواست‌ها</div>
+    </div>
+    <div class="nav-item" id="nav-chats" onclick="switchTab('chats',null,this)">
+      <div class="nav-ico">💬</div><div class="nav-lbl">مکالمات</div>
+      <div class="nav-badge" id="navUnreadBadge" style="display:none">0</div>
+    </div>
+    <div class="nav-item" id="nav-profile" onclick="switchTab('profile',null,this)">
+      <div class="nav-ico">👤</div><div class="nav-lbl">پروفایل</div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── CHAT SCREEN ─── -->
+<div id="chatScreen" class="screen">
+  <div class="chat-header">
+    <div class="chat-back" onclick="closeChat()">←</div>
+    <div class="chat-avatar">🏢</div>
+    <div class="chat-info">
+      <div class="chat-name" id="chatName">مشاور</div>
+      <div class="chat-sub" id="chatSub">کد: —</div>
+    </div>
+  </div>
+  <div class="chat-body" id="chatBody"></div>
+  <div class="chat-footer">
+    <div class="chat-input-row">
+      <textarea class="chat-input" id="chatInputEl" placeholder="پیام بنویسید..." rows="1" onkeydown="handleChatKey(event)" oninput="autoGrow(this)"></textarea>
+      <button class="chat-send" onclick="sendMessage()">➤</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── REQUEST DETAIL MODAL ─── -->
+<div class="overlay" id="reqModal" onclick="closeModal(event)">
+  <div class="bottom-sheet" id="reqSheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title" id="modalTitle">جزئیات درخواست</div>
+    <div id="modalBody"></div>
+    <div class="sheet-actions" id="modalActions"></div>
+  </div>
+</div>
+
+<!-- ─── EDIT REQUEST MODAL ─── -->
+<div class="overlay" id="editModal" onclick="closeEditModal(event)">
+  <div class="bottom-sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">✏️ ویرایش درخواست <span id="editCode" style="font-size:.8rem;color:var(--gold)"></span></div>
+    <div class="form-field">
+      <label class="form-label">موقعیت / منطقه</label>
+      <input class="form-input" id="editLoc" type="text" placeholder="مثال: تهران، سعادت‌آباد"/>
+    </div>
+    <div class="form-2col">
+      <div class="form-field">
+        <label class="form-label">نوع ملک</label>
+        <select class="form-select" id="editPtype">
+          <option>آپارتمان</option><option>خانه ویلایی</option>
+          <option>زمین</option><option>مغازه / تجاری</option>
+          <option>دفتر / اداری</option><option>پنت‌هاوس</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label class="form-label">هدف</label>
+        <select class="form-select" id="editPurp">
+          <option>خرید</option><option>اجاره</option><option>رهن و اجاره</option><option>پیش‌خرید</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-field">
+      <label class="form-label">بودجه</label>
+      <input class="form-input" id="editBudget" type="text" placeholder="مثال: ۵۰۰ میلیون تومان"/>
+    </div>
+    <div class="form-2col">
+      <div class="form-field">
+        <label class="form-label">متراژ</label>
+        <input class="form-input" id="editArea" type="text" placeholder="متر"/>
+      </div>
+      <div class="form-field">
+        <label class="form-label">اتاق خواب</label>
+        <select class="form-select" id="editRooms">
+          <option>فرقی نمی‌کند</option><option>استودیو</option>
+          <option>۱ اتاق</option><option>۲ اتاق</option><option>۳ اتاق</option><option>۴+</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-field">
+      <label class="form-label">طبقه</label>
+      <select class="form-select" id="editFloor">
+        <option>فرقی نمی‌کند</option><option>همکف</option>
+        <option>۱ تا ۳</option><option>۴ تا ۷</option><option>بالای ۷</option>
+      </select>
+    </div>
+    <div class="form-field">
+      <label class="form-label">امکانات مورد نظر</label>
+      <div class="chips" id="editChips">
+        <div class="chip" data-v="پارکینگ">🅿 پارکینگ</div>
+        <div class="chip" data-v="انباری">📦 انباری</div>
+        <div class="chip" data-v="آسانسور">🛗 آسانسور</div>
+        <div class="chip" data-v="نور عالی">☀️ نور عالی</div>
+        <div class="chip" data-v="بالکن">🌿 بالکن</div>
+        <div class="chip" data-v="سند تک‌برگ">📋 سند تک‌برگ</div>
+        <div class="chip" data-v="گاز شهری">🔥 گاز</div>
+        <div class="chip" data-v="نوساز">🏗 نوساز</div>
+        <div class="chip" data-v="نگهبان">🦺 نگهبان</div>
+        <div class="chip" data-v="حیاط">🌳 حیاط</div>
+        <div class="chip" data-v="استخر">🏊 استخر</div>
+        <div class="chip" data-v="سونا">🧖 سونا</div>
+      </div>
+    </div>
+    <div class="form-field">
+      <label class="form-label">توضیحات تکمیلی</label>
+      <textarea class="form-textarea" id="editDesc" placeholder="هر نکته‌ای که مشاوران باید بدانند..."></textarea>
+    </div>
+    <div class="sheet-actions">
+      <button class="btn-sm btn-ghost" onclick="closeEditModal()">انصراف</button>
+      <button class="btn-sm btn-gold" id="saveEditBtn" onclick="saveEdit()">ذخیره تغییرات</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── CONFIG ───
+const SB_URL = "https://vwbyxjhyrrclmpcbkpgj.supabase.co";
+const SB_KEY = "sb_publishable_0xEgmVLQ_fm_XrYMaiF8_Q_z4OyxWpC";
+
+// ─── STATE ───
+let ownerUser = null;
+let currentConvId = null;
+let currentConvData = null;
+let realtimeSub = null;
+let otpTimerInterval = null;
+let pendingOTP = null;
+let allMyRequests = [];
+let currentEditCode = null;
+
+// ─── TELEGRAM ───
+const tg = window.Telegram?.WebApp;
+if (tg) { tg.ready(); tg.expand(); }
+
+// ─── SUPABASE ───
+async function sb(method, path, data = null, params = "") {
+  const url = `${SB_URL}/rest/v1/${path}${params}`;
+  const headers = {
+    "apikey": SB_KEY,
+    "Authorization": `Bearer ${SB_KEY}`,
+    "Content-Type": "application/json",
+    "Prefer": "return=representation"
+  };
+  const opts = { method, headers };
+  if (data) opts.body = JSON.stringify(data);
+  try {
+    const res = await fetch(url, opts);
+    if (!res.ok) { const t = await res.text(); console.error("SB:", t); return null; }
+    const txt = await res.text();
+    return txt ? JSON.parse(txt) : [];
+  } catch(e) { console.error("SB fetch:", e); return null; }
+}
+
+// ─── REALTIME ───
+function connectRealtime(convId, onMessage) {
+  if (realtimeSub) disconnectRealtime();
+  const channel = `messages:conversation_id=eq.${convId}`;
+  const ws = new WebSocket(`wss://vwbyxjhyrrclmpcbkpgj.supabase.co/realtime/v1/websocket?apikey=${SB_KEY}&vsn=1.0.0`);
+  let hbInterval;
+  ws.onopen = () => {
+    ws.send(JSON.stringify({ topic: "realtime:public:" + channel, event: "phx_join", payload: {}, ref: "1" }));
+    hbInterval = setInterval(() => ws.send(JSON.stringify({ topic: "phoenix", event: "heartbeat", payload: {}, ref: "hb" })), 25000);
+  };
+  ws.onmessage = (e) => {
+    try {
+      const msg = JSON.parse(e.data);
+      if (msg.event === "INSERT" && msg.payload?.record) onMessage(msg.payload.record);
+    } catch {}
+  };
+  ws.onclose = () => clearInterval(hbInterval);
+  realtimeSub = { ws, hbInterval };
+}
+
+function disconnectRealtime() {
+  if (realtimeSub) {
+    clearInterval(realtimeSub.hbInterval);
+    realtimeSub.ws.close();
+    realtimeSub = null;
+  }
+}
+
+// ─── UI HELPERS ───
+function showScreen(id) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("show"));
+  document.getElementById(id).classList.add("show");
+}
+
+function showToast(msg, dur = 2500) {
+  const el = document.getElementById("toast");
+  el.textContent = msg;
+  el.classList.add("show");
+  setTimeout(() => el.classList.remove("show"), dur);
+}
+
+function formatTime(iso) {
+  if (!iso) return "";
+  try { return new Date(iso).toLocaleTimeString("fa-IR", { hour: "2-digit", minute: "2-digit" }); }
+  catch { return ""; }
+}
+
+function formatDate(iso) {
+  if (!iso) return "—";
+  try { return new Date(iso).toLocaleDateString("fa-IR"); }
+  catch { return "—"; }
+}
+
+function escHtml(s) {
+  return String(s || '').replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/g,"<br>");
+}
+
+function autoGrow(el) {
+  el.style.height = "auto";
+  el.style.height = Math.min(el.scrollHeight, 100) + "px";
+}
+
+function scrollToBottom() {
+  const body = document.getElementById("chatBody");
+  body.scrollTop = body.scrollHeight;
+}
+
+// ─── OTP LOGIN ───
+async function sendOTP() {
+  const phone = document.getElementById("phoneInput").value.trim();
+  const errEl = document.getElementById("phoneErr");
+  errEl.classList.remove("show");
+
+  if (!/^09\d{9}$/.test(phone)) {
+    errEl.textContent = "شماره معتبر نیست. مثال: 09123456789";
+    errEl.classList.add("show");
+    return;
+  }
+
+  const btn = document.getElementById("sendOtpBtn");
+  btn.disabled = true; btn.textContent = "در حال ارسال...";
+
+  const users = await sb("GET", "users", null, `?phone=eq.${phone}&select=id,full_name,username,phone,wallet,created_at`);
+  if (!users || users.length === 0) {
+    errEl.textContent = "این شماره در سیستم ثبت نشده. ابتدا از ربات ثبت‌نام کنید.";
+    errEl.classList.add("show");
+    btn.disabled = false; btn.textContent = "دریافت کد تأیید";
+    return;
+  }
+
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  pendingOTP = { code: otp, phone, userId: users[0].id, ts: Date.now() };
+
+  await sb("POST", "otp_requests", {
+    user_id: users[0].id, code: otp, phone,
+    expires_at: new Date(Date.now() + 120000).toISOString()
+  });
+
+  document.getElementById("stepPhone").style.display = "none";
+  document.getElementById("stepOtp").style.display = "block";
+  startOtpTimer(120);
+  btn.disabled = false; btn.textContent = "دریافت کد تأیید";
+  showToast("✓ کد به ربات تلگرام شما ارسال شد");
+}
+
+function startOtpTimer(sec) {
+  clearInterval(otpTimerInterval);
+  let t = sec;
+  const el = document.getElementById("timerVal");
+  el.textContent = t;
+  otpTimerInterval = setInterval(() => {
+    t--;
+    el.textContent = t;
+    if (t <= 0) {
+      clearInterval(otpTimerInterval);
+      document.getElementById("otpTimer").innerHTML = '<span style="color:var(--red)">کد منقضی شد</span>';
+    }
+  }, 1000);
+}
+
+async function verifyOTP() {
+  const code = document.getElementById("otpInput").value.trim();
+  const errEl = document.getElementById("otpErr");
+  errEl.classList.remove("show");
+
+  if (!pendingOTP) { errEl.textContent = "ابتدا کد دریافت کنید."; errEl.classList.add("show"); return; }
+  if (Date.now() - pendingOTP.ts > 120000) { errEl.textContent = "کد منقضی شده."; errEl.classList.add("show"); return; }
+
+  const btn = document.getElementById("verifyBtn");
+  btn.disabled = true; btn.textContent = "در حال تأیید...";
+
+  const otpRows = await sb("GET", "otp_requests", null, `?user_id=eq.${pendingOTP.userId}&code=eq.${code}&select=id&order=created_at.desc&limit=1`);
+  if (!otpRows || otpRows.length === 0) {
+    errEl.textContent = "کد اشتباه است.";
+    errEl.classList.add("show");
+    btn.disabled = false; btn.textContent = "تأیید و ورود";
+    return;
+  }
+
+  await sb("DELETE", "otp_requests", null, `?id=eq.${otpRows[0].id}`);
+
+  const user = await sb("GET", "users", null, `?id=eq.${pendingOTP.userId}&select=*`);
+  ownerUser = user[0];
+
+  localStorage.setItem("owner_session", JSON.stringify({
+    userId: ownerUser.id, phone: ownerUser.phone, exp: Date.now() + 7 * 86400000
+  }));
+
+  clearInterval(otpTimerInterval);
+  pendingOTP = null;
+  btn.disabled = false; btn.textContent = "تأیید و ورود";
+  await loadMainPanel();
+}
+
+function backToPhone() {
+  clearInterval(otpTimerInterval);
+  pendingOTP = null;
+  document.getElementById("stepOtp").style.display = "none";
+  document.getElementById("stepPhone").style.display = "block";
+  document.getElementById("otpInput").value = "";
+  document.getElementById("otpErr").classList.remove("show");
+}
+
+// ─── SESSION ───
+async function checkSession() {
+  try {
+    const s = JSON.parse(localStorage.getItem("owner_session") || "null");
+    if (!s || Date.now() > s.exp) return false;
+    const user = await sb("GET", "users", null, `?id=eq.${s.userId}&select=*`);
+    if (!user || !user[0]) return false;
+    ownerUser = user[0];
+    return true;
+  } catch { return false; }
+}
+
+function logout() {
+  if (!confirm("از پنل خارج می‌شوید؟")) return;
+  localStorage.removeItem("owner_session");
+  ownerUser = null;
+  disconnectRealtime();
+  showScreen("loginScreen");
+}
+
+// ─── MAIN PANEL ───
+async function loadMainPanel() {
+  showScreen("mainScreen");
+  document.getElementById("headerName").textContent = ownerUser.full_name || ownerUser.username || "کاربر";
+  await Promise.all([loadDashboard(), loadRequests(), loadChats(), loadProfile()]);
+  startUnreadPoller();
+}
+
+// ─── TABS ───
+function switchTab(name, tabEl = null, navEl = null) {
+  document.querySelectorAll(".tab-page").forEach(p => p.classList.remove("show"));
+  document.getElementById("tab-" + name).classList.add("show");
+  if (tabEl) {
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("on"));
+    tabEl.classList.add("on");
+  }
+  document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("on"));
+  const nav = navEl || document.getElementById("nav-" + name);
+  if (nav) nav.classList.add("on");
+}
+
+// ─── DASHBOARD ───
+async function loadDashboard() {
+  const myReqs = await sb("GET", "requests", null, `?user_id=eq.${ownerUser.id}&select=unique_code,status`);
+  const reqs = myReqs || [];
+  const activeCnt = reqs.filter(r => r.status === 'active').length;
+
+  let totalContacts = 0;
+  if (reqs.length > 0) {
+    const codes = reqs.map(r => r.unique_code).join(',');
+    const contacts = await sb("GET", "advisor_requests", null, `?request_code=in.(${codes})&select=id`);
+    totalContacts = (contacts || []).length;
+  }
+
+  const convs = await sb("GET", "conversations", null,
+    `?owner_id=eq.${ownerUser.id}&select=id,status,request_code,advisor:advisor_id(full_name,username)&order=created_at.desc`);
+  const activeConvs = (convs || []).filter(c => c.status === 'active');
+
+  let unread = 0;
+  for (const c of activeConvs.slice(0, 5)) {
+    const u = await sb("GET", "messages", null,
+      `?conversation_id=eq.${c.id}&sender_id=neq.${ownerUser.id}&is_read=eq.false&select=id`);
+    unread += (u || []).length;
+  }
+
+  document.getElementById("statActive").textContent = activeCnt;
+  document.getElementById("statContacts").textContent = totalContacts;
+  document.getElementById("statChats").textContent = activeConvs.length;
+  document.getElementById("statUnread").textContent = unread;
+
+  await renderDashRecentChats(activeConvs.slice(0, 3));
+}
+
+async function renderDashRecentChats(convs) {
+  const el = document.getElementById("dashRecentChats");
+  if (!convs || convs.length === 0) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-ico">💬</div><div class="empty-title">مکالمه‌ای ندارید</div><div class="empty-sub">پس از تأیید مشاور، مکالمه اینجا نمایش می‌شود</div></div>`;
+    return;
+  }
+  const cards = await Promise.all(convs.map(async c => {
+    const lastMsg = await sb("GET", "messages", null,
+      `?conversation_id=eq.${c.id}&select=content,created_at&order=created_at.desc&limit=1`);
+    const preview = lastMsg && lastMsg[0] ? lastMsg[0].content : "مکالمه را شروع کنید";
+    const time = lastMsg && lastMsg[0] ? formatTime(lastMsg[0].created_at) : "";
+    return { c, preview, time };
+  }));
+  el.innerHTML = cards.map(({ c, preview, time }) => `
+    <div class="conv-card" onclick="openChat(${c.id})">
+      <div class="conv-avatar">🏢</div>
+      <div class="conv-info">
+        <div class="conv-name">${c.advisor?.full_name || c.advisor?.username || 'مشاور'}</div>
+        <div class="conv-preview">${escHtml(preview).substring(0, 50)}</div>
+        <div class="conv-code">${c.request_code}</div>
+      </div>
+      <div class="conv-meta"><div class="conv-time">${time}</div></div>
+    </div>
+  `).join('');
+}
+
+// ─── MY REQUESTS ───
+async function loadRequests() {
+  const el = document.getElementById("requestsList");
+  el.innerHTML = `<div class="loading"><div class="spinner"></div> در حال بارگذاری...</div>`;
+
+  const reqs = await sb("GET", "requests", null, `?user_id=eq.${ownerUser.id}&select=*&order=created_at.desc`);
+  allMyRequests = reqs || [];
+
+  if (allMyRequests.length === 0) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-ico">🏠</div><div class="empty-title">هنوز درخواستی ندارید</div><div class="empty-sub">از دکمه «ثبت درخواست ملک» در ربات شروع کنید</div></div>`;
+    return;
+  }
+
+  const contactCounts = {};
+  const codes = allMyRequests.map(r => r.unique_code).join(',');
+  const allContacts = await sb("GET", "advisor_requests", null, `?request_code=in.(${codes})&select=request_code`);
+  (allContacts || []).forEach(c => {
+    contactCounts[c.request_code] = (contactCounts[c.request_code] || 0) + 1;
+  });
+
+  el.innerHTML = allMyRequests.map(r => `
+    <div class="req-card" onclick="showReqDetail('${r.unique_code}')">
+      <div class="req-head">
+        <div class="req-code">${r.unique_code}</div>
+        <div class="req-status ${r.status || 'active'}">${r.status === 'closed' ? 'منقضی' : 'فعال'}</div>
+      </div>
+      <div class="req-rows">
+        <div class="req-row"><div class="req-icon">📍</div><div class="req-val">${r.location || '—'}</div></div>
+        <div class="req-row"><div class="req-icon">🏠</div><div class="req-val">${r.property_type || '—'} — ${r.purpose || '—'}</div></div>
+        <div class="req-row"><div class="req-icon">💰</div><div class="req-val">${r.budget || '—'}</div></div>
+        ${r.area ? `<div class="req-row"><div class="req-icon">📐</div><div class="req-val">${r.area}</div></div>` : ''}
+      </div>
+      <div class="req-footer">
+        <span class="req-stat">👤 ${contactCounts[r.unique_code] || 0} مشاور تماس گرفت</span>
+        <span class="req-date">${formatDate(r.created_at)}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function showReqDetail(code) {
+  const req = allMyRequests.find(r => r.unique_code === code);
+  if (!req) return;
+
+  const [contacts, convs] = await Promise.all([
+    sb("GET", "advisor_requests", null,
+      `?request_code=eq.${code}&select=advisor_id,created_at,advisor:advisor_id(full_name,username,phone)&order=created_at.desc`),
+    sb("GET", "conversations", null,
+      `?request_code=eq.${code}&owner_id=eq.${ownerUser.id}&select=id,status,advisor:advisor_id(full_name,username)`)
+  ]);
+
+  document.getElementById("modalTitle").textContent = `درخواست ${code}`;
+
+  const contactsHtml = (contacts || []).length
+    ? (contacts || []).map(c => {
+        const conv = (convs || []).find(cv =>
+          cv.advisor?.username === c.advisor?.username || cv.advisor?.full_name === c.advisor?.full_name
+        );
+        return `
+          <div class="advisor-row">
+            <div class="advisor-info">
+              <div class="advisor-name">${c.advisor?.full_name || c.advisor?.username || 'مشاور'}</div>
+              <div class="advisor-phone">${c.advisor?.phone || '—'}</div>
+            </div>
+            <div class="advisor-date">${formatDate(c.created_at)}</div>
+            ${conv ? `<button class="btn-sm btn-ghost" style="min-width:50px;flex:0" onclick="closeModal();openChat(${conv.id})">چت</button>` : ''}
+          </div>`;
+      }).join('')
+    : `<div style="color:var(--text2);font-size:.78rem;padding:8px 0">هنوز مشاوری تماس نگرفته</div>`;
+
+  document.getElementById("modalBody").innerHTML = `
+    <div class="modal-section">
+      <div class="modal-sec-title">اطلاعات درخواست</div>
+      <div class="modal-field"><div class="modal-field-lbl">موقعیت</div><div class="modal-field-val">${req.location || '—'}</div></div>
+      <div class="modal-field"><div class="modal-field-lbl">نوع ملک</div><div class="modal-field-val">${req.property_type || '—'}</div></div>
+      <div class="modal-field"><div class="modal-field-lbl">هدف</div><div class="modal-field-val">${req.purpose || '—'}</div></div>
+      <div class="modal-field"><div class="modal-field-lbl">بودجه</div><div class="modal-field-val">${req.budget || '—'}</div></div>
+      <div class="modal-field"><div class="modal-field-lbl">متراژ</div><div class="modal-field-val">${req.area || '—'}</div></div>
+      <div class="modal-field"><div class="modal-field-lbl">اتاق</div><div class="modal-field-val">${req.rooms || '—'}</div></div>
+      <div class="modal-field"><div class="modal-field-lbl">طبقه</div><div class="modal-field-val">${req.floor || '—'}</div></div>
+      ${req.requirements ? `<div class="modal-field"><div class="modal-field-lbl">امکانات</div><div class="modal-field-val">${req.requirements}</div></div>` : ''}
+      ${req.description ? `<div class="modal-field"><div class="modal-field-lbl">توضیحات</div><div class="modal-field-val">${escHtml(req.description)}</div></div>` : ''}
+    </div>
+    <div class="modal-section">
+      <div class="modal-sec-title">مشاوران تماس‌گرفته (${(contacts || []).length})</div>
+      ${contactsHtml}
+    </div>
+  `;
+
+  document.getElementById("modalActions").innerHTML = `
+    <button class="btn-sm btn-ghost" onclick="closeModal()">بستن</button>
+    <button class="btn-sm btn-ghost" onclick="closeModal();openEditForm('${code}')">✏️ ویرایش</button>
+    ${req.status !== 'closed'
+      ? `<button class="btn-sm btn-red" onclick="closeModal();toggleReqStatus('${code}','active')">❌ بستن آگهی</button>`
+      : `<button class="btn-sm btn-green" onclick="closeModal();toggleReqStatus('${code}','closed')">✅ بازگشایی</button>`}
+  `;
+
+  document.getElementById("reqModal").classList.add("show");
+}
+
+function closeModal(e) {
+  if (!e || e.target === document.getElementById("reqModal")) {
+    document.getElementById("reqModal").classList.remove("show");
+  }
+}
+
+async function toggleReqStatus(code, currentStatus) {
+  const newStatus = currentStatus === 'active' ? 'closed' : 'active';
+  const msg = currentStatus === 'active'
+    ? 'آگهی بسته می‌شود و مشاوران نمی‌توانند آن را ببینند. ادامه می‌دهید؟'
+    : 'آگهی مجدداً فعال می‌شود. ادامه می‌دهید؟';
+  if (!confirm(msg)) return;
+
+  await sb("PATCH", "requests", { status: newStatus }, `?unique_code=eq.${code}&user_id=eq.${ownerUser.id}`);
+  showToast(newStatus === 'active' ? '✅ آگهی بازگشایی شد' : '❌ آگهی بسته شد');
+  await Promise.all([loadRequests(), loadDashboard()]);
+}
+
+// ─── EDIT REQUEST ───
+function openEditForm(code) {
+  const req = allMyRequests.find(r => r.unique_code === code);
+  if (!req) return;
+  currentEditCode = code;
+
+  document.getElementById("editCode").textContent = code;
+  document.getElementById("editLoc").value = req.location || '';
+  document.getElementById("editPtype").value = req.property_type || '';
+  document.getElementById("editPurp").value = req.purpose || '';
+  document.getElementById("editBudget").value = req.budget || '';
+  document.getElementById("editArea").value = req.area || '';
+  document.getElementById("editRooms").value = req.rooms || '';
+  document.getElementById("editFloor").value = req.floor || '';
+  document.getElementById("editDesc").value = req.description || '';
+
+  const reqsList = (req.requirements || '').split(',').map(s => s.trim()).filter(Boolean);
+  document.querySelectorAll('#editChips .chip').forEach(chip => {
+    chip.classList.toggle('on', reqsList.includes(chip.dataset.v));
+  });
+
+  document.getElementById("editModal").classList.add("show");
+}
+
+function closeEditModal(e) {
+  if (!e || e.target === document.getElementById("editModal")) {
+    document.getElementById("editModal").classList.remove("show");
+    currentEditCode = null;
+  }
+}
+
+document.querySelectorAll('#editChips .chip').forEach(c => c.onclick = () => c.classList.toggle('on'));
+
+async function saveEdit() {
+  if (!currentEditCode) return;
+  const btn = document.getElementById("saveEditBtn");
+  btn.disabled = true; btn.textContent = "در حال ذخیره...";
+
+  const selectedChips = [...document.querySelectorAll('#editChips .chip.on')].map(c => c.dataset.v);
+
+  const data = {
+    location: document.getElementById("editLoc").value.trim(),
+    property_type: document.getElementById("editPtype").value,
+    purpose: document.getElementById("editPurp").value,
+    budget: document.getElementById("editBudget").value.trim(),
+    area: document.getElementById("editArea").value.trim(),
+    rooms: document.getElementById("editRooms").value,
+    floor: document.getElementById("editFloor").value,
+    requirements: selectedChips.join(', '),
+    description: document.getElementById("editDesc").value.trim(),
+  };
+
+  const res = await sb("PATCH", "requests", data, `?unique_code=eq.${currentEditCode}&user_id=eq.${ownerUser.id}`);
+
+  btn.disabled = false; btn.textContent = "ذخیره تغییرات";
+
+  if (res !== null) {
+    showToast("✅ درخواست ویرایش شد");
+    document.getElementById("editModal").classList.remove("show");
+    currentEditCode = null;
+    await Promise.all([loadRequests(), loadDashboard()]);
+  } else {
+    showToast("⚠️ خطا در ذخیره تغییرات");
+  }
+}
+
+// ─── CHATS ───
+async function loadChats() {
+  const el = document.getElementById("chatsList");
+  el.innerHTML = `<div class="loading"><div class="spinner"></div> در حال بارگذاری...</div>`;
+
+  const convs = await sb("GET", "conversations", null,
+    `?owner_id=eq.${ownerUser.id}&select=*,advisor:advisor_id(full_name,username,phone)&order=created_at.desc`);
+
+  if (!convs || convs.length === 0) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-ico">💬</div><div class="empty-title">مکالمه‌ای ندارید</div><div class="empty-sub">پس از تأیید درخواست مشاور، مکالمه اینجا نمایش داده می‌شود</div></div>`;
+    return;
+  }
+
+  const cards = await Promise.all(convs.map(async c => {
+    const lastMsg = await sb("GET", "messages", null,
+      `?conversation_id=eq.${c.id}&select=content,created_at,sender_id&order=created_at.desc&limit=1`);
+    const unread = await sb("GET", "messages", null,
+      `?conversation_id=eq.${c.id}&sender_id=neq.${ownerUser.id}&is_read=eq.false&select=id`);
+    const unreadCount = (unread || []).length;
+    const advisor = c.advisor || {};
+    const advisorName = advisor.full_name || advisor.username || 'مشاور';
+    const preview = lastMsg && lastMsg[0] ? lastMsg[0].content : "مکالمه را شروع کنید";
+    const time = lastMsg && lastMsg[0] ? formatTime(lastMsg[0].created_at) : "";
+    return { c, advisorName, preview, time, unreadCount };
+  }));
+
+  el.innerHTML = cards.map(({ c, advisorName, preview, time, unreadCount }) => `
+    <div class="conv-card ${unreadCount > 0 ? 'has-unread' : ''}" onclick="openChat(${c.id})">
+      <div class="conv-avatar">
+        🏢
+        ${unreadCount > 0 ? '<div class="unread-dot"></div>' : ''}
+      </div>
+      <div class="conv-info">
+        <div class="conv-name">${advisorName}</div>
+        <div class="conv-preview">${escHtml(preview).substring(0, 50)}</div>
+        <div class="conv-code">${c.request_code}</div>
+      </div>
+      <div class="conv-meta">
+        <div class="conv-time">${time}</div>
+        ${unreadCount > 0 ? `<div class="conv-badge">${unreadCount}</div>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+async function openChat(convId) {
+  const conv = await sb("GET", "conversations", null,
+    `?id=eq.${convId}&select=*,advisor:advisor_id(full_name,username,phone)`);
+  if (!conv || !conv[0]) return;
+  currentConvData = conv[0];
+  currentConvId = convId;
+
+  const advisor = conv[0].advisor || {};
+  document.getElementById("chatName").textContent = advisor.full_name || advisor.username || 'مشاور';
+  document.getElementById("chatSub").textContent = `کد: ${conv[0].request_code}`;
+
+  showScreen("chatScreen");
+  await loadMessages();
+
+  connectRealtime(convId, (newMsg) => {
+    if (newMsg.sender_id !== ownerUser.id) {
+      appendMessage(newMsg, true);
+      markRead(newMsg.id);
+    }
+  });
+
+  await sb("PATCH", "messages", { is_read: true },
+    `?conversation_id=eq.${convId}&sender_id=neq.${ownerUser.id}`);
+}
+
+async function loadMessages() {
+  const body = document.getElementById("chatBody");
+  body.innerHTML = `<div class="loading"><div class="spinner"></div></div>`;
+
+  const msgs = await sb("GET", "messages", null,
+    `?conversation_id=eq.${currentConvId}&order=created_at.asc&select=*`);
+  body.innerHTML = "";
+
+  if (!msgs || msgs.length === 0) {
+    body.innerHTML = `<div class="empty-state"><div class="empty-ico">💬</div><div class="empty-title">مکالمه را شروع کنید</div><div class="empty-sub">اولین پیام را بنویسید</div></div>`;
+    return;
+  }
+
+  let lastDate = "";
+  msgs.forEach(msg => {
+    const d = new Date(msg.created_at).toLocaleDateString("fa-IR");
+    if (d !== lastDate) {
+      const sep = document.createElement("div");
+      sep.className = "msg-date-sep";
+      sep.innerHTML = `<span>${d}</span>`;
+      body.appendChild(sep);
+      lastDate = d;
+    }
+    appendMessage(msg, false);
+  });
+  scrollToBottom();
+}
+
+function appendMessage(msg, scroll = true) {
+  const body = document.getElementById("chatBody");
+  const empty = body.querySelector(".empty-state");
+  if (empty) empty.remove();
+
+  const isMe = msg.sender_id === ownerUser.id;
+  const div = document.createElement("div");
+  div.className = `msg ${isMe ? 'me' : 'them'}`;
+  div.innerHTML = `
+    <div class="msg-bubble">${escHtml(msg.content)}</div>
+    <div class="msg-time">${formatTime(msg.created_at)}</div>
+  `;
+  body.appendChild(div);
+  if (scroll) scrollToBottom();
+}
+
+async function sendMessage() {
+  const input = document.getElementById("chatInputEl");
+  const text = input.value.trim();
+  if (!text || !currentConvId) return;
+
+  input.value = "";
+  autoGrow(input);
+
+  const msgData = {
+    conversation_id: currentConvId,
+    sender_id: ownerUser.id,
+    content: text,
+    type: "text",
+    is_read: false
+  };
+
+  appendMessage({ ...msgData, created_at: new Date().toISOString() });
+  const res = await sb("POST", "messages", msgData);
+  if (!res) showToast("⚠️ خطا در ارسال پیام");
+}
+
+function closeChat() {
+  disconnectRealtime();
+  currentConvId = null;
+  currentConvData = null;
+  showScreen("mainScreen");
+  loadChats();
+  loadDashboard();
+}
+
+function handleChatKey(e) {
+  if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
+
+async function markRead(msgId) {
+  await sb("PATCH", "messages", { is_read: true }, `?id=eq.${msgId}`);
+}
+
+// ─── PROFILE ───
+async function loadProfile() {
+  const u = ownerUser;
+  const reqs = await sb("GET", "requests", null, `?user_id=eq.${u.id}&select=id,status`);
+  const totalReqs = (reqs || []).length;
+  const activeReqs = (reqs || []).filter(r => r.status !== 'closed').length;
+
+  document.getElementById("profileContent").innerHTML = `
+    <div class="profile-card">
+      <div class="profile-avatar">👤</div>
+      <div class="profile-name">${u.full_name || u.username || 'کاربر'}</div>
+      <div class="profile-phone">${u.phone || '—'}</div>
+      <div class="profile-badges">
+        <div class="badge badge-gold">🏠 متقاضی ملک</div>
+      </div>
+    </div>
+    <div class="sec-title">اطلاعات حساب</div>
+    <div class="info-rows">
+      <div class="info-row"><div class="info-key">یوزرنیم تلگرام</div><div class="info-val">${u.username ? '@'+u.username : '—'}</div></div>
+      <div class="info-row"><div class="info-key">شماره تلفن</div><div class="info-val">${u.phone || '—'}</div></div>
+      <div class="info-row"><div class="info-key">کیف پول</div><div class="info-val" style="color:var(--gold)">${(u.wallet||0).toLocaleString('fa')} ت</div></div>
+      <div class="info-row"><div class="info-key">کل درخواست‌ها</div><div class="info-val">${totalReqs}</div></div>
+      <div class="info-row"><div class="info-key">درخواست‌های فعال</div><div class="info-val" style="color:var(--green)">${activeReqs}</div></div>
+      <div class="info-row"><div class="info-key">تاریخ عضویت</div><div class="info-val">${formatDate(u.created_at)}</div></div>
+    </div>
+    <br>
+    <button class="l-btn-ghost" onclick="logout()">خروج از حساب</button>
+  `;
+}
+
+// ─── UNREAD POLLER ───
+function startUnreadPoller() {
+  setInterval(async () => {
+    if (currentConvId) return;
+    const convs = await sb("GET", "conversations", null,
+      `?owner_id=eq.${ownerUser.id}&status=eq.active&select=id`);
+    if (!convs) return;
+    let total = 0;
+    for (const c of convs) {
+      const u = await sb("GET", "messages", null,
+        `?conversation_id=eq.${c.id}&sender_id=neq.${ownerUser.id}&is_read=eq.false&select=id`);
+      total += (u || []).length;
+    }
+    const badge = document.getElementById("navUnreadBadge");
+    if (total > 0) { badge.style.display = "flex"; badge.textContent = total; }
+    else badge.style.display = "none";
+  }, 30000);
+}
+
+// ─── INIT ───
+(async () => {
+  const ok = await checkSession();
+  if (ok) await loadMainPanel();
+  else showScreen("loginScreen");
+})();
+</script>
+</body>
+</html>
