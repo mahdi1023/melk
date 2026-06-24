@@ -220,30 +220,11 @@ body{font-family:'Vazirmatn',sans-serif;background:var(--bg);color:var(--text);m
   <div class="spinner" style="width:32px;height:32px;border-width:3px"></div>
 </div>
 
-<!-- ─── LOGIN ─── -->
-<div id="loginScreen" class="screen">
-  <div class="login-glow"></div>
-  <div class="login-icon">🏠</div>
-  <div class="login-title">پنل درخواست‌هایم</div>
-  <div class="login-sub">شماره تلفن یا آیدی عددی تلگرام خود را وارد کنید.<br>کد تأیید از طریق <b>ربات تلگرام</b> ارسال می‌شود.</div>
-  <div class="login-box">
-    <div id="stepPhone">
-      <div class="l-label">شماره تلفن یا Telegram ID</div>
-      <input class="l-input" id="phoneInput" type="text" placeholder="09123456789 یا ID عددی تلگرام" maxlength="15" inputmode="numeric" autocomplete="off" style="letter-spacing:1px"/>
-      <div class="l-err" id="phoneErr"></div>
-      <button class="l-btn" id="sendOtpBtn" onclick="sendOTP()">دریافت کد از ربات</button>
-    </div>
-    <div id="stepOtp" style="display:none">
-      <div class="l-label">رمز موقت ورود</div>
-      <div class="otp-row">
-        <input class="l-input" id="otpInput" type="text" placeholder="1234" maxlength="6" inputmode="numeric" autocomplete="one-time-code"/>
-      </div>
-      <div class="l-timer" id="otpTimer">رمز موقت: <span id="timerVal" style="color:var(--gold);font-weight:700">1234</span></div>
-      <div class="l-err" id="otpErr"></div>
-      <button class="l-btn" id="verifyBtn" onclick="verifyOTP()">تأیید و ورود</button>
-      <button class="l-btn-ghost" onclick="backToPhone()">← تغییر شماره</button>
-    </div>
-  </div>
+<!-- ─── ERROR SCREEN ─── -->
+<div id="errorScreen" class="screen" style="align-items:center;justify-content:center;min-height:100vh;background:var(--bg);padding:32px;text-align:center">
+  <div style="font-size:3rem;margin-bottom:16px">🔒</div>
+  <div style="font-size:1.1rem;font-weight:700;margin-bottom:10px">دسترسی محدود</div>
+  <div style="font-size:.85rem;color:var(--text2);line-height:1.8">این پنل فقط از داخل<br><b style="color:var(--gold)">ربات تلگرام</b> قابل دسترسی است.<br><br>روی دکمه «🗂 پنل درخواست‌هایم» در ربات کلیک کنید.</div>
 </div>
 
 <!-- ─── MAIN PANEL ─── -->
@@ -450,8 +431,6 @@ let ownerUser = null;
 let currentConvId = null;
 let currentConvData = null;
 let realtimeSub = null;
-let otpTimerInterval = null;
-let pendingOTP = null;
 let allMyRequests = [];
 let currentEditCode = null;
 
@@ -543,108 +522,6 @@ function autoGrow(el) {
 function scrollToBottom() {
   const body = document.getElementById("chatBody");
   body.scrollTop = body.scrollHeight;
-}
-
-// ─── OTP LOGIN ───
-async function sendOTP() {
-  const input = document.getElementById("phoneInput").value.trim().replace(/\s/g, "");
-  const errEl = document.getElementById("phoneErr");
-  errEl.classList.remove("show");
-
-  const isPhone = /^09\d{9}$/.test(input);
-  const isTgId  = /^\d{5,15}$/.test(input) && !isPhone;
-
-  if (!isPhone && !isTgId) {
-    errEl.textContent = "ورودی معتبر نیست. شماره (09...) یا ID عددی تلگرام وارد کنید.";
-    errEl.classList.add("show");
-    return;
-  }
-
-  const btn = document.getElementById("sendOtpBtn");
-  btn.disabled = true; btn.textContent = "در حال جستجو...";
-
-  // جستجو: ابتدا شماره تلفن، سپس Telegram ID
-  let users = null;
-  if (isPhone) {
-    users = await sb("GET", "users", null, `?phone=eq.${input}&select=*`);
-  }
-  if ((!users || users.length === 0) && isTgId) {
-    users = await sb("GET", "users", null, `?id=eq.${input}&select=*`);
-  }
-  // fallback: اگر شماره بود ولی پیدا نشد، با ID هم امتحان کن
-  if ((!users || users.length === 0) && isPhone) {
-    users = await sb("GET", "users", null, `?id=eq.${input}&select=*`);
-  }
-
-  if (!users || users.length === 0) {
-    errEl.textContent = "کاربری با این مشخصات یافت نشد. ابتدا /start را در ربات بزنید.";
-    errEl.classList.add("show");
-    btn.disabled = false; btn.textContent = "دریافت کد از ربات";
-    return;
-  }
-
-  pendingOTP = { code: "1234", userId: users[0].id, ts: Date.now() };
-
-  document.getElementById("stepPhone").style.display = "none";
-  document.getElementById("stepOtp").style.display = "block";
-  startOtpTimer(3600);
-  btn.disabled = false; btn.textContent = "دریافت کد از ربات";
-  showToast("✓ رمز موقت: 1234");
-}
-
-function startOtpTimer(sec) {
-  clearInterval(otpTimerInterval);
-  let t = sec;
-  const el = document.getElementById("timerVal");
-  el.textContent = t;
-  otpTimerInterval = setInterval(() => {
-    t--;
-    el.textContent = t;
-    if (t <= 0) {
-      clearInterval(otpTimerInterval);
-      document.getElementById("otpTimer").innerHTML = '<span style="color:var(--red)">کد منقضی شد</span>';
-    }
-  }, 1000);
-}
-
-async function verifyOTP() {
-  const code = document.getElementById("otpInput").value.trim();
-  const errEl = document.getElementById("otpErr");
-  errEl.classList.remove("show");
-
-  if (!pendingOTP) { errEl.textContent = "ابتدا کد دریافت کنید."; errEl.classList.add("show"); return; }
-  if (Date.now() - pendingOTP.ts > 120000) { errEl.textContent = "کد منقضی شده."; errEl.classList.add("show"); return; }
-
-  const btn = document.getElementById("verifyBtn");
-  btn.disabled = true; btn.textContent = "در حال تأیید...";
-
-  if (code !== "1234") {
-    errEl.textContent = "رمز اشتباه است.";
-    errEl.classList.add("show");
-    btn.disabled = false; btn.textContent = "تأیید و ورود";
-    return;
-  }
-
-  const user = await sb("GET", "users", null, `?id=eq.${pendingOTP.userId}&select=*`);
-  ownerUser = user[0];
-
-  localStorage.setItem("owner_session", JSON.stringify({
-    userId: ownerUser.id, phone: ownerUser.phone, exp: Date.now() + 7 * 86400000
-  }));
-
-  clearInterval(otpTimerInterval);
-  pendingOTP = null;
-  btn.disabled = false; btn.textContent = "تأیید و ورود";
-  await loadMainPanel();
-}
-
-function backToPhone() {
-  clearInterval(otpTimerInterval);
-  pendingOTP = null;
-  document.getElementById("stepOtp").style.display = "none";
-  document.getElementById("stepPhone").style.display = "block";
-  document.getElementById("otpInput").value = "";
-  document.getElementById("otpErr").classList.remove("show");
 }
 
 // ─── TELEGRAM AUTO-AUTH ───
@@ -1149,16 +1026,13 @@ function startUnreadPoller() {
 
 // ─── INIT ───
 (async () => {
-  // اگر از داخل تلگرام باز شده → ورود خودکار
   const tgOk = await tryTelegramAuth();
   if (tgOk) { await loadMainPanel(); return; }
 
-  // اگر session معتبر داری → ورود خودکار
   const sessOk = await checkSession();
   if (sessOk) { await loadMainPanel(); return; }
 
-  // در غیر این صورت → صفحه لاگین
-  showScreen("loginScreen");
+  showScreen("errorScreen");
 })();
 </script>
 </body>
