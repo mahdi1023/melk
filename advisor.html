@@ -394,6 +394,16 @@ body{font-family:'Vazirmatn',sans-serif;background:var(--bg);color:var(--text);m
         <div class="stat-val" id="statUnread">—</div>
         <div class="stat-lbl">پیام خوانده‌نشده</div>
       </div>
+      <div class="stat-card">
+        <div class="stat-ico">👥</div>
+        <div class="stat-val" id="statUniqueOwners">—</div>
+        <div class="stat-lbl">متقاضی منحصربه‌فرد</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-ico">🎯</div>
+        <div class="stat-val" id="statSuccess">—</div>
+        <div class="stat-lbl">نرخ موفقیت</div>
+      </div>
     </div>
 
     <div class="sec-title">آخرین مکالمات</div>
@@ -732,16 +742,22 @@ function switchTab(name, tabEl = null, navEl = null) {
 
 // ─── DASHBOARD ──────────────────────────────────────────────
 async function loadDashboard() {
-  const convs = await sb("GET", "conversations", null, `?advisor_id=eq.${advisorUser.id}&select=*`);
-  const activeConvs = (convs || []).filter(c => c.status === "active");
-  const closedConvs = (convs || []).filter(c => c.status === "closed");
+  const [convs, requests] = await Promise.all([
+    sb("GET", "conversations", null, `?advisor_id=eq.${advisorUser.id}&select=*`),
+    sb("GET", "advisor_requests", null, `?advisor_id=eq.${advisorUser.id}&select=id`)
+  ]);
 
-  // آمار درخواست‌های مشاهده‌شده
-  const requests = await sb("GET", "advisor_requests", null, `?advisor_id=eq.${advisorUser.id}&select=id`);
+  const allConvs = convs || [];
+  const activeConvs = allConvs.filter(c => c.status === "active");
+  const closedConvs = allConvs.filter(c => c.status === "closed");
+  const uniqueOwners = new Set(allConvs.map(c => c.owner_id)).size;
+  const successRate = allConvs.length > 0 ? Math.round(closedConvs.length / allConvs.length * 100) : 0;
 
   document.getElementById("statChats").textContent = activeConvs.length;
   document.getElementById("statRequests").textContent = (requests || []).length;
   document.getElementById("statClosed").textContent = closedConvs.length;
+  document.getElementById("statUniqueOwners").textContent = uniqueOwners;
+  document.getElementById("statSuccess").textContent = successRate + "%";
 
   // پیام‌های خوانده‌نشده
   let totalUnread = 0;
@@ -837,8 +853,19 @@ async function loadRequests() {
 // ─── PROFILE ────────────────────────────────────────────────
 async function loadProfile() {
   const u = advisorUser;
-  const advisor = u.advisor || {};
   const el = document.getElementById("profileContent");
+
+  el.innerHTML = `<div class="loading"><div class="spinner"></div> در حال بارگذاری آمار...</div>`;
+
+  const [convs, requests] = await Promise.all([
+    sb("GET", "conversations", null, `?advisor_id=eq.${u.id}&select=id,status,owner_id`),
+    sb("GET", "advisor_requests", null, `?advisor_id=eq.${u.id}&select=id`)
+  ]);
+
+  const allConvs = convs || [];
+  const closedConvs = allConvs.filter(c => c.status === "closed");
+  const uniqueOwners = new Set(allConvs.map(c => c.owner_id)).size;
+  const successRate = allConvs.length > 0 ? Math.round(closedConvs.length / allConvs.length * 100) : 0;
 
   el.innerHTML = `
     <div class="profile-card">
@@ -848,6 +875,29 @@ async function loadProfile() {
       <div class="profile-badges">
         <div class="badge badge-gold">🏛 مشاور ملک</div>
         <div class="badge badge-green">✅ تأیید شده</div>
+      </div>
+    </div>
+    <div class="sec-title">آمار کلی عملکرد</div>
+    <div class="stat-grid" style="margin-bottom:16px">
+      <div class="stat-card">
+        <div class="stat-ico">📋</div>
+        <div class="stat-val">${(requests || []).length}</div>
+        <div class="stat-lbl">کل تماس‌ها</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-ico">💬</div>
+        <div class="stat-val">${allConvs.length}</div>
+        <div class="stat-lbl">کل مکالمات</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-ico">👥</div>
+        <div class="stat-val">${uniqueOwners}</div>
+        <div class="stat-lbl">متقاضی منحصربه‌فرد</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-ico">🎯</div>
+        <div class="stat-val">${successRate}%</div>
+        <div class="stat-lbl">نرخ موفقیت</div>
       </div>
     </div>
     <div class="sec-title">اطلاعات حساب</div>
