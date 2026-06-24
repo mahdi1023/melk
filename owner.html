@@ -859,6 +859,7 @@ async function saveEdit() {
     floor: document.getElementById("editFloor").value,
     requirements: selectedChips.join(', '),
     description: document.getElementById("editDesc").value.trim(),
+    needs_channel_update: true,
   };
 
   const res = await sb("PATCH", "requests", data, `?unique_code=eq.${currentEditCode}&user_id=eq.${ownerUser.id}`);
