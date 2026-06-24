@@ -320,32 +320,16 @@ body{font-family:'Vazirmatn',sans-serif;background:var(--bg);color:var(--text);m
 <!-- ─── TOAST ─── -->
 <div id="toast"></div>
 
-<!-- ─── LOGIN SCREEN ─── -->
-<div id="loginScreen" class="screen show">
-  <div class="login-glow"></div>
-  <div class="login-icon">🏛</div>
-  <div class="login-title">پنل مشاور</div>
-  <div class="login-sub">با شماره تلفن ثبت‌شده در سیستم وارد شوید</div>
-  <div class="login-box">
-    <!-- Step 1: phone -->
-    <div id="stepPhone">
-      <div class="l-label">شماره تلفن</div>
-      <input class="l-input" id="phoneInput" type="tel" placeholder="09123456789" maxlength="11" inputmode="numeric" autocomplete="off"/>
-      <div class="l-err" id="phoneErr"></div>
-      <button class="l-btn" id="sendOtpBtn" onclick="sendOTP()">دریافت کد تأیید</button>
-    </div>
-    <!-- Step 2: OTP -->
-    <div id="stepOtp" style="display:none">
-      <div class="l-label">کد ۶ رقمی ارسال شده</div>
-      <div class="otp-row">
-        <input class="l-input" id="otpInput" type="text" placeholder="------" maxlength="6" inputmode="numeric" autocomplete="one-time-code"/>
-      </div>
-      <div class="l-timer" id="otpTimer">کد تا <span id="timerVal">120</span> ثانیه معتبر است</div>
-      <div class="l-err" id="otpErr"></div>
-      <button class="l-btn" id="verifyBtn" onclick="verifyOTP()">تأیید و ورود</button>
-      <button class="l-btn-ghost" onclick="backToPhone()">← تغییر شماره</button>
-    </div>
-  </div>
+<!-- ─── INIT SCREEN ─── -->
+<div id="initScreen" class="screen show" style="align-items:center;justify-content:center;min-height:100vh;background:var(--bg)">
+  <div class="spinner" style="width:32px;height:32px;border-width:3px"></div>
+</div>
+
+<!-- ─── ERROR SCREEN ─── -->
+<div id="errorScreen" class="screen" style="align-items:center;justify-content:center;min-height:100vh;background:var(--bg);padding:32px;text-align:center">
+  <div style="font-size:3rem;margin-bottom:16px">🔒</div>
+  <div style="font-size:1.1rem;font-weight:700;margin-bottom:10px">دسترسی محدود</div>
+  <div style="font-size:.85rem;color:var(--text2);line-height:1.8" id="errorMsg">این پنل فقط از داخل<br><b style="color:var(--gold)">ربات تلگرام</b> قابل دسترسی است.</div>
 </div>
 
 <!-- ─── MAIN PANEL SCREEN ─── -->
@@ -494,8 +478,6 @@ let advisorUser = null;         // کاربر لاگین‌شده (از جدول
 let currentConvId = null;       // مکالمه باز
 let currentConvData = null;
 let realtimeSub = null;         // Supabase realtime channel
-let otpTimerInterval = null;
-let pendingOTP = null;          // کد OTP ارسال‌شده (برای حالت demo)
 let unreadCounts = {};          // { conv_id: count }
 
 // ─── TELEGRAM WEBAPP ────────────────────────────────────────
@@ -564,131 +546,27 @@ function showScreen(id) {
   document.getElementById(id).classList.add("show");
 }
 
-// ─── OTP LOGIN ──────────────────────────────────────────────
-async function sendOTP() {
-  const phone = document.getElementById("phoneInput").value.trim();
-  const errEl = document.getElementById("phoneErr");
-  errEl.classList.remove("show");
-
-  if (!/^09\d{9}$/.test(phone)) {
-    errEl.textContent = "شماره معتبر نیست. مثال: 09123456789";
-    errEl.classList.add("show");
-    return;
-  }
-
-  const btn = document.getElementById("sendOtpBtn");
-  btn.disabled = true;
-  btn.textContent = "در حال ارسال...";
-
-  // بررسی وجود مشاور در DB
-  const users = await sb("GET", "users", null, `?phone=eq.${phone}&select=*`);
-  if (!users || users.length === 0) {
-    errEl.textContent = "این شماره در سیستم ثبت‌نام نشده است.";
-    errEl.classList.add("show");
-    btn.disabled = false;
-    btn.textContent = "دریافت کد تأیید";
-    return;
-  }
-
-  // بررسی اینکه مشاور است (جدول advisors)
-  const advisorCheck = await sb("GET", "advisors", null, `?user_id=eq.${users[0].id}&select=id,is_active`);
-  if (!advisorCheck || advisorCheck.length === 0) {
-    errEl.textContent = "دسترسی مشاور برای این شماره فعال نیست.";
-    errEl.classList.add("show");
-    btn.disabled = false;
-    btn.textContent = "دریافت کد تأیید";
-    return;
-  }
-
-  if (!advisorCheck[0].is_active) {
-    errEl.textContent = "حساب مشاور شما غیرفعال است. با پشتیبانی تماس بگیرید.";
-    errEl.classList.add("show");
-    btn.disabled = false;
-    btn.textContent = "دریافت کد تأیید";
-    return;
-  }
-
-  // ساخت OTP 6 رقمی
-  const otp = Math.floor(100000 + Math.random() * 900000).toString();
-  pendingOTP = { code: otp, phone, userId: users[0].id, ts: Date.now() };
-
-  // ذخیره OTP در Supabase برای bot بفرسته
-  await sb("POST", "otp_requests", { user_id: users[0].id, code: otp, phone, expires_at: new Date(Date.now() + 120000).toISOString() });
-
-  // نمایش مرحله OTP
-  document.getElementById("stepPhone").style.display = "none";
-  document.getElementById("stepOtp").style.display = "block";
-  startOtpTimer(120);
-  btn.disabled = false;
-  btn.textContent = "دریافت کد تأیید";
-
-  showToast("✅ کد به ربات تلگرام شما ارسال شد");
-}
-
-function startOtpTimer(sec) {
-  clearInterval(otpTimerInterval);
-  let t = sec;
-  const el = document.getElementById("timerVal");
-  el.textContent = t;
-  otpTimerInterval = setInterval(() => {
-    t--;
-    el.textContent = t;
-    if (t <= 0) {
-      clearInterval(otpTimerInterval);
-      document.getElementById("otpTimer").innerHTML = '<span style="color:var(--red)">کد منقضی شد</span>';
+// ─── TELEGRAM AUTO-AUTH ─────────────────────────────────────
+async function tryTelegramAuth() {
+  try {
+    const tgApp = window.Telegram?.WebApp;
+    if (!tgApp || !tgApp.initDataUnsafe?.user?.id) return false;
+    const tgUser = tgApp.initDataUnsafe.user;
+    const [user, advisor] = await Promise.all([
+      sb("GET", "users", null, `?id=eq.${tgUser.id}&select=*`),
+      sb("GET", "advisors", null, `?user_id=eq.${tgUser.id}&select=*`)
+    ]);
+    if (!user || user.length === 0) return false;
+    if (!advisor || advisor.length === 0 || !advisor[0].is_active) {
+      document.getElementById("errorMsg").innerHTML =
+        "دسترسی مشاور برای حساب شما فعال نیست.<br><br>" +
+        "برای فعال‌سازی با ادمین تماس بگیرید.";
+      return "no_advisor";
     }
-  }, 1000);
-}
-
-async function verifyOTP() {
-  const code = document.getElementById("otpInput").value.trim();
-  const errEl = document.getElementById("otpErr");
-  errEl.classList.remove("show");
-
-  if (!pendingOTP) { errEl.textContent = "ابتدا کد دریافت کنید."; errEl.classList.add("show"); return; }
-  if (Date.now() - pendingOTP.ts > 120000) { errEl.textContent = "کد منقضی شده. مجدداً دریافت کنید."; errEl.classList.add("show"); return; }
-
-  const btn = document.getElementById("verifyBtn");
-  btn.disabled = true;
-  btn.textContent = "در حال تأیید...";
-
-  // بررسی OTP از Supabase
-  const otpRows = await sb("GET", "otp_requests", null, `?user_id=eq.${pendingOTP.userId}&code=eq.${code}&select=id&order=created_at.desc&limit=1`);
-  if (!otpRows || otpRows.length === 0) {
-    errEl.textContent = "کد اشتباه است.";
-    errEl.classList.add("show");
-    btn.disabled = false;
-    btn.textContent = "تأیید و ورود";
-    return;
-  }
-
-  // پاک کردن OTP استفاده‌شده
-  await sb("DELETE", "otp_requests", null, `?id=eq.${otpRows[0].id}`);
-
-  // دریافت اطلاعات کامل کاربر و مشاور
-  const user = await sb("GET", "users", null, `?id=eq.${pendingOTP.userId}&select=*`);
-  const advisor = await sb("GET", "advisors", null, `?user_id=eq.${pendingOTP.userId}&select=*`);
-  advisorUser = { ...user[0], advisor: advisor[0] };
-
-  // ذخیره در localStorage (برای session)
-  localStorage.setItem("advisor_session", JSON.stringify({ userId: advisorUser.id, phone: advisorUser.phone, exp: Date.now() + 7 * 86400000 }));
-
-  clearInterval(otpTimerInterval);
-  pendingOTP = null;
-
-  btn.disabled = false;
-  btn.textContent = "تأیید و ورود";
-
-  await loadMainPanel();
-}
-
-function backToPhone() {
-  clearInterval(otpTimerInterval);
-  pendingOTP = null;
-  document.getElementById("stepOtp").style.display = "none";
-  document.getElementById("stepPhone").style.display = "block";
-  document.getElementById("otpInput").value = "";
-  document.getElementById("otpErr").classList.remove("show");
+    advisorUser = { ...user[0], advisor: advisor[0] };
+    localStorage.setItem("advisor_session", JSON.stringify({ userId: advisorUser.id, exp: Date.now() + 7 * 86400000 }));
+    return true;
+  } catch { return false; }
 }
 
 // ─── SESSION CHECK ───────────────────────────────────────────
@@ -709,7 +587,7 @@ function logout() {
   localStorage.removeItem("advisor_session");
   advisorUser = null;
   disconnectRealtime();
-  showScreen("loginScreen");
+  showScreen("errorScreen");
 }
 
 // ─── MAIN PANEL ─────────────────────────────────────────────
@@ -1110,9 +988,14 @@ function escHtml(s) {
 
 // ─── INIT ────────────────────────────────────────────────────
 (async () => {
-  const ok = await checkSession();
-  if (ok) await loadMainPanel();
-  else showScreen("loginScreen");
+  const tgOk = await tryTelegramAuth();
+  if (tgOk === true) { await loadMainPanel(); return; }
+  if (tgOk === "no_advisor") { showScreen("errorScreen"); return; }
+
+  const sessOk = await checkSession();
+  if (sessOk) { await loadMainPanel(); return; }
+
+  showScreen("errorScreen");
 })();
 </script>
 </body>
