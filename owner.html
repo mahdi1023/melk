@@ -215,21 +215,26 @@ body{font-family:'Vazirmatn',sans-serif;background:var(--bg);color:var(--text);m
 
 <div id="toast"></div>
 
+<!-- ─── LOADING INIT ─── -->
+<div id="initScreen" class="screen show" style="align-items:center;justify-content:center;min-height:100vh;background:var(--bg)">
+  <div class="spinner" style="width:32px;height:32px;border-width:3px"></div>
+</div>
+
 <!-- ─── LOGIN ─── -->
-<div id="loginScreen" class="screen show">
+<div id="loginScreen" class="screen">
   <div class="login-glow"></div>
   <div class="login-icon">🏠</div>
   <div class="login-title">پنل درخواست‌هایم</div>
-  <div class="login-sub">با شماره تلفن ثبت‌شده در سیستم وارد شوید</div>
+  <div class="login-sub">برای ورود، شماره تلفن ثبت‌شده در ربات را وارد کنید.<br>کد تأیید از طریق ربات تلگرام ارسال می‌شود.</div>
   <div class="login-box">
     <div id="stepPhone">
       <div class="l-label">شماره تلفن</div>
       <input class="l-input" id="phoneInput" type="tel" placeholder="09123456789" maxlength="11" inputmode="numeric" autocomplete="off"/>
       <div class="l-err" id="phoneErr"></div>
-      <button class="l-btn" id="sendOtpBtn" onclick="sendOTP()">دریافت کد تأیید</button>
+      <button class="l-btn" id="sendOtpBtn" onclick="sendOTP()">دریافت کد از ربات</button>
     </div>
     <div id="stepOtp" style="display:none">
-      <div class="l-label">کد ۶ رقمی ارسال‌شده به ربات</div>
+      <div class="l-label">کد ارسال‌شده از ربات تلگرام</div>
       <div class="otp-row">
         <input class="l-input" id="otpInput" type="text" placeholder="------" maxlength="6" inputmode="numeric" autocomplete="one-time-code"/>
       </div>
@@ -634,6 +639,22 @@ function backToPhone() {
   document.getElementById("stepPhone").style.display = "block";
   document.getElementById("otpInput").value = "";
   document.getElementById("otpErr").classList.remove("show");
+}
+
+// ─── TELEGRAM AUTO-AUTH ───
+async function tryTelegramAuth() {
+  try {
+    const tg = window.Telegram?.WebApp;
+    if (!tg || !tg.initDataUnsafe?.user?.id) return false;
+    const tgUser = tg.initDataUnsafe.user;
+    const user = await sb("GET", "users", null, `?id=eq.${tgUser.id}&select=*`);
+    if (!user || user.length === 0) return false;
+    ownerUser = user[0];
+    localStorage.setItem("owner_session", JSON.stringify({
+      userId: ownerUser.id, exp: Date.now() + 7 * 86400000
+    }));
+    return true;
+  } catch { return false; }
 }
 
 // ─── SESSION ───
@@ -1122,9 +1143,16 @@ function startUnreadPoller() {
 
 // ─── INIT ───
 (async () => {
-  const ok = await checkSession();
-  if (ok) await loadMainPanel();
-  else showScreen("loginScreen");
+  // اگر از داخل تلگرام باز شده → ورود خودکار
+  const tgOk = await tryTelegramAuth();
+  if (tgOk) { await loadMainPanel(); return; }
+
+  // اگر session معتبر داری → ورود خودکار
+  const sessOk = await checkSession();
+  if (sessOk) { await loadMainPanel(); return; }
+
+  // در غیر این صورت → صفحه لاگین
+  showScreen("loginScreen");
 })();
 </script>
 </body>
