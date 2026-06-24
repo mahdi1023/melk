@@ -425,6 +425,8 @@ body{font-family:'Vazirmatn',sans-serif;background:var(--bg);color:var(--text);m
 // ─── CONFIG ───
 const SB_URL = "https://vwbyxjhyrrclmpcbkpgj.supabase.co";
 const SB_KEY = "sb_publishable_0xEgmVLQ_fm_XrYMaiF8_Q_z4OyxWpC";
+const REQUEST_LIFETIME_DAYS = 30;
+const RENEW_COST = 50000;
 
 // ─── STATE ───
 let ownerUser = null;
@@ -508,6 +510,25 @@ function formatDate(iso) {
   if (!iso) return "—";
   try { return new Date(iso).toLocaleDateString("fa-IR"); }
   catch { return "—"; }
+}
+
+function isExpired(req) {
+  if (req.status === 'closed') return true;
+  if (!req.created_at) return false;
+  const expiry = new Date(req.created_at).getTime() + REQUEST_LIFETIME_DAYS * 86400000;
+  return Date.now() > expiry;
+}
+
+function expiryDate(req) {
+  if (!req.created_at) return "—";
+  const d = new Date(new Date(req.created_at).getTime() + REQUEST_LIFETIME_DAYS * 86400000);
+  try { return d.toLocaleDateString("fa-IR"); } catch { return "—"; }
+}
+
+function daysLeft(req) {
+  if (!req.created_at) return 0;
+  const expiry = new Date(req.created_at).getTime() + REQUEST_LIFETIME_DAYS * 86400000;
+  return Math.max(0, Math.ceil((expiry - Date.now()) / 86400000));
 }
 
 function escHtml(s) {
@@ -659,11 +680,16 @@ async function loadRequests() {
     contactCounts[c.request_code] = (contactCounts[c.request_code] || 0) + 1;
   });
 
-  el.innerHTML = allMyRequests.map(r => `
+  el.innerHTML = allMyRequests.map(r => {
+    const expired = isExpired(r);
+    const left = daysLeft(r);
+    const statusLabel = expired ? 'اعتبار تموم' : (left <= 5 ? `${left} روز مانده` : 'فعال');
+    const statusClass = expired ? 'closed' : 'active';
+    return `
     <div class="req-card" onclick="showReqDetail('${r.unique_code}')">
       <div class="req-head">
         <div class="req-code">${r.unique_code}</div>
-        <div class="req-status ${r.status || 'active'}">${r.status === 'closed' ? 'منقضی' : 'فعال'}</div>
+        <div class="req-status ${statusClass}">${statusLabel}</div>
       </div>
       <div class="req-rows">
         <div class="req-row"><div class="req-icon">📍</div><div class="req-val">${r.location || '—'}</div></div>
@@ -673,10 +699,10 @@ async function loadRequests() {
       </div>
       <div class="req-footer">
         <span class="req-stat">👤 ${contactCounts[r.unique_code] || 0} مشاور تماس گرفت</span>
-        <span class="req-date">${formatDate(r.created_at)}</span>
+        <span class="req-date">${expired ? '🔴 ' + expiryDate(r) : '📅 ' + formatDate(r.created_at)}</span>
       </div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 
 async function showReqDetail(code) {
@@ -728,12 +754,13 @@ async function showReqDetail(code) {
     </div>
   `;
 
+  const expired = isExpired(req);
   document.getElementById("modalActions").innerHTML = `
     <button class="btn-sm btn-ghost" onclick="closeModal()">بستن</button>
-    <button class="btn-sm btn-ghost" onclick="closeModal();openEditForm('${code}')">✏️ ویرایش</button>
-    ${req.status !== 'closed'
-      ? `<button class="btn-sm btn-red" onclick="closeModal();toggleReqStatus('${code}','active')">❌ بستن آگهی</button>`
-      : `<button class="btn-sm btn-green" onclick="closeModal();toggleReqStatus('${code}','closed')">✅ بازگشایی</button>`}
+    ${!expired ? `<button class="btn-sm btn-ghost" onclick="closeModal();openEditForm('${code}')">✏️ ویرایش</button>` : ''}
+    ${expired
+      ? `<button class="btn-sm btn-gold" onclick="closeModal();renewRequest('${code}')">🔄 ارسال مجدد (${(RENEW_COST/1000).toLocaleString('fa')}K)</button>`
+      : `<button class="btn-sm btn-red" onclick="closeModal();toggleReqStatus('${code}','active')">❌ بستن آگهی</button>`}
   `;
 
   document.getElementById("reqModal").classList.add("show");
@@ -755,6 +782,31 @@ async function toggleReqStatus(code, currentStatus) {
   await sb("PATCH", "requests", { status: newStatus }, `?unique_code=eq.${code}&user_id=eq.${ownerUser.id}`);
   showToast(newStatus === 'active' ? '✅ آگهی بازگشایی شد' : '❌ آگهی بسته شد');
   await Promise.all([loadRequests(), loadDashboard()]);
+}
+
+async function renewRequest(code) {
+  const wallet = ownerUser.wallet || 0;
+  if (wallet < RENEW_COST) {
+    showToast(`⚠️ موجودی کافی نیست. موجودی: ${wallet.toLocaleString('fa')} تومان`);
+    return;
+  }
+  if (!confirm(`برای ارسال مجدد این درخواست ${RENEW_COST.toLocaleString('fa')} تومان از کیف پول کسر می‌شود. ادامه می‌دهید؟`)) return;
+
+  const newWallet = wallet - RENEW_COST;
+  const renewedAt = new Date().toISOString();
+
+  const [r1, r2] = await Promise.all([
+    sb("PATCH", "users", { wallet: newWallet }, `?id=eq.${ownerUser.id}`),
+    sb("PATCH", "requests", { status: 'active', created_at: renewedAt }, `?unique_code=eq.${code}&user_id=eq.${ownerUser.id}`)
+  ]);
+
+  if (r1 !== null && r2 !== null) {
+    ownerUser.wallet = newWallet;
+    showToast(`✅ درخواست تجدید شد. موجودی: ${newWallet.toLocaleString('fa')} تومان`);
+    await Promise.all([loadRequests(), loadDashboard(), loadProfile()]);
+  } else {
+    showToast("⚠️ خطا در تجدید درخواست");
+  }
 }
 
 // ─── EDIT REQUEST ───
