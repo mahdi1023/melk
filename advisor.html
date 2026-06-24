@@ -552,18 +552,9 @@ async function tryTelegramAuth() {
     const tgApp = window.Telegram?.WebApp;
     if (!tgApp || !tgApp.initDataUnsafe?.user?.id) return false;
     const tgUser = tgApp.initDataUnsafe.user;
-    const [user, advisor] = await Promise.all([
-      sb("GET", "users", null, `?id=eq.${tgUser.id}&select=*`),
-      sb("GET", "advisors", null, `?user_id=eq.${tgUser.id}&select=*`)
-    ]);
+    const user = await sb("GET", "users", null, `?id=eq.${tgUser.id}&select=*`);
     if (!user || user.length === 0) return false;
-    if (!advisor || advisor.length === 0 || !advisor[0].is_active) {
-      document.getElementById("errorMsg").innerHTML =
-        "دسترسی مشاور برای حساب شما فعال نیست.<br><br>" +
-        "برای فعال‌سازی با ادمین تماس بگیرید.";
-      return "no_advisor";
-    }
-    advisorUser = { ...user[0], advisor: advisor[0] };
+    advisorUser = user[0];
     localStorage.setItem("advisor_session", JSON.stringify({ userId: advisorUser.id, exp: Date.now() + 7 * 86400000 }));
     return true;
   } catch { return false; }
@@ -575,9 +566,8 @@ async function checkSession() {
     const s = JSON.parse(localStorage.getItem("advisor_session") || "null");
     if (!s || Date.now() > s.exp) return false;
     const user = await sb("GET", "users", null, `?id=eq.${s.userId}&select=*`);
-    const advisor = await sb("GET", "advisors", null, `?user_id=eq.${s.userId}&select=*`);
-    if (!user || !user[0] || !advisor || !advisor[0] || !advisor[0].is_active) return false;
-    advisorUser = { ...user[0], advisor: advisor[0] };
+    if (!user || !user[0]) return false;
+    advisorUser = user[0];
     return true;
   } catch { return false; }
 }
@@ -989,8 +979,7 @@ function escHtml(s) {
 // ─── INIT ────────────────────────────────────────────────────
 (async () => {
   const tgOk = await tryTelegramAuth();
-  if (tgOk === true) { await loadMainPanel(); return; }
-  if (tgOk === "no_advisor") { showScreen("errorScreen"); return; }
+  if (tgOk) { await loadMainPanel(); return; }
 
   const sessOk = await checkSession();
   if (sessOk) { await loadMainPanel(); return; }
